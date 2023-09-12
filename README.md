@@ -27,7 +27,7 @@
 **Student Collaborator at The Filipino Cirriculum Project (_January 2023 - Present_)**
 - Sucessfully managed a promotion campagin for the Filipino Social studies class made by myself and the filipino cirriculum team to 7 Public and Private Highschools to promote equity in the cirriulum for Hawaii's Majoirty Filipino Student population 
 
-## Projects
+## Current Projects
 ### Filipino Wordle Mini Game
 - (_BETA_) A mini game utalizing the woordle style game format to teach others Filipino Language, Made using Python, CSS and is able to choose words infinitley
 
