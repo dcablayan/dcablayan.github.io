@@ -1,4 +1,4 @@
-# Dylan Cablayan - Intern at UH Manoa & Amaetur Coder
+# Dylan Cablayan - Intern at UH Manoa & Highschool Student
 
 #### Technical Skills: Prompt Writing, Graphic Design
 
