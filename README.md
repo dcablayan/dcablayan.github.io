@@ -13,7 +13,7 @@
 **Member of the Work Based Learning Leadership Board at the Hawaii Chamber of Commerce (_September 2023 - Present_)**
 - As a Work-Based Leadership Board member, I successfully led fellow students in taking civic action to address critical community issues. I leveraged my network within the Chamber to foster productive collaborations.
 
-**Head of Information Technology at Pride of Kalihi Clothing Company (_March 2023 - Present_)**
+**Head of Information Technology at Pride of Kalihi Clothing Company (_March 2023 - October 2023_)**
 - Created and Developed the online store platform gogovs.com
 - Made 3d Models of all clothing being sold
 
