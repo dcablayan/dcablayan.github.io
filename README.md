@@ -17,7 +17,7 @@
 - Created and Developed the online store platform gogovs.com
 - Made 3d Models of all clothing being sold
 
-**Co Founder & Chief Operating Officer at Vaoult (_July 2023 - Present_)**
+**Co Founder & Chief Operating Officer at Vaoult (_July 2023 - October 2023_)**
 - Founded Vauolt, a local Hawai'i Startup focused on tackling the problem of the lack of accessable & domestic recycling of Lithium ion batteries
 - Currently looking for investors
 
@@ -27,7 +27,7 @@
 **Student Collaborator at The Filipino Cirriculum Project (_January 2023 - Present_)**
 - Sucessfully managed a promotion campagin for the Filipino Social studies class made by myself and the filipino cirriculum team to 7 Public and Private Highschools to promote equity in the cirriulum for Hawaii's Majoirty Filipino Student population 
 
-## Current Projects
+## Current & Future Projects
 ### Filipino Wordle Mini Game
 - (_BETA_) A mini game utalizing the woordle style game format to teach others Filipino Language, Made using Python, CSS and is able to choose words infinitley
 
