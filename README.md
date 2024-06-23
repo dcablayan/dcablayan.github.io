@@ -1,8 +1,7 @@
 # Dylan Joshua B. Cablayan
 
 [808.745.3250](tel:8087453250) | [dylanj7@hawaii.edu](mailto:dylanj7@hawaii.edu) | Honolulu, HI  
-[LinkedIn](https://linkedin.com/in/dylancablayan) | [GitHub](https://github.com/dylancablayan)  
-[Personal Website/Portfolio](https://dcablayan.github.io)
+[LinkedIn](https://linkedin.com/in/dylancablayan) | [GitHub](https://github.com/dcablayan)  
 
 ---
 
@@ -97,10 +96,12 @@
 ## Education
 
 **W.R Farrington High School** | Marketing Management CTE Pathway (2021 - 2025) | GPA: 4.0 (Cumulative)  
-Courses: A.P Biology, A.P English Language & Composition
+Courses: A.P Biology, A.P English Language & Composition, A.P English Literature & Composition, Honors English III
 
 **University of Hawai’i System** | Dual Enrollment | GPA: 4.0  
-Courses: Introduction to STEM Research (SCI 295V), HWST 281 Ho’okele I: Hawaiian Astronomy
+Courses: Personal and Public Speaking (SP 151), Ho’okele I: Hawaiian Astronomy (HWST 281, Introduction to STEM Research (SCI 295V), Survey of Psychology (PSY 100), Biology and Society (BIO 101 & 101L), Survey of Mathematics (MATH 100), Introduction to Sociology (SOC 100), Composition I (ENG 100), Calculus I (MATH 241)
+
+GPA: 4.4
 
 **Online Learning**  
 Courses: Harvard University CS50, Stanford CS 101 Online Courses
