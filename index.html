@@ -3,330 +3,870 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dylan Joshua B. Cablayan</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <title>Opportunity Command Center</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
+    :root {
+      color-scheme: light;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      background-color: #f4f4f4;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top, #f5f7ff, #eef2f9 45%, #e3e8f4 100%);
+      color: #101828;
+      min-height: 100vh;
     }
-    .container {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 2rem;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+    .page-wrapper {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
     }
-    .contact-info p {
-      margin: 0.2rem 0;
+
+    .auth-toolbar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
     }
-    .contact-info a {
-      color: #0073e6;
-      text-decoration: none;
+
+    .auth-toolbar .btn {
+      white-space: nowrap;
     }
-    .section h2 {
-      border-bottom: 2px solid #0073e6;
-      padding-bottom: 0.5rem;
-    }
-    .section h3 {
-      margin-top: 1rem;
-    }
-    .experience-logo, .tech-logo {
-      width: 40px;
-      height: auto;
-      margin-right: 10px;
-    }
-    .logo-container {
+
+    .auth-identity {
       display: flex;
       align-items: center;
+      gap: 0.9rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.05);
+      border: 1px solid rgba(148, 163, 184, 0.35);
     }
-    .collapse-container {
-      cursor: pointer;
-      margin-bottom: 1rem;
+
+    .auth-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 10px 25px -18px rgba(15, 23, 42, 0.8);
+    }
+
+    .auth-details {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+      min-width: 0;
+    }
+
+    .auth-details span,
+    .auth-details small {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 220px;
+    }
+
+    .auth-callout {
+      border-radius: 1rem;
+      border: 1px solid rgba(253, 186, 116, 0.6);
+      background: linear-gradient(135deg, rgba(254, 243, 199, 0.6), rgba(253, 230, 138, 0.35));
+      color: #854d0e;
+    }
+
+    .auth-callout strong {
+      font-weight: 600;
+    }
+
+    [data-auth-guard] {
+      position: relative;
+    }
+
+    [data-auth-guard].auth-locked .card-header,
+    [data-auth-guard].auth-locked .card-body,
+    [data-auth-guard].auth-locked .list-card,
+    [data-auth-guard].auth-locked form {
+      pointer-events: none;
+      user-select: none;
+      filter: blur(1.2px) grayscale(0.1);
+    }
+
+    .auth-guard-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.72), rgba(30, 64, 175, 0.65));
+      color: #f8fafc;
+      border-radius: inherit;
+      padding: clamp(1.5rem, 3vw, 3rem);
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      flex-direction: column;
+      gap: 1rem;
+      backdrop-filter: blur(6px);
+    }
+
+    [data-auth-guard].auth-locked .auth-guard-overlay {
+      display: flex;
+    }
+
+    .auth-guard-overlay h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .auth-guard-overlay p {
+      margin: 0;
+      color: rgba(241, 245, 249, 0.85);
+      max-width: 420px;
+    }
+
+    .auth-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(15, 23, 42, 0.58);
+      backdrop-filter: blur(4px);
+      padding: 1.5rem;
+      z-index: 1050;
+    }
+
+    .auth-modal-backdrop.active {
+      display: flex;
+    }
+
+    .auth-modal {
+      position: relative;
+      width: min(520px, 100%);
+      border-radius: 1.25rem;
+      background: linear-gradient(160deg, #ffffff 0%, #f8fbff 100%);
+      padding: clamp(1.75rem, 2vw, 2.5rem);
+      box-shadow: 0 35px 70px -40px rgba(15, 23, 42, 0.7);
+    }
+
+    .auth-modal h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .auth-modal p.lead {
+      font-size: 1rem;
+      color: #475467;
+      margin-bottom: 1.5rem;
+    }
+
+    .auth-modal-close {
+      position: absolute;
+      top: 0.85rem;
+      right: 0.85rem;
+    }
+
+    .google-button-placeholder {
+      padding: 0.85rem 1rem;
+      border-radius: 0.75rem;
+      border: 1px dashed rgba(148, 163, 184, 0.6);
+      background: rgba(241, 245, 249, 0.6);
+      font-size: 0.9rem;
+      color: #475467;
+    }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 1.75rem 0 1.25rem;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.7));
+    }
+
+    .passkey-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .passkey-status {
+      min-height: 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 768px) {
+      .auth-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+      }
+
+      .auth-identity {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .auth-details span,
+      .auth-details small {
+        max-width: 100%;
+      }
+    }
+
+    header.hero {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    header.hero h1 {
+      font-weight: 700;
+      font-size: clamp(2.25rem, 2.7vw + 1.6rem, 3.5rem);
+      margin-bottom: 0.75rem;
+    }
+
+    header.hero p {
+      max-width: 760px;
+      margin: 0 auto;
+      color: #475467;
+      font-size: 1.05rem;
+    }
+
+    .metric-grid {
+      display: grid;
+      gap: 1.25rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      margin-bottom: 1.75rem;
+    }
+
+    .insights-grid {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      margin-bottom: 2.5rem;
+    }
+
+    .card {
+      border: none;
+      border-radius: 1.25rem;
+      box-shadow: 0 25px 60px -32px rgba(15, 23, 42, 0.4);
+      overflow: hidden;
+      background: linear-gradient(145deg, #fff, #f8faff);
+    }
+
+    .card-header {
+      border-bottom: none;
+      background: transparent;
+      padding-bottom: 0.5rem;
+    }
+
+    .card-header h2 {
+      font-size: 1.35rem;
+      font-weight: 600;
+    }
+
+    .metric-card {
+      padding: 1.75rem 1.5rem;
+      background: linear-gradient(160deg, rgba(59, 130, 246, 0.08), rgba(37, 99, 235, 0.04));
+      border: 1px solid rgba(59, 130, 246, 0.08);
+    }
+
+    .metric-card .metric-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #1d4ed8;
+      margin-bottom: 0.4rem;
+    }
+
+    .metric-card .metric-value {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.1;
+    }
+
+    .metric-card .metric-subtext {
+      font-size: 0.9rem;
+      color: #475467;
+      margin-top: 0.3rem;
+    }
+
+    .list-card {
+      padding: 1.5rem;
+    }
+
+    .list-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .list-card li + li {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .list-card .empty-state {
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+
+    .deadline-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(220, 38, 38, 0.12);
+      color: #b91c1c;
+    }
+
+    .deadline-chip.deadline-soon {
+      background: rgba(251, 191, 36, 0.18);
+      color: #92400e;
+    }
+
+    .deadline-chip.deadline-clear {
+      background: rgba(34, 197, 94, 0.18);
+      color: #047857;
+    }
+
+    .eligibility-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .eligibility-strong {
+      background: rgba(34, 197, 94, 0.18);
+      color: #047857;
+    }
+
+    .eligibility-review {
+      background: rgba(251, 191, 36, 0.18);
+      color: #92400e;
+    }
+
+    .eligibility-gap {
+      background: rgba(248, 113, 113, 0.25);
+      color: #b91c1c;
+    }
+
+    .eligibility-unknown {
+      background: rgba(148, 163, 184, 0.28);
+      color: #475467;
+    }
+
+    .section-description {
+      color: #52606d;
+      font-size: 0.95rem;
+    }
+
+    .table-responsive {
+      border-radius: 1.25rem;
+      overflow: hidden;
+    }
+
+    .table thead th {
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      letter-spacing: 0.05rem;
+      background: #f8fafc;
+      border-bottom-width: 1px;
+      color: #475467;
+      white-space: nowrap;
+    }
+
+    .table tbody td {
+      vertical-align: top;
+      font-size: 0.82rem;
+      color: #1f2937;
+    }
+
+    .badge-outline {
+      background: rgba(59, 130, 246, 0.08);
+      color: #1d4ed8;
+      font-weight: 500;
+      border-radius: 999px;
+      padding: 0.25rem 0.75rem;
+    }
+
+    .btn-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .status-message {
+      min-height: 1.5rem;
+    }
+
+    textarea.form-control {
+      min-height: 90px;
+    }
+
+    .profile-grid {
+      display: grid;
+      gap: 1.25rem;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .profile-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .profile-summary {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #475467;
+    }
+
+    .eligibility-feedback {
+      margin-top: 0.5rem;
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      background: rgba(148, 163, 184, 0.12);
+      color: #0f172a;
+    }
+
+    @media (max-width: 768px) {
+      .metric-card {
+        padding: 1.25rem 1rem;
+      }
+
+      .metric-card .metric-value {
+        font-size: 2rem;
+      }
+
+      header.hero {
+        margin-bottom: 2rem;
+      }
     }
   </style>
 </head>
-<body>
-  <div class="container mt-4">
-    <div class="text-center mb-4">
-      <h1>Dylan Joshua B. Cablayan</h1>
-      <img src="images/Dylan.png" alt="Dylan Cablayan" class="rounded-circle" style="width: 150px; height: auto;">
-      <div class="contact-info mt-3">
-        <p><i class="fas fa-phone"></i> 808.745.3250 | <a href="mailto:dylanj7@hawaii.edu"><i class="fas fa-envelope"></i> dylanj7@hawaii.edu</a> | Honolulu, HI</p>
-        <p><a href="https://linkedin.com/in/dylancablayan"><i class="fab fa-linkedin"></i> LinkedIn</a> | <a href="https://github.com/dylancablayan"><i class="fab fa-github"></i> GitHub</a></p>
+<body data-google-client-id="">
+  <div class="page-wrapper">
+    <div class="auth-toolbar">
+      <div id="auth-signed-out" class="d-flex align-items-center gap-2">
+        <button class="btn btn-primary" type="button" data-open-auth>Sign in</button>
       </div>
-      <p class="mt-3">Dylan Cablayan is a Junior at W.R. Farrington High School with a deep interest in the intersection of Artificial Intelligence Regulations, Electrical Engineering, and Law. He focuses on AI regulation, particularly its integration with semiconductors and the impact of AI across various industries. Aspiring to specialize in electrical engineering, Dylan is particularly interested in conducting research on AI, exploring how this groundbreaking technology can be developed and regulated to meet the evolving needs of society and industries.</p>
+      <div id="auth-signed-in" class="auth-identity d-none">
+        <img src="" alt="" id="auth-avatar" class="auth-avatar" hidden>
+        <div class="auth-details">
+          <span id="auth-user-name"></span>
+          <small id="auth-user-email"></small>
+        </div>
+        <span class="badge rounded-pill text-bg-light border" id="auth-provider-badge"></span>
+        <button class="btn btn-outline-secondary btn-sm" type="button" id="sign-out-button">Sign out</button>
+      </div>
     </div>
 
-    <div id="experience" class="section">
-      <h2>Experience</h2>
-
-      <div id="stem-experience" class="subsection">
-        <h3>STEM</h3>
-
-        <div class="collapse-container" data-toggle="collapse" data-target="#uh-details" aria-expanded="false" aria-controls="uh-details">
-          <h4>University of Hawaii (Project Hokulani)</h4>
-          <div class="logo-container">
-            <img src="images/UH.png" alt="University of Hawaii Logo" class="experience-logo">
-            <div>
-              <p><strong>Student Intern (Paid Internship)</strong></p>
-              <p>Honolulu, HI | Sep 2023 – Present</p>
-            </div>
-          </div>
+    <div id="auth-callout" class="auth-callout alert d-none" role="alert">
+      <div class="d-flex flex-column flex-md-row align-items-md-center gap-3">
+        <div>
+          <strong>Sign in to unlock your opportunity tracker.</strong>
+          <div class="small mt-1">Save opportunities, sync eligibility, and keep your profile in one place once you're signed in.</div>
         </div>
-        <div id="uh-details" class="collapse">
-          <ul>
-            <li>Participated in Project Hokulani, a credit-earning initiative at the University of Hawaii (SCI 295V), in addition to the summer internship at the Laboratory of Applications in Informatics & Analytics.</li>
-            <li>Collaborated with a small team during a paid summer internship to develop a mobile application for receipt scanning.</li>
-            <li>Utilized Python for backend development and integrated ChatGPT-3 and AWS technologies to enhance app functionality.</li>
-          </ul>
-        </div>
-
-        <div class="collapse-container" data-toggle="collapse" data-target="#nasa-details" aria-expanded="false" aria-controls="nasa-details">
-          <h4>National Aeronautics and Space Administration (NASA) & University of Texas Center for Space Research</h4>
-          <div class="logo-container">
-            <img src="images/NASA.jpg" alt="NASA Logo" class="experience-logo">
-            <div>
-              <p><strong>Gravity Recovery and Climate Experiment (GRACE) Project Research Intern</strong></p>
-              <p>Austin, TX | May 2024 – Present</p>
-            </div>
-          </div>
-        </div>
-        <div id="nasa-details" class="collapse">
-          <ul>
-            <li>Selected for the prestigious 2024 STEM Enhancement in Earth Science (SEES) Summer High School Intern Program at the University of Texas at Austin, boasting a competitive acceptance rate of 14%.</li>
-            <li>Interning with the NASA GRACE team, tasked with analyzing pivotal data collected during experimental trials.</li>
-            <li>Published findings of research at the SEES virtual symposium.</li>
-            <li>Awarded a full travel scholarship in recognition of academic excellence and commitment to scientific inquiry.</li>
-          </ul>
-        </div>
-
-        <div class="collapse-container" data-toggle="collapse" data-target="#aimi-details" aria-expanded="false" aria-controls="aimi-details">
-          <h4>Stanford Center for Artificial Intelligence & Medical Imaging (AIMI) AI Bootcamp</h4>
-          <div class="logo-container">
-            <img src="images/AIMI.png" alt="Stanford AIMI Logo" class="experience-logo">
-            <div>
-              <p><strong>Participant</strong></p>
-              <p>Palo Alto, CA | Jul 2024 – Present</p>
-            </div>
-          </div>
-        </div>
-        <div id="aimi-details" class="collapse">
-          <ul>
-            <li>Selected for a competitive 2-week virtual bootcamp at Stanford AIMI focused on machine learning in healthcare.</li>
-            <li>Mastered advanced concepts, evaluation techniques, and deployment strategies for ML in healthcare.</li>
-            <li>Collaborated with top experts & Stanford faculty in group discussions and breakout activities.</li>
-            <li>Networked with distinguished professionals during exclusive Career Lunch and Learn sessions.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div id="political-science-law-experience" class="subsection">
-        <h3>Political Science/Law</h3>
-
-        <div class="collapse-container" data-toggle="collapse" data-target="#coc-details" aria-expanded="false" aria-controls="coc-details">
-          <h4>Hawai’i Chamber of Commerce</h4>
-          <div class="logo-container">
-            <img src="images/COC.png" alt="Hawai’i Chamber of Commerce Logo" class="experience-logo">
-            <div>
-              <p><strong>Student Leadership Board Member (Paid Internship)</strong></p>
-              <p>Honolulu, HI | Sep 2023 – May 2024</p>
-            </div>
-          </div>
-        </div>
-        <div id="coc-details" class="collapse">
-          <ul>
-            <li>Advised Chamber on work-based learning initiatives targeting K-12 education levels.</li>
-            <li>Developed and implemented work-based learning programs specifically designed for middle school students.</li>
-            <li>Advocated at the state senate for the establishment of a paid internship program connecting high school students with local businesses.</li>
-            <li>Successfully lobbied for educational reform that promotes practical learning experiences through local business partnerships (SB 2975 & HB 1654).</li>
-          </ul>
-        </div>
-
-        <div class="collapse-container" data-toggle="collapse" data-target="#cula-details" aria-expanded="false" aria-controls="cula-details">
-          <h4>Civics Unplugged Summer 2024 Civic Innovation Academy at UCLA</h4>
-          <div class="logo-container">
-            <img src="images/CULA.png" alt="UCLA Logo" class="experience-logo">
-            <div>
-              <p><strong>Participant</strong></p>
-              <p>Los Angeles, CA | Aug 2024 – Present</p>
-            </div>
-          </div>
-        </div>
-        <div id="cula-details" class="collapse">
-          <ul>
-            <li>Chosen as one of 50 participants from a pool of over 2,000 applicants for the Summer 2024 Civic Innovation Academy Program at UCLA, boasting an acceptance rate of 10%.</li>
-            <li>Immersing in a comprehensive curriculum led by UCLA and Civics Unplugged experts, focusing on public policy, with a specialized emphasis on Artificial Intelligence and Tech policy.</li>
-            <li>Recognized for academic achievement and potential in civic leadership through the award of a full travel scholarship.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div id="business-experience" class="subsection">
-        <h3>Business</h3>
-
-        <div class="collapse-container" data-toggle="collapse" data-target="#farrington-details" aria-expanded="false" aria-controls="farrington-details">
-          <h4>Farrington Business & Natural Resources Academy</h4>
-          <div class="logo-container">
-            <img src="images/FHS.png" alt="Farrington Academy Logo" class="experience-logo">
-            <div>
-              <p><strong>Academy Ambassador (School Club)</strong></p>
-              <p>Honolulu, HI | Aug 2022 – Present</p>
-            </div>
-          </div>
-        </div>
-        <div id="farrington-details" class="collapse">
-          <ul>
-            <li>Created and managed content for the academy’s social media platforms, effectively promoting the academy’s mission and activities.</li>
-            <li>Played a key role in planning and executing major school events, including Senior Graduation and Academy Enrollment Day.</li>
-            <li>Assisted in the academy’s accreditation process by conducting interviews with certifiers and leading campus tours, providing essential information to evaluate the institution.</li>
-            <li>Represented the academy at outreach events, engaging with students at lower-level feeder schools to foster interest and encourage future enrollments.</li>
-          </ul>
-        </div>
-
-        <div class="collapse-container" data-toggle="collapse" data-target="#deca-details" aria-expanded="false" aria-controls="deca-details">
-          <h4>Farrington High School DECA</h4>
-          <div class="logo-container">
-            <img src="images/DECA.png" alt="DECA Logo" class="experience-logo">
-            <div>
-              <p><strong>Vice President of Leadership (School Club)</strong></p>
-              <p>Honolulu, HI | Aug 2022 – Present</p>
-            </div>
-          </div>
-        </div>
-        <div id="deca-details" class="collapse">
-          <ul>
-            <li>Led event planning and community engagement initiatives (once a month).</li>
-            <li>Hosted a series of professional development workshops, including LinkedIn optimization, resume building, & internship preparedness.</li>
-            <li>Played a pivotal role in advising and training the new executive board to ensure continuity and the ongoing success of the club.</li>
-            <li>Secured a 2nd place finish in the 2024 Innovation Plan Competition at the Career Development Conference (CDC) for Hawaii.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div id="extracurricular-activities" class="subsection">
-        <h3>Extracurricular Activities</h3>
-
-        <div class="collapse-container" data-toggle="collapse" data-target="#fcp-details" aria-expanded="false" aria-controls="fcp-details">
-          <h4>Filipino Curriculum Project</h4>
-          <div class="logo-container">
-            <img src="images/FCP.png" alt="Filipino Curriculum Project Logo" class="experience-logo">
-            <div>
-              <p><strong>Student Collaborator/Public Relations Officer</strong></p>
-              <p>Honolulu, HI | Jan 2023 – Present</p>
-            </div>
-          </div>
-        </div>
-        <div id="fcp-details" class="collapse">
-          <ul>
-            <li>Managed & produced multimedia content for the Filipino Curriculum Project’s Instagram, TikTok, & YouTube channels.</li>
-            <li>Developed print advertisements deployed across six local schools in Hawaii.</li>
-            <li>Successfully drove a significant increase in student enrollment, achieving over 1,000 new registrations for our newly launched course (CHR 2300 Filipino History & Culture).</li>
-          </ul>
-        </div>
-
-        <div class="collapse-container" data-toggle="collapse" data-target="#hhs-details" aria-expanded="false" aria-controls="hhs-details">
-          <h4>Hawaiian Humane Society</h4>
-          <div class="logo-container">
-            <img src="images/HHS.webp" alt="Hawaiian Humane Society Logo" class="experience-logo">
-            <div>
-              <p><strong>Teens4Animals Council (Volunteer)</strong></p>
-              <p>Honolulu, HI | July 2023 – June 2024</p>
-            </div>
-          </div>
-        </div>
-        <div id="hhs-details" class="collapse">
-          <ul>
-            <li>Produced advertisements on behalf of the Hawaiian Humane Society on their social media platforms.</li>
-            <li>Headed outreach programs involving the community on behalf of the organization, incurring 60+ service hours.</li>
-          </ul>
-        </div>
-
-        <div class="collapse-container" data-toggle="collapse" data-target="#nalukai-details" aria-expanded="false" aria-controls="nalukai-details">
-          <h4>Nalukai Academy</h4>
-          <div class="logo-container">
-            <img src="images/NALUKAI.png" alt="Nalukai Academy Logo" class="experience-logo">
-            <div>
-              <p><strong>Summer Startup Camp Cohort 10 Student “Founder”</strong></p>
-              <p>Hilo, HI | Jul 2023 – Jul 2023</p>
-            </div>
-          </div>
-        </div>
-        <div id="nalukai-details" class="collapse">
-          <ul>
-            <li>1 of 24 participants selected (6% acceptance rate).</li>
-            <li>Collaborated within a four-person team to develop a business model focused on battery recycling.</li>
-            <li>Crafted a comprehensive supply chain strategy for the proposed business model.</li>
-            <li>Successfully pitched the business plan to a panel of community leaders in Computer Science, Entrepreneurship, and Venture Capital.</li>
-            <li>Received a Certificate of Recognition from the Governor for outstanding contributions to sustainable business practices and entrepreneurship.</li>
-          </ul>
-        </div>
-
-        <div class="collapse-container" data-toggle="collapse" data-target="#mejireh-details" aria-expanded="false" aria-controls="mejireh-details">
-          <h4>Me Jireh Adult Foster Home</h4>
-          <div class="logo-container">
-            <img src="images/MRH.png" alt="Me Jireh Adult Foster Home Logo" class="experience-logo">
-            <div>
-              <p><strong>Assistant</strong></p>
-              <p>Honolulu, HI | Jul 2019 – Present</p>
-            </div>
-          </div>
-        </div>
-        <div id="mejireh-details" class="collapse">
-          <ul>
-            <li>Shadowed healthcare professionals and assisted with therapeutic exercises for patients.</li>
-            <li>Managed technology aids for patients, including setting up and troubleshooting phones and TVs.</li>
-            <li>Prepared meals with specific attention to dietary restrictions.</li>
-            <li>Organized and dispensed medication for patients, maintaining strict adherence to prescribed health regimens.</li>
-          </ul>
+        <div class="ms-md-auto">
+          <button class="btn btn-sm btn-primary" type="button" data-open-auth>Sign in</button>
         </div>
       </div>
     </div>
 
-    <div id="education" class="section">
-      <h2>Education</h2>
-      <p><strong>W.R Farrington High School</strong> | Marketing Management CTE Pathway (2021 - 2025) | GPA: 4.0 (Cumulative)</p>
-      <p>Courses: A.P Biology, A.P English Language & Composition, A.P English Literature & Composition, Honors English III</p>
-      <p><strong>University of Hawai’i System</strong> | Dual Enrollment | GPA: 4.0</p>
-      <p>Courses: Personal and Public Speaking (SP 151), Ho’okele I: Hawaiian Astronomy (HWST 281), Introduction to STEM Research (SCI 295V), Survey of Psychology (PSY 100), Biology and Society (BIO 101 & 101L), Survey of Mathematics (MATH 100), Introduction to Sociology (SOC 100), Composition I (ENG 100), Calculus I (MATH 241)</p>
-      <p><strong>Online Learning</strong></p>
-      <p>Courses: Harvard University CS50, Stanford CS 101 Online Courses</p>
-    </div>
+    <header class="hero">
+      <h1>Opportunity Command Center</h1>
+      <p>Track every application, stay ahead of deadlines, and understand where you stand at a glance. Paste an opportunity
+        link and the assistant will enrich it with accurate company details, metadata, and eligibility insights.</p>
+    </header>
 
-    <div id="skills" class="section">
-      <h2>Skills</h2>
-      <p>Community Outreach, Facilitation, Leadership, Basic Graphic Design, Organization, Basic Web Design</p>
-    </div>
-
-    <div id="interests" class="section">
-      <h2>Interests</h2>
-      <p>Photography, Cinema, Archery, Non-profit Work, Educational Equity</p>
-    </div>
-
-    <div id="languages" class="section">
-      <h2>Languages</h2>
-      <div class="logo-container">
-        <p>Ilokano, Tagalog, English, (Learning) Python, C++, MATLAB, C#</p>
+    <section class="dashboard-overview">
+      <div class="metric-grid">
+        <div class="card metric-card">
+          <div class="metric-label">Total Saved</div>
+          <div class="metric-value" id="metric-total">0</div>
+          <div class="metric-subtext">Opportunities across your pipeline</div>
+        </div>
+        <div class="card metric-card">
+          <div class="metric-label">Due Soon</div>
+          <div class="metric-value" id="metric-due-soon">0</div>
+          <div class="metric-subtext">Deadlines in the next 7 days</div>
+        </div>
+        <div class="card metric-card">
+          <div class="metric-label">Overdue</div>
+          <div class="metric-value" id="metric-overdue">0</div>
+          <div class="metric-subtext">Deadlines that already passed</div>
+        </div>
+        <div class="card metric-card">
+          <div class="metric-label">High Priority</div>
+          <div class="metric-value" id="metric-high-priority">0</div>
+          <div class="metric-subtext">Marked as high urgency</div>
+        </div>
       </div>
-    </div>
 
-    <div id="citizenship" class="section">
-      <h2>Citizenship</h2>
-      <p>U.S.</p>
-    </div>
+      <div class="insights-grid">
+        <div class="card list-card">
+          <div class="card-header p-0 mb-3">
+            <h2 class="mb-1">Next Actions</h2>
+            <p class="section-description mb-0">Upcoming action items ordered by due date.</p>
+          </div>
+          <ul id="next-actions-list">
+            <li class="empty-state">No next actions scheduled yet. Add opportunities and set next steps to see them here.</li>
+          </ul>
+        </div>
+        <div class="card list-card">
+          <div class="card-header p-0 mb-3">
+            <h2 class="mb-1">Eligibility Watchlist</h2>
+            <p class="section-description mb-0">Opportunities that need additional requirements or confirmation.</p>
+          </div>
+          <ul id="eligibility-watchlist">
+            <li class="empty-state">You're all set—no eligibility concerns detected.</li>
+          </ul>
+        </div>
+        <div class="card list-card">
+          <div class="card-header p-0 mb-3">
+            <h2 class="mb-1">Deadlines Radar</h2>
+            <p class="section-description mb-0">Stay alert on commitments approaching fast.</p>
+          </div>
+          <ul id="deadline-radar">
+            <li class="empty-state">No deadlines yet. Add opportunities to populate this radar.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
 
-    <div id="references" class="section">
-      <h2>References</h2>
-      <p>References provided upon request.</p>
-    </div>
+    <section class="card mb-4" id="profile-card" data-auth-guard>
+      <div class="auth-guard-overlay" data-auth-guard-overlay>
+        <div>
+          <h3>Sign in to sync your profile</h3>
+          <p>Store resume details and coursework securely after you authenticate with Google or an iCloud Keychain passkey.</p>
+        </div>
+        <button class="btn btn-light" type="button" data-open-auth>Sign in</button>
+      </div>
+      <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div>
+          <h2 class="mb-1">Profile &amp; Eligibility</h2>
+          <p class="section-description mb-0">Keep your resume highlights and coursework current to personalize eligibility checks.</p>
+        </div>
+        <small class="profile-summary" id="profile-last-updated">Profile not saved yet.</small>
+      </div>
+      <div class="card-body">
+        <form id="profile-form" class="profile-grid">
+          <div>
+            <label for="fullName" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Ada Lovelace">
+          </div>
+          <div>
+            <label for="educationLevel" class="form-label">Education Level</label>
+            <select class="form-select" id="educationLevel" name="educationLevel">
+              <option value="">Select...</option>
+              <option value="High School">High School</option>
+              <option value="Undergraduate">Undergraduate</option>
+              <option value="Graduate">Graduate</option>
+              <option value="Professional">Professional</option>
+            </select>
+          </div>
+          <div>
+            <label for="gradYear" class="form-label">Graduation Year</label>
+            <input type="number" class="form-control" id="gradYear" name="gradYear" placeholder="2026" min="1900" max="2100">
+          </div>
+          <div>
+            <label for="gpa" class="form-label">GPA</label>
+            <input type="number" step="0.01" min="0" max="4" class="form-control" id="gpa" name="gpa" placeholder="3.8">
+          </div>
+          <div>
+            <label for="citizenship" class="form-label">Citizenship / Work Authorization</label>
+            <input type="text" class="form-control" id="citizenship" name="citizenship" placeholder="U.S. Citizen">
+          </div>
+          <div>
+            <label for="majors" class="form-label">Major / Focus Areas</label>
+            <input type="text" class="form-control" id="majors" name="majors" placeholder="Computer Science, Applied Math">
+          </div>
+          <div>
+            <label for="skills" class="form-label">Key Skills</label>
+            <input type="text" class="form-control" id="skills" name="skills" placeholder="Python, Machine Learning, Public Speaking">
+          </div>
+          <div>
+            <label for="courses" class="form-label">Course List</label>
+            <textarea class="form-control" id="courses" name="courses" placeholder="CS 101 - Intro to Computer Science
+MATH 221 - Linear Algebra
+STAT 202 - Statistics"></textarea>
+          </div>
+          <div class="col-12">
+            <label for="resumeHighlights" class="form-label">Resume Highlights</label>
+            <textarea class="form-control" id="resumeHighlights" name="resumeHighlights" placeholder="Research assistant in robotics lab, Volunteer mentor"></textarea>
+          </div>
+          <div class="col-12">
+            <div class="profile-card-footer">
+              <button class="btn btn-primary" type="submit">Save profile</button>
+              <button class="btn btn-outline-secondary" type="button" id="clear-profile">Clear profile</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="card mb-4" id="entry-card" data-auth-guard>
+      <div class="auth-guard-overlay" data-auth-guard-overlay>
+        <div>
+          <h3>Sign in to capture opportunities</h3>
+          <p>Add, enrich, and prioritize applications only after you authenticate. Your data stays tied to your account.</p>
+        </div>
+        <button class="btn btn-light" type="button" data-open-auth>Sign in</button>
+      </div>
+      <div class="card-header d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+        <div>
+          <h2 class="mb-1">Add an Opportunity</h2>
+          <p class="section-description mb-0">Fetch details from a link, review eligibility feedback, and add it to your dashboard.</p>
+        </div>
+        <button class="btn btn-outline-danger btn-sm" id="clear-all" type="button">
+          <span class="btn-icon">Clear All</span>
+        </button>
+      </div>
+      <div class="card-body">
+        <form id="opportunity-form" class="row g-3">
+          <div class="col-12 col-md-8">
+            <label for="link" class="form-label">Link</label>
+            <div class="input-group">
+              <input type="url" class="form-control" id="link" name="link" placeholder="https://" required>
+              <button class="btn btn-outline-primary" type="button" id="fetch-details">Fetch details</button>
+            </div>
+            <div id="fetch-status" class="status-message small text-secondary mt-1"></div>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="addedOn" class="form-label">Added On</label>
+            <input type="date" class="form-control" id="addedOn" name="addedOn">
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" placeholder="Opportunity title">
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="organization" class="form-label">Organization</label>
+            <input type="text" class="form-control" id="organization" name="organization" placeholder="Company or host">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="opportunityType" class="form-label">Opportunity Type</label>
+            <input type="text" class="form-control" id="opportunityType" name="opportunityType" placeholder="Internship, Scholarship, ...">
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="tags" class="form-label">Tags</label>
+            <input type="text" class="form-control" id="tags" name="tags" placeholder="AI, Hardware, Policy">
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" class="form-control" id="location" name="location" placeholder="City, State or Country">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="remote" class="form-label">Remote</label>
+            <select class="form-select" id="remote" name="remote">
+              <option value="">Select...</option>
+              <option value="Yes">Yes</option>
+              <option value="Hybrid">Hybrid</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="deadline" class="form-label">Deadline</label>
+            <input type="text" class="form-control" id="deadline" name="deadline" placeholder="April 5, 2025">
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="programDates" class="form-label">Program Dates</label>
+            <input type="text" class="form-control" id="programDates" name="programDates" placeholder="June - August 2025">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="duration" class="form-label">Duration</label>
+            <input type="text" class="form-control" id="duration" name="duration" placeholder="10 weeks">
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="compensation" class="form-label">Compensation</label>
+            <input type="text" class="form-control" id="compensation" name="compensation" placeholder="$4,000 stipend">
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="eligibility" class="form-label">Eligibility</label>
+            <input type="text" class="form-control" id="eligibility" name="eligibility" placeholder="U.S. high school juniors">
+            <div id="eligibility-preview" class="eligibility-feedback d-none"></div>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="materials" class="form-label">Materials</label>
+            <input type="text" class="form-control" id="materials" name="materials" placeholder="Resume, Cover Letter, Transcript">
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="applyLink" class="form-label">Apply Link</label>
+            <input type="url" class="form-control" id="applyLink" name="applyLink" placeholder="Direct application URL">
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="contactEmail" class="form-label">Contact Email</label>
+            <input type="email" class="form-control" id="contactEmail" name="contactEmail" placeholder="contact@example.com">
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="source" class="form-label">Source</label>
+            <input type="text" class="form-control" id="source" name="source" placeholder="Where you found it">
+          </div>
+
+          <div class="col-12">
+            <label for="notes" class="form-label">Notes</label>
+            <textarea class="form-control" id="notes" name="notes" placeholder="Important reminders or thoughts"></textarea>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="status" class="form-label">Status</label>
+            <select class="form-select" id="status" name="status">
+              <option value="Wishlist">Wishlist</option>
+              <option value="Applied">Applied</option>
+              <option value="Interviewing">Interviewing</option>
+              <option value="Offer">Offer</option>
+              <option value="Declined">Declined</option>
+              <option value="Not Pursuing">Not Pursuing</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="priority" class="form-label">Priority</label>
+            <select class="form-select" id="priority" name="priority">
+              <option value="High">High</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="nextAction" class="form-label">Next Action</label>
+            <input type="text" class="form-control" id="nextAction" name="nextAction" placeholder="Follow up, Submit essay, ...">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="nextActionDate" class="form-label">Next Action Date</label>
+            <input type="date" class="form-control" id="nextActionDate" name="nextActionDate">
+          </div>
+
+          <div class="col-12 text-end mt-3">
+            <button type="submit" class="btn btn-primary btn-lg">Add to dashboard</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="card" id="opportunities-card" data-auth-guard>
+      <div class="auth-guard-overlay" data-auth-guard-overlay>
+        <div>
+          <h3>Sign in to view your dashboard</h3>
+          <p>Once you're logged in, saved opportunities and eligibility insights appear here automatically.</p>
+        </div>
+        <button class="btn btn-light" type="button" data-open-auth>Sign in</button>
+      </div>
+      <div class="card-header">
+        <h2 class="mb-1">Saved Opportunities</h2>
+        <p class="section-description mb-0">A consolidated table including metadata, eligibility, and next actions.</p>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle" id="opportunity-table">
+            <thead>
+              <tr>
+                <th scope="col">Added</th>
+                <th scope="col">Link</th>
+                <th scope="col">Title</th>
+                <th scope="col">Organization</th>
+                <th scope="col">Type</th>
+                <th scope="col">Tags</th>
+                <th scope="col">Location</th>
+                <th scope="col">Remote</th>
+                <th scope="col">Deadline</th>
+                <th scope="col">Urgency</th>
+                <th scope="col">Program Dates</th>
+                <th scope="col">Duration</th>
+                <th scope="col">Compensation</th>
+                <th scope="col">Eligibility</th>
+                <th scope="col">Eligibility Check</th>
+                <th scope="col">Materials</th>
+                <th scope="col">Apply Link</th>
+                <th scope="col">Contact Email</th>
+                <th scope="col">Source</th>
+                <th scope="col">Notes</th>
+                <th scope="col">Status</th>
+                <th scope="col">Priority</th>
+                <th scope="col">Next Action</th>
+                <th scope="col">Next Action Date</th>
+                <th scope="col" class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="script.js"></script>
+  <div class="auth-modal-backdrop" id="auth-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="auth-modal">
+      <button type="button" class="btn-close auth-modal-close" id="auth-modal-close" aria-label="Close"></button>
+      <h2>Secure sign-in</h2>
+      <p class="lead">Authenticate with Google or your iCloud Keychain passkey to unlock saving opportunities and syncing your profile.</p>
+      <div id="google-signin-button" class="mb-3"></div>
+      <div id="google-signin-placeholder" class="google-button-placeholder d-none">
+        Add a Google OAuth Client ID to the <code>data-google-client-id</code> attribute on <code>&lt;body&gt;</code> (or set <code>window.AUTH_CONFIG.googleClientId</code>) to enable Google sign-in.
+      </div>
+      <div class="auth-divider">or continue with a passkey</div>
+      <div class="mb-3">
+        <p class="small text-secondary mb-3">Use a passkey stored in iCloud Keychain or create a new one on this device. Passkeys keep your credentials encrypted and synced across Apple devices.</p>
+        <div class="passkey-actions">
+          <button class="btn btn-outline-primary" type="button" id="passkey-sign-in">Use existing passkey</button>
+          <button class="btn btn-outline-secondary" type="button" id="passkey-register-toggle" aria-expanded="false">Create new passkey</button>
+        </div>
+      </div>
+      <form id="passkey-register-form" class="row g-3 d-none" autocomplete="off">
+        <div class="col-md-6">
+          <label for="passkey-name" class="form-label">Full name</label>
+          <input type="text" class="form-control" id="passkey-name" name="passkeyName" autocomplete="name" placeholder="Ada Lovelace" required>
+        </div>
+        <div class="col-md-6">
+          <label for="passkey-email" class="form-label">Email (optional)</label>
+          <input type="email" class="form-control" id="passkey-email" name="passkeyEmail" autocomplete="email" placeholder="ada@example.com">
+        </div>
+        <div class="col-12">
+          <button class="btn btn-primary w-100" type="submit">Create passkey</button>
+        </div>
+        <div class="col-12">
+          <p class="form-text">You'll be prompted by your device to confirm with Face ID, Touch ID, or your passcode. Your new passkey stays in iCloud Keychain.</p>
+        </div>
+      </form>
+      <div id="passkey-status" class="passkey-status text-secondary"></div>
+    </div>
+  </div>
+  <script src="script.js" defer></script>
 </body>
 </html>
