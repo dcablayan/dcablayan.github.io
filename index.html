@@ -24,6 +24,48 @@
     </nav>
     <div class="inline-actions">
       <a class="btn btn-outline" href="https://calendar.google.com" target="_blank" rel="noopener">Open Calendar</a>
+      <button class="btn btn-primary" data-go-vault disabled>Open Vault</button>
+    </div>
+  </header>
+
+  <main class="auth-layout">
+    <section class="hero-card" id="features">
+      <h2>Track every application milestone in one intelligent vault.</h2>
+      <p style="max-width: 520px; color: var(--text-muted); font-size: 1.05rem; line-height: 1.6;">
+        Capture opportunities, sync them with your resume and coursework, and stay on top of deadlines with proactive alerts.
+        Opportunity Atlas keeps each profile isolated per login so you can focus on decisions that matter most.
+      </p>
+      <div class="hero-points">
+        <div class="hero-point">
+          <div>
+            <strong>Personalized eligibility radar</strong>
+            <span>Upload your skills and classes once &mdash; every opportunity is scored for fit before you apply.</span>
+          </div>
+        </div>
+        <div class="hero-point">
+          <div>
+            <strong>Deadline mission control</strong>
+            <span>Urgency badges and next actions keep you ahead of looming dates without spreadsheet juggling.</span>
+          </div>
+        </div>
+        <div class="hero-point" id="security">
+          <div>
+            <strong>Secure by default</strong>
+            <span>Sign in with Google Identity Services or your iCloud Keychain passkey. Data is partitioned per account.</span>
+</head>
+<body data-page="auth">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-logo">OA</span>
+      <h1>Opportunity Atlas</h1>
+    </div>
+    <nav class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#security">Security</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="inline-actions">
+      <a class="btn btn-outline" href="https://calendar.google.com" target="_blank" rel="noopener">Open Calendar</a>
       <button class="btn btn-primary" data-go-dashboard disabled>Dashboard</button>
     </div>
   </header>
@@ -753,6 +795,20 @@
             <li class="empty-state">You're all set—no eligibility concerns detected.</li>
           </ul>
         </div>
+      </div>
+    </section>
+
+    <section class="auth-card">
+      <h3>Log in or create your secure workspace</h3>
+      <p style="margin-top: -0.5rem; margin-bottom: 1.5rem; color: var(--text-muted);">
+        Choose your preferred sign-in path. Access to profiles and opportunities is gated until you authenticate.
+      </p>
+
+      <div id="authAlert" class="badge" data-variant="warning" style="display:none;"></div>
+
+      <div id="googleSignInContainer" style="display:grid; gap:1rem;">
+        <div style="display:flex; justify-content:center;">
+          <div id="googleSignInButton"></div>
         <div class="hero-point">
           <div>
             <strong>Deadline mission control</strong>
@@ -881,8 +937,29 @@ STAT 202 - Statistics"></textarea>
             <li class="empty-state">You're all set—no eligibility concerns detected.</li>
           </ul>
         </div>
+        <small style="text-align:center; color: var(--text-muted);">Use your Google account to continue.</small>
       </div>
     </section>
+
+      <div class="divider"></div>
+
+      <form id="passkeySignUp" autocomplete="off">
+        <legend>Create a passkey profile</legend>
+        <div class="form-group">
+          <label for="signUpName">Full name</label>
+          <input type="text" id="signUpName" name="name" placeholder="Ada Lovelace" required />
+        </div>
+        <div class="form-group">
+          <label for="signUpEmail">Email address</label>
+          <input type="email" id="signUpEmail" name="email" placeholder="ada@example.com" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Create passkey workspace</button>
+        <small style="color: var(--text-muted);">
+          Works with iCloud Keychain, Chrome, and compatible authenticators. We'll ask your device to store a passkey.
+        </small>
+      </form>
+
+      <div class="divider"></div>
 
     <section class="auth-card">
       <h3>Log in or create your secure workspace</h3>
@@ -1160,6 +1237,23 @@ STAT 202 - Statistics"></textarea>
         <div class="form-group">
           <label for="signInEmail">Email address</label>
           <input type="email" id="signInEmail" name="email" placeholder="ada@example.com" required />
+        </div>
+        <button type="submit" class="btn btn-outline">Use saved passkey</button>
+      </form>
+
+      <div class="divider"></div>
+
+      <section id="faq">
+        <h4 style="margin:0 0 0.75rem;">Need help?</h4>
+        <p style="margin:0; color: var(--text-muted);">
+          Once signed in you can update your profile, add opportunities, and collaborate with your future self.
+          Every piece of data is encrypted at rest in your browser storage and scoped to your account.
+        </p>
+      </section>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
         </div>
         <button type="submit" class="btn btn-outline">Use saved passkey</button>
       </form>

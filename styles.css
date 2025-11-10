@@ -251,12 +251,104 @@ input:focus, textarea:focus, select:focus {
   margin: 1.75rem 0;
 }
 
+.brand-subtitle {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
 .dashboard-shell {
   padding: clamp(2.5rem, 5vw, 4rem) clamp(2rem, 5vw, 3.5rem);
   display: grid;
   gap: clamp(2.5rem, 4vw, 3.5rem);
 }
 
+.vault-shell {
+  padding: clamp(2.5rem, 5vw, 4rem) clamp(2rem, 6vw, 4rem);
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  gap: clamp(2rem, 4vw, 3rem);
+  align-items: start;
+}
+
+.vault-sidebar {
+  display: grid;
+  gap: 1.5rem;
+  position: sticky;
+  top: 120px;
+  height: fit-content;
+}
+
+.vault-main {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3rem);
+}
+
+.vault-card {
+  background: var(--surface-gradient);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 28px 50px -40px rgba(15, 23, 42, 0.45);
+  padding: clamp(1.5rem, 2vw, 1.9rem);
+  display: grid;
+  gap: 1.25rem;
+}
+
+.vault-card h2,
+.vault-card h3 {
+  margin: 0;
+}
+
+.section-heading.compact {
+  align-items: baseline;
+}
+
+.vault-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.vault-hero > div {
+  max-width: 520px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+}
+
+.helper-text {
+  color: var(--text-muted);
+}
+
+@media (max-width: 1100px) {
+  .vault-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .vault-sidebar {
+    position: static;
+    order: 2;
+  }
+
+  .vault-main {
+    order: 1;
+  }
+
+  .vault-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 .dashboard-grid {
   display: grid;
   gap: 2rem;
@@ -543,4 +635,30 @@ dialog {
 dialog::backdrop {
   background: rgba(15, 23, 42, 0.55);
   backdrop-filter: blur(6px);
+}
+
+.redirect-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top, #f7f8ff 0%, #eef2fb 45%, #e6ecf8 100%);
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.redirect-card {
+  background: var(--surface-gradient);
+  padding: 2rem 2.5rem;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.redirect-card a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
 }
