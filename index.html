@@ -1,332 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dylan Joshua B. Cablayan</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      background-color: #f4f4f4;
-    }
-    .container {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 2rem;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .contact-info p {
-      margin: 0.2rem 0;
-    }
-    .contact-info a {
-      color: #0073e6;
-      text-decoration: none;
-    }
-    .section h2 {
-      border-bottom: 2px solid #0073e6;
-      padding-bottom: 0.5rem;
-    }
-    .section h3 {
-      margin-top: 1rem;
-    }
-    .experience-logo, .tech-logo {
-      width: 40px;
-      height: auto;
-      margin-right: 10px;
-    }
-    .logo-container {
-      display: flex;
-      align-items: center;
-    }
-    .collapse-container {
-      cursor: pointer;
-      margin-bottom: 1rem;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Opportunity Atlas · Sign in</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script defer src="script.js"></script>
 </head>
-<body>
-  <div class="container mt-4">
-    <div class="text-center mb-4">
-      <h1>Dylan Joshua B. Cablayan</h1>
-      <img src="images/Dylan.png" alt="Dylan Cablayan" class="rounded-circle" style="width: 150px; height: auto;">
-      <div class="contact-info mt-3">
-        <p><i class="fas fa-phone"></i> 808.745.3250 | <a href="mailto:dylanj7@hawaii.edu"><i class="fas fa-envelope"></i> dylanj7@hawaii.edu</a> | Honolulu, HI</p>
-        <p><a href="https://linkedin.com/in/dylancablayan"><i class="fab fa-linkedin"></i> LinkedIn</a> | <a href="https://github.com/dylancablayan"><i class="fab fa-github"></i> GitHub</a></p>
-      </div>
-      <p class="mt-3">Dylan Cablayan is a Junior at W.R. Farrington High School with a deep interest in the intersection of Artificial Intelligence Regulations, Electrical Engineering, and Law. He focuses on AI regulation, particularly its integration with semiconductors and the impact of AI across various industries. Aspiring to specialize in electrical engineering, Dylan is particularly interested in conducting research on AI, exploring how this groundbreaking technology can be developed and regulated to meet the evolving needs of society and industries.</p>
+<body data-page="auth">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-logo">OA</span>
+      <h1>Opportunity Atlas</h1>
     </div>
+    <nav class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#security">Security</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="inline-actions">
+      <a class="btn btn-outline" href="https://calendar.google.com" target="_blank" rel="noopener">Open Calendar</a>
+      <button class="btn btn-primary" data-go-vault disabled>Open Vault</button>
+    </div>
+  </header>
 
-    <div id="experience" class="section">
-      <h2>Experience</h2>
-
-      <div id="stem-experience" class="subsection">
-        <h3>STEM</h3>
-
-        <div class="collapse-container" data-toggle="collapse" data-target="#uh-details" aria-expanded="false" aria-controls="uh-details">
-          <h4>University of Hawaii (Project Hokulani)</h4>
-          <div class="logo-container">
-            <img src="images/UH.png" alt="University of Hawaii Logo" class="experience-logo">
-            <div>
-              <p><strong>Student Intern (Paid Internship)</strong></p>
-              <p>Honolulu, HI | Sep 2023 – Present</p>
-            </div>
+  <main class="auth-layout">
+    <section class="hero-card" id="features">
+      <h2>Track every application milestone in one intelligent vault.</h2>
+      <p style="max-width: 520px; color: var(--text-muted); font-size: 1.05rem; line-height: 1.6;">
+        Capture opportunities, sync them with your resume and coursework, and stay on top of deadlines with proactive alerts.
+        Opportunity Atlas keeps each profile isolated per login so you can focus on decisions that matter most.
+      </p>
+      <div class="hero-points">
+        <div class="hero-point">
+          <div>
+            <strong>Personalized eligibility radar</strong>
+            <span>Upload your skills and classes once &mdash; every opportunity is scored for fit before you apply.</span>
           </div>
         </div>
-        <div id="uh-details" class="collapse">
-          <ul>
-            <li>Participated in Project Hokulani, a credit-earning initiative at the University of Hawaii (SCI 295V), in addition to the summer internship at the Laboratory of Applications in Informatics & Analytics.</li>
-            <li>Collaborated with a small team during a paid summer internship to develop a mobile application for receipt scanning.</li>
-            <li>Utilized Python for backend development and integrated ChatGPT-3 and AWS technologies to enhance app functionality.</li>
-          </ul>
-        </div>
-
-        <div class="collapse-container" data-toggle="collapse" data-target="#nasa-details" aria-expanded="false" aria-controls="nasa-details">
-          <h4>National Aeronautics and Space Administration (NASA) & University of Texas Center for Space Research</h4>
-          <div class="logo-container">
-            <img src="images/NASA.jpg" alt="NASA Logo" class="experience-logo">
-            <div>
-              <p><strong>Gravity Recovery and Climate Experiment (GRACE) Project Research Intern</strong></p>
-              <p>Austin, TX | May 2024 – Present</p>
-            </div>
+        <div class="hero-point">
+          <div>
+            <strong>Deadline mission control</strong>
+            <span>Urgency badges and next actions keep you ahead of looming dates without spreadsheet juggling.</span>
           </div>
         </div>
-        <div id="nasa-details" class="collapse">
-          <ul>
-            <li>Selected for the prestigious 2024 STEM Enhancement in Earth Science (SEES) Summer High School Intern Program at the University of Texas at Austin, boasting a competitive acceptance rate of 14%.</li>
-            <li>Interning with the NASA GRACE team, tasked with analyzing pivotal data collected during experimental trials.</li>
-            <li>Published findings of research at the SEES virtual symposium.</li>
-            <li>Awarded a full travel scholarship in recognition of academic excellence and commitment to scientific inquiry.</li>
-          </ul>
-        </div>
-
-        <div class="collapse-container" data-toggle="collapse" data-target="#aimi-details" aria-expanded="false" aria-controls="aimi-details">
-          <h4>Stanford Center for Artificial Intelligence & Medical Imaging (AIMI) AI Bootcamp</h4>
-          <div class="logo-container">
-            <img src="images/AIMI.png" alt="Stanford AIMI Logo" class="experience-logo">
-            <div>
-              <p><strong>Participant</strong></p>
-              <p>Palo Alto, CA | Jul 2024 – Present</p>
-            </div>
+        <div class="hero-point" id="security">
+          <div>
+            <strong>Secure by default</strong>
+            <span>Sign in with Google Identity Services or your iCloud Keychain passkey. Data is partitioned per account.</span>
           </div>
-        </div>
-        <div id="aimi-details" class="collapse">
-          <ul>
-            <li>Selected for a competitive 2-week virtual bootcamp at Stanford AIMI focused on machine learning in healthcare.</li>
-            <li>Mastered advanced concepts, evaluation techniques, and deployment strategies for ML in healthcare.</li>
-            <li>Collaborated with top experts & Stanford faculty in group discussions and breakout activities.</li>
-            <li>Networked with distinguished professionals during exclusive Career Lunch and Learn sessions.</li>
-          </ul>
         </div>
       </div>
+    </section>
 
-      <div id="political-science-law-experience" class="subsection">
-        <h3>Political Science/Law</h3>
+    <section class="auth-card">
+      <h3>Log in or create your secure workspace</h3>
+      <p style="margin-top: -0.5rem; margin-bottom: 1.5rem; color: var(--text-muted);">
+        Choose your preferred sign-in path. Access to profiles and opportunities is gated until you authenticate.
+      </p>
 
-        <div class="collapse-container" data-toggle="collapse" data-target="#coc-details" aria-expanded="false" aria-controls="coc-details">
-          <h4>Hawai’i Chamber of Commerce</h4>
-          <div class="logo-container">
-            <img src="images/COC.png" alt="Hawai’i Chamber of Commerce Logo" class="experience-logo">
-            <div>
-              <p><strong>Student Leadership Board Member (Paid Internship)</strong></p>
-              <p>Honolulu, HI | Sep 2023 – May 2024</p>
-            </div>
-          </div>
-        </div>
-        <div id="coc-details" class="collapse">
-          <ul>
-            <li>Advised Chamber on work-based learning initiatives targeting K-12 education levels.</li>
-            <li>Developed and implemented work-based learning programs specifically designed for middle school students.</li>
-            <li>Advocated at the state senate for the establishment of a paid internship program connecting high school students with local businesses.</li>
-            <li>Successfully lobbied for educational reform that promotes practical learning experiences through local business partnerships (SB 2975 & HB 1654).</li>
-          </ul>
-        </div>
+      <div id="authAlert" class="badge" data-variant="warning" style="display:none;"></div>
 
-        <div class="collapse-container" data-toggle="collapse" data-target="#cula-details" aria-expanded="false" aria-controls="cula-details">
-          <h4>Civics Unplugged Summer 2024 Civic Innovation Academy at UCLA</h4>
-          <div class="logo-container">
-            <img src="images/CULA.png" alt="UCLA Logo" class="experience-logo">
-            <div>
-              <p><strong>Participant</strong></p>
-              <p>Los Angeles, CA | Aug 2024 – Present</p>
-            </div>
-          </div>
+      <div id="googleSignInContainer" style="display:grid; gap:1rem;">
+        <div style="display:flex; justify-content:center;">
+          <div id="googleSignInButton"></div>
         </div>
-        <div id="cula-details" class="collapse">
-          <ul>
-            <li>Chosen as one of 50 participants from a pool of over 2,000 applicants for the Summer 2024 Civic Innovation Academy Program at UCLA, boasting an acceptance rate of 10%.</li>
-            <li>Immersing in a comprehensive curriculum led by UCLA and Civics Unplugged experts, focusing on public policy, with a specialized emphasis on Artificial Intelligence and Tech policy.</li>
-            <li>Recognized for academic achievement and potential in civic leadership through the award of a full travel scholarship.</li>
-          </ul>
-        </div>
+        <small style="text-align:center; color: var(--text-muted);">Use your Google account to continue.</small>
       </div>
 
-      <div id="business-experience" class="subsection">
-        <h3>Business</h3>
+      <div class="divider"></div>
 
-        <div class="collapse-container" data-toggle="collapse" data-target="#farrington-details" aria-expanded="false" aria-controls="farrington-details">
-          <h4>Farrington Business & Natural Resources Academy</h4>
-          <div class="logo-container">
-            <img src="images/FHS.png" alt="Farrington Academy Logo" class="experience-logo">
-            <div>
-              <p><strong>Academy Ambassador (School Club)</strong></p>
-              <p>Honolulu, HI | Aug 2022 – Present</p>
-            </div>
-          </div>
+      <form id="passkeySignUp" autocomplete="off">
+        <legend>Create a passkey profile</legend>
+        <div class="form-group">
+          <label for="signUpName">Full name</label>
+          <input type="text" id="signUpName" name="name" placeholder="Ada Lovelace" required />
         </div>
-        <div id="farrington-details" class="collapse">
-          <ul>
-            <li>Created and managed content for the academy’s social media platforms, effectively promoting the academy’s mission and activities.</li>
-            <li>Played a key role in planning and executing major school events, including Senior Graduation and Academy Enrollment Day.</li>
-            <li>Assisted in the academy’s accreditation process by conducting interviews with certifiers and leading campus tours, providing essential information to evaluate the institution.</li>
-            <li>Represented the academy at outreach events, engaging with students at lower-level feeder schools to foster interest and encourage future enrollments.</li>
-          </ul>
+        <div class="form-group">
+          <label for="signUpEmail">Email address</label>
+          <input type="email" id="signUpEmail" name="email" placeholder="ada@example.com" required />
         </div>
+        <button type="submit" class="btn btn-primary">Create passkey workspace</button>
+        <small style="color: var(--text-muted);">
+          Works with iCloud Keychain, Chrome, and compatible authenticators. We'll ask your device to store a passkey.
+        </small>
+      </form>
 
-        <div class="collapse-container" data-toggle="collapse" data-target="#deca-details" aria-expanded="false" aria-controls="deca-details">
-          <h4>Farrington High School DECA</h4>
-          <div class="logo-container">
-            <img src="images/DECA.png" alt="DECA Logo" class="experience-logo">
-            <div>
-              <p><strong>Vice President of Leadership (School Club)</strong></p>
-              <p>Honolulu, HI | Aug 2022 – Present</p>
-            </div>
-          </div>
+      <div class="divider"></div>
+
+      <form id="passkeySignIn" autocomplete="off">
+        <legend>Sign in with an existing passkey</legend>
+        <div class="form-group">
+          <label for="signInEmail">Email address</label>
+          <input type="email" id="signInEmail" name="email" placeholder="ada@example.com" required />
         </div>
-        <div id="deca-details" class="collapse">
-          <ul>
-            <li>Led event planning and community engagement initiatives (once a month).</li>
-            <li>Hosted a series of professional development workshops, including LinkedIn optimization, resume building, & internship preparedness.</li>
-            <li>Played a pivotal role in advising and training the new executive board to ensure continuity and the ongoing success of the club.</li>
-            <li>Secured a 2nd place finish in the 2024 Innovation Plan Competition at the Career Development Conference (CDC) for Hawaii.</li>
-          </ul>
-        </div>
-      </div>
+        <button type="submit" class="btn btn-outline">Use saved passkey</button>
+      </form>
 
-      <div id="extracurricular-activities" class="subsection">
-        <h3>Extracurricular Activities</h3>
+      <div class="divider"></div>
 
-        <div class="collapse-container" data-toggle="collapse" data-target="#fcp-details" aria-expanded="false" aria-controls="fcp-details">
-          <h4>Filipino Curriculum Project</h4>
-          <div class="logo-container">
-            <img src="images/FCP.png" alt="Filipino Curriculum Project Logo" class="experience-logo">
-            <div>
-              <p><strong>Student Collaborator/Public Relations Officer</strong></p>
-              <p>Honolulu, HI | Jan 2023 – Present</p>
-            </div>
-          </div>
-        </div>
-        <div id="fcp-details" class="collapse">
-          <ul>
-            <li>Managed & produced multimedia content for the Filipino Curriculum Project’s Instagram, TikTok, & YouTube channels.</li>
-            <li>Developed print advertisements deployed across six local schools in Hawaii.</li>
-            <li>Successfully drove a significant increase in student enrollment, achieving over 1,000 new registrations for our newly launched course (CHR 2300 Filipino History & Culture).</li>
-          </ul>
-        </div>
+      <section id="faq">
+        <h4 style="margin:0 0 0.75rem;">Need help?</h4>
+        <p style="margin:0; color: var(--text-muted);">
+          Once signed in you can update your profile, add opportunities, and collaborate with your future self.
+          Every piece of data is encrypted at rest in your browser storage and scoped to your account.
+        </p>
+      </section>
+    </section>
+  </main>
 
-        <div class="collapse-container" data-toggle="collapse" data-target="#hhs-details" aria-expanded="false" aria-controls="hhs-details">
-          <h4>Hawaiian Humane Society</h4>
-          <div class="logo-container">
-            <img src="images/HHS.webp" alt="Hawaiian Humane Society Logo" class="experience-logo">
-            <div>
-              <p><strong>Teens4Animals Council (Volunteer)</strong></p>
-              <p>Honolulu, HI | July 2023 – June 2024</p>
-            </div>
-          </div>
-        </div>
-        <div id="hhs-details" class="collapse">
-          <ul>
-            <li>Produced advertisements on behalf of the Hawaiian Humane Society on their social media platforms.</li>
-            <li>Headed outreach programs involving the community on behalf of the organization, incurring 60+ service hours.</li>
-          </ul>
-        </div>
-
-        <div class="collapse-container" data-toggle="collapse" data-target="#nalukai-details" aria-expanded="false" aria-controls="nalukai-details">
-          <h4>Nalukai Academy</h4>
-          <div class="logo-container">
-            <img src="images/NALUKAI.png" alt="Nalukai Academy Logo" class="experience-logo">
-            <div>
-              <p><strong>Summer Startup Camp Cohort 10 Student “Founder”</strong></p>
-              <p>Hilo, HI | Jul 2023 – Jul 2023</p>
-            </div>
-          </div>
-        </div>
-        <div id="nalukai-details" class="collapse">
-          <ul>
-            <li>1 of 24 participants selected (6% acceptance rate).</li>
-            <li>Collaborated within a four-person team to develop a business model focused on battery recycling.</li>
-            <li>Crafted a comprehensive supply chain strategy for the proposed business model.</li>
-            <li>Successfully pitched the business plan to a panel of community leaders in Computer Science, Entrepreneurship, and Venture Capital.</li>
-            <li>Received a Certificate of Recognition from the Governor for outstanding contributions to sustainable business practices and entrepreneurship.</li>
-          </ul>
-        </div>
-
-        <div class="collapse-container" data-toggle="collapse" data-target="#mejireh-details" aria-expanded="false" aria-controls="mejireh-details">
-          <h4>Me Jireh Adult Foster Home</h4>
-          <div class="logo-container">
-            <img src="images/MRH.png" alt="Me Jireh Adult Foster Home Logo" class="experience-logo">
-            <div>
-              <p><strong>Assistant</strong></p>
-              <p>Honolulu, HI | Jul 2019 – Present</p>
-            </div>
-          </div>
-        </div>
-        <div id="mejireh-details" class="collapse">
-          <ul>
-            <li>Shadowed healthcare professionals and assisted with therapeutic exercises for patients.</li>
-            <li>Managed technology aids for patients, including setting up and troubleshooting phones and TVs.</li>
-            <li>Prepared meals with specific attention to dietary restrictions.</li>
-            <li>Organized and dispensed medication for patients, maintaining strict adherence to prescribed health regimens.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div id="education" class="section">
-      <h2>Education</h2>
-      <p><strong>W.R Farrington High School</strong> | Marketing Management CTE Pathway (2021 - 2025) | GPA: 4.0 (Cumulative)</p>
-      <p>Courses: A.P Biology, A.P English Language & Composition, A.P English Literature & Composition, Honors English III</p>
-      <p><strong>University of Hawai’i System</strong> | Dual Enrollment | GPA: 4.0</p>
-      <p>Courses: Personal and Public Speaking (SP 151), Ho’okele I: Hawaiian Astronomy (HWST 281), Introduction to STEM Research (SCI 295V), Survey of Psychology (PSY 100), Biology and Society (BIO 101 & 101L), Survey of Mathematics (MATH 100), Introduction to Sociology (SOC 100), Composition I (ENG 100), Calculus I (MATH 241)</p>
-      <p><strong>Online Learning</strong></p>
-      <p>Courses: Harvard University CS50, Stanford CS 101 Online Courses</p>
-    </div>
-
-    <div id="skills" class="section">
-      <h2>Skills</h2>
-      <p>Community Outreach, Facilitation, Leadership, Basic Graphic Design, Organization, Basic Web Design</p>
-    </div>
-
-    <div id="interests" class="section">
-      <h2>Interests</h2>
-      <p>Photography, Cinema, Archery, Non-profit Work, Educational Equity</p>
-    </div>
-
-    <div id="languages" class="section">
-      <h2>Languages</h2>
-      <div class="logo-container">
-        <p>Ilokano, Tagalog, English, (Learning) Python, C++, MATLAB, C#</p>
-      </div>
-    </div>
-
-    <div id="citizenship" class="section">
-      <h2>Citizenship</h2>
-      <p>U.S.</p>
-    </div>
-
-    <div id="references" class="section">
-      <h2>References</h2>
-      <p>References provided upon request.</p>
-    </div>
-  </div>
-
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="script.js"></script>
+  <div class="toast" id="toast"></div>
 </body>
 </html>
