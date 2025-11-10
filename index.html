@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Opportunity Command Center</title>
+  <title>Opportunity Tracker</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -360,6 +361,45 @@
       font-weight: 600;
     }
 
+    }
+
+    .list-card .empty-state {
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+
+    .deadline-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(220, 38, 38, 0.12);
+      color: #b91c1c;
+    }
+
+    .deadline-chip.deadline-soon {
+      background: rgba(251, 191, 36, 0.18);
+      color: #92400e;
+    }
+
+    .deadline-chip.deadline-clear {
+      background: rgba(34, 197, 94, 0.18);
+      color: #047857;
+    }
+
+    .eligibility-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
     .eligibility-strong {
       background: rgba(34, 197, 94, 0.18);
       color: #047857;
@@ -407,6 +447,54 @@
       color: #1f2937;
     }
 
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f6f8fb;
+      color: #1f2933;
+    }
+    .page-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1rem 4rem;
+    }
+    .card {
+      border: none;
+      border-radius: 1rem;
+      box-shadow: 0 20px 60px -30px rgba(15, 23, 42, 0.35);
+    }
+    .card-header {
+      border-bottom: 0;
+      background: transparent;
+    }
+    .card-header h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+    .section-description {
+      color: #52606d;
+      font-size: 0.95rem;
+    }
+    .form-label {
+      font-weight: 500;
+      color: #334155;
+    }
+    .table thead th {
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.05rem;
+      background: #f8fafc;
+      border-bottom-width: 1px;
+    }
+    .table tbody td {
+      vertical-align: top;
+      font-size: 0.85rem;
+    }
+    .table-responsive {
+      border-radius: 1rem;
+      overflow: hidden;
+    }
     .badge-outline {
       background: rgba(59, 130, 246, 0.08);
       color: #1d4ed8;
@@ -530,7 +618,202 @@
           <div class="metric-value" id="metric-high-priority">0</div>
           <div class="metric-subtext">Marked as high urgency</div>
         </div>
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .profile-summary {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #475467;
+    }
+
+    .eligibility-feedback {
+      margin-top: 0.5rem;
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      background: rgba(148, 163, 184, 0.12);
+      color: #0f172a;
+    }
+
+    @media (max-width: 768px) {
+      .metric-card {
+        padding: 1.25rem 1rem;
+      }
+
+      .metric-card .metric-value {
+        font-size: 2rem;
+      }
+
+      header.hero {
+        margin-bottom: 2rem;
+      }
+    .btn-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .status-message {
+      min-height: 1.5rem;
+    }
+    textarea.form-control {
+      min-height: 90px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <header class="hero">
+      <h1>Opportunity Command Center</h1>
+      <p>Track every application, stay ahead of deadlines, and understand where you stand at a glance. Paste an opportunity
+        link and the assistant will enrich it with accurate company details, metadata, and eligibility insights.</p>
+    </header>
+
+    <section class="dashboard-overview">
+      <div class="metric-grid">
+        <div class="card metric-card">
+          <div class="metric-label">Total Saved</div>
+          <div class="metric-value" id="metric-total">0</div>
+          <div class="metric-subtext">Opportunities across your pipeline</div>
+        </div>
+        <div class="card metric-card">
+          <div class="metric-label">Due Soon</div>
+          <div class="metric-value" id="metric-due-soon">0</div>
+          <div class="metric-subtext">Deadlines in the next 7 days</div>
+        </div>
+        <div class="card metric-card">
+          <div class="metric-label">Overdue</div>
+          <div class="metric-value" id="metric-overdue">0</div>
+          <div class="metric-subtext">Deadlines that already passed</div>
+        </div>
+        <div class="card metric-card">
+          <div class="metric-label">High Priority</div>
+          <div class="metric-value" id="metric-high-priority">0</div>
+          <div class="metric-subtext">Marked as high urgency</div>
+        </div>
       </div>
+
+      <div class="insights-grid">
+        <div class="card list-card">
+          <div class="card-header p-0 mb-3">
+            <h2 class="mb-1">Next Actions</h2>
+            <p class="section-description mb-0">Upcoming action items ordered by due date.</p>
+          </div>
+          <ul id="next-actions-list">
+            <li class="empty-state">No next actions scheduled yet. Add opportunities and set next steps to see them here.</li>
+          </ul>
+        </div>
+        <div class="card list-card">
+          <div class="card-header p-0 mb-3">
+            <h2 class="mb-1">Eligibility Watchlist</h2>
+            <p class="section-description mb-0">Opportunities that need additional requirements or confirmation.</p>
+          </div>
+          <ul id="eligibility-watchlist">
+            <li class="empty-state">You're all set—no eligibility concerns detected.</li>
+          </ul>
+        </div>
+        <div class="card list-card">
+          <div class="card-header p-0 mb-3">
+            <h2 class="mb-1">Deadlines Radar</h2>
+            <p class="section-description mb-0">Stay alert on commitments approaching fast.</p>
+          </div>
+          <ul id="deadline-radar">
+            <li class="empty-state">No deadlines yet. Add opportunities to populate this radar.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card mb-4" id="profile-card">
+      <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div>
+          <h2 class="mb-1">Profile &amp; Eligibility</h2>
+          <p class="section-description mb-0">Keep your resume highlights and coursework current to personalize eligibility checks.</p>
+        </div>
+        <small class="profile-summary" id="profile-last-updated">Profile not saved yet.</small>
+      </div>
+      <div class="card-body">
+        <form id="profile-form" class="profile-grid">
+          <div>
+            <label for="fullName" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Ada Lovelace">
+          </div>
+          <div>
+            <label for="educationLevel" class="form-label">Education Level</label>
+            <select class="form-select" id="educationLevel" name="educationLevel">
+              <option value="">Select...</option>
+              <option value="High School">High School</option>
+              <option value="Undergraduate">Undergraduate</option>
+              <option value="Graduate">Graduate</option>
+              <option value="Professional">Professional</option>
+            </select>
+          </div>
+          <div>
+            <label for="gradYear" class="form-label">Graduation Year</label>
+            <input type="number" class="form-control" id="gradYear" name="gradYear" placeholder="2026" min="1900" max="2100">
+          </div>
+          <div>
+            <label for="gpa" class="form-label">GPA</label>
+            <input type="number" step="0.01" min="0" max="4" class="form-control" id="gpa" name="gpa" placeholder="3.8">
+          </div>
+          <div>
+            <label for="citizenship" class="form-label">Citizenship / Work Authorization</label>
+            <input type="text" class="form-control" id="citizenship" name="citizenship" placeholder="U.S. Citizen">
+          </div>
+          <div>
+            <label for="majors" class="form-label">Major / Focus Areas</label>
+            <input type="text" class="form-control" id="majors" name="majors" placeholder="Computer Science, Applied Math">
+          </div>
+          <div>
+            <label for="skills" class="form-label">Key Skills</label>
+            <input type="text" class="form-control" id="skills" name="skills" placeholder="Python, Machine Learning, Public Speaking">
+          </div>
+          <div>
+            <label for="courses" class="form-label">Course List</label>
+            <textarea class="form-control" id="courses" name="courses" placeholder="CS 101 - Intro to Computer Science
+MATH 221 - Linear Algebra
+STAT 202 - Statistics"></textarea>
+          </div>
+          <div class="col-12">
+            <label for="resumeHighlights" class="form-label">Resume Highlights</label>
+            <textarea class="form-control" id="resumeHighlights" name="resumeHighlights" placeholder="Research assistant in robotics lab, Volunteer mentor"></textarea>
+          </div>
+          <div class="col-12">
+            <div class="profile-card-footer">
+              <button class="btn btn-primary" type="submit">Save profile</button>
+              <button class="btn btn-outline-secondary" type="button" id="clear-profile">Clear profile</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="card mb-4" id="entry-card">
+      <div class="card-header d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+        <div>
+          <h2 class="mb-1">Add an Opportunity</h2>
+          <p class="section-description mb-0">Fetch details from a link, review eligibility feedback, and add it to your dashboard.</p>
+        </div>
+        <button class="btn btn-outline-danger btn-sm" id="clear-all" type="button">
+          <span class="btn-icon">Clear All</span>
+        </button>
+      </div>
+      <div class="card-body">
+        <form id="opportunity-form" class="row g-3">
+          <div class="col-12 col-md-8">
+            <label for="link" class="form-label">Link</label>
+            <div class="input-group">
+              <input type="url" class="form-control" id="link" name="link" placeholder="https://" required>
+              <button class="btn btn-outline-primary" type="button" id="fetch-details">Fetch details</button>
+            </div>
+            <div id="fetch-status" class="status-message small text-secondary mt-1"></div>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="addedOn" class="form-label">Added On</label>
+            <input type="date" class="form-control" id="addedOn" name="addedOn">
+          </div>
 
       <div class="insights-grid">
         <div class="card list-card">
@@ -646,6 +929,129 @@ STAT 202 - Statistics"></textarea>
         <div>
           <h2 class="mb-1">Add an Opportunity</h2>
           <p class="section-description mb-0">Fetch details from a link, review eligibility feedback, and add it to your dashboard.</p>
+        </div>
+          <div class="col-12 col-md-6">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" placeholder="Opportunity title">
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="organization" class="form-label">Organization</label>
+            <input type="text" class="form-control" id="organization" name="organization" placeholder="Company or host">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="opportunityType" class="form-label">Opportunity Type</label>
+            <input type="text" class="form-control" id="opportunityType" name="opportunityType" placeholder="Internship, Scholarship, ...">
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="tags" class="form-label">Tags</label>
+            <input type="text" class="form-control" id="tags" name="tags" placeholder="AI, Hardware, Policy">
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" class="form-control" id="location" name="location" placeholder="City, State or Country">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="remote" class="form-label">Remote</label>
+            <select class="form-select" id="remote" name="remote">
+              <option value="">Select...</option>
+              <option value="Yes">Yes</option>
+              <option value="Hybrid">Hybrid</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="deadline" class="form-label">Deadline</label>
+            <input type="text" class="form-control" id="deadline" name="deadline" placeholder="April 5, 2025">
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="programDates" class="form-label">Program Dates</label>
+            <input type="text" class="form-control" id="programDates" name="programDates" placeholder="June - August 2025">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="duration" class="form-label">Duration</label>
+            <input type="text" class="form-control" id="duration" name="duration" placeholder="10 weeks">
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="compensation" class="form-label">Compensation</label>
+            <input type="text" class="form-control" id="compensation" name="compensation" placeholder="$4,000 stipend">
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="eligibility" class="form-label">Eligibility</label>
+            <input type="text" class="form-control" id="eligibility" name="eligibility" placeholder="U.S. high school juniors">
+            <div id="eligibility-preview" class="eligibility-feedback d-none"></div>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="materials" class="form-label">Materials</label>
+            <input type="text" class="form-control" id="materials" name="materials" placeholder="Resume, Cover Letter, Transcript">
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="applyLink" class="form-label">Apply Link</label>
+            <input type="url" class="form-control" id="applyLink" name="applyLink" placeholder="Direct application URL">
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="contactEmail" class="form-label">Contact Email</label>
+            <input type="email" class="form-control" id="contactEmail" name="contactEmail" placeholder="contact@example.com">
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="source" class="form-label">Source</label>
+            <input type="text" class="form-control" id="source" name="source" placeholder="Where you found it">
+          </div>
+
+          <div class="col-12">
+            <label for="notes" class="form-label">Notes</label>
+            <textarea class="form-control" id="notes" name="notes" placeholder="Important reminders or thoughts"></textarea>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="status" class="form-label">Status</label>
+            <select class="form-select" id="status" name="status">
+              <option value="Wishlist">Wishlist</option>
+              <option value="Applied">Applied</option>
+              <option value="Interviewing">Interviewing</option>
+              <option value="Offer">Offer</option>
+              <option value="Declined">Declined</option>
+              <option value="Not Pursuing">Not Pursuing</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="priority" class="form-label">Priority</label>
+            <select class="form-select" id="priority" name="priority">
+              <option value="High">High</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="nextAction" class="form-label">Next Action</label>
+            <input type="text" class="form-control" id="nextAction" name="nextAction" placeholder="Follow up, Submit essay, ...">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="nextActionDate" class="form-label">Next Action Date</label>
+            <input type="date" class="form-control" id="nextActionDate" name="nextActionDate">
+          </div>
+
+          <div class="col-12 text-end mt-3">
+            <button type="submit" class="btn btn-primary btn-lg">Add to dashboard</button>
+          </div>
+    <header class="mb-5 text-center">
+      <h1 class="fw-bold display-5">Opportunity Tracker</h1>
+      <p class="text-secondary mx-auto" style="max-width: 640px;">
+        Paste a link to a job, internship, scholarship, or program opportunity and the tracker will crawl the page, extract key details,
+        and save everything in your personalized list. Update the fields before saving to keep your search organized.
+      </p>
+    </header>
+
+    <section class="card mb-4">
+      <div class="card-header d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+        <div>
+          <h2>Add an Opportunity</h2>
+          <p class="section-description mb-0">Fetch details from a link, then fine-tune any field before adding it to your list.</p>
         </div>
         <button class="btn btn-outline-danger btn-sm" id="clear-all" type="button">
           <span class="btn-icon">Clear All</span>
@@ -866,6 +1272,108 @@ STAT 202 - Statistics"></textarea>
       </form>
       <div id="passkey-status" class="passkey-status text-secondary"></div>
     </div>
+
+          <div class="col-12 col-md-6">
+            <label for="contactEmail" class="form-label">Contact Email</label>
+            <input type="email" class="form-control" id="contactEmail" name="contactEmail" placeholder="contact@example.com">
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="source" class="form-label">Source</label>
+            <input type="text" class="form-control" id="source" name="source" placeholder="Where you found it">
+          </div>
+
+          <div class="col-12">
+            <label for="notes" class="form-label">Notes</label>
+            <textarea class="form-control" id="notes" name="notes" placeholder="Important reminders or thoughts"></textarea>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="status" class="form-label">Status</label>
+            <select class="form-select" id="status" name="status">
+              <option value="Wishlist">Wishlist</option>
+              <option value="Applied">Applied</option>
+              <option value="Interviewing">Interviewing</option>
+              <option value="Offer">Offer</option>
+              <option value="Declined">Declined</option>
+              <option value="Not Pursuing">Not Pursuing</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="priority" class="form-label">Priority</label>
+            <select class="form-select" id="priority" name="priority">
+              <option value="High">High</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="nextAction" class="form-label">Next Action</label>
+            <input type="text" class="form-control" id="nextAction" name="nextAction" placeholder="Follow up, Submit essay, ...">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="nextActionDate" class="form-label">Next Action Date</label>
+            <input type="date" class="form-control" id="nextActionDate" name="nextActionDate">
+          </div>
+
+          <div class="col-12 text-end mt-3">
+            <button type="submit" class="btn btn-primary btn-lg">Add to list</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="card" id="opportunities-card">
+      <div class="card-header">
+        <h2 class="mb-1">Saved Opportunities</h2>
+        <p class="section-description mb-0">A consolidated table including metadata, eligibility, and next actions.</p>
+    <section class="card">
+      <div class="card-header">
+        <h2 class="mb-0">Saved Opportunities</h2>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle" id="opportunity-table">
+            <thead>
+              <tr>
+                <th scope="col">Added</th>
+                <th scope="col">Link</th>
+                <th scope="col">Title</th>
+                <th scope="col">Organization</th>
+                <th scope="col">Type</th>
+                <th scope="col">Added On</th>
+                <th scope="col">Link</th>
+                <th scope="col">Title</th>
+                <th scope="col">Organization</th>
+                <th scope="col">Opportunity Type</th>
+                <th scope="col">Tags</th>
+                <th scope="col">Location</th>
+                <th scope="col">Remote</th>
+                <th scope="col">Deadline</th>
+                <th scope="col">Urgency</th>
+                <th scope="col">Program Dates</th>
+                <th scope="col">Duration</th>
+                <th scope="col">Compensation</th>
+                <th scope="col">Eligibility</th>
+                <th scope="col">Eligibility Check</th>
+                <th scope="col">Materials</th>
+                <th scope="col">Apply Link</th>
+                <th scope="col">Contact Email</th>
+                <th scope="col">Source</th>
+                <th scope="col">Notes</th>
+                <th scope="col">Status</th>
+                <th scope="col">Priority</th>
+                <th scope="col">Next Action</th>
+                <th scope="col">Next Action Date</th>
+                <th scope="col" class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
   </div>
   <script src="script.js" defer></script>
 </body>

@@ -29,6 +29,33 @@ const fieldIds = [
   'nextActionDate'
 ];
 
+const storageKey = 'opportunity-tracker-entries';
+const profileStorageKey = 'opportunity-tracker-profile';
+const fieldIds = [
+  'addedOn',
+  'link',
+  'title',
+  'organization',
+  'opportunityType',
+  'tags',
+  'location',
+  'remote',
+  'deadline',
+  'programDates',
+  'duration',
+  'compensation',
+  'eligibility',
+  'materials',
+  'applyLink',
+  'contactEmail',
+  'source',
+  'notes',
+  'status',
+  'priority',
+  'nextAction',
+  'nextActionDate'
+];
+
 const profileFieldIds = [
   'fullName',
   'educationLevel',
@@ -328,6 +355,44 @@ function handleSubmit(event) {
     return;
   }
   if (!form) return;
+
+let profile = loadProfile();
+let entries = loadEntries().map(upgradeEntry);
+
+renderEntries();
+populateProfileForm();
+updateProfileSummary();
+updateEligibilityPreview();
+
+fetchButton.addEventListener('click', handleFetchDetails);
+form.addEventListener('submit', handleSubmit);
+form.addEventListener('input', (event) => {
+  if (event.target.name === 'eligibility' || event.target.name === 'tags') {
+    updateEligibilityPreview();
+  }
+});
+clearAllButton.addEventListener('click', handleClearAll);
+tableBody.addEventListener('click', handleTableClick);
+
+profileForm.addEventListener('submit', handleProfileSubmit);
+clearProfileButton.addEventListener('click', handleProfileClear);
+profileForm.addEventListener('input', (event) => {
+  if (['skills', 'courses', 'resumeHighlights', 'educationLevel', 'gpa', 'citizenship', 'majors'].includes(event.target.name)) {
+    updateEligibilityPreview();
+  }
+});
+
+
+let entries = loadEntries();
+renderEntries();
+
+fetchButton.addEventListener('click', handleFetchDetails);
+form.addEventListener('submit', handleSubmit);
+clearAllButton.addEventListener('click', handleClearAll);
+tableBody.addEventListener('click', handleTableClick);
+
+function handleSubmit(event) {
+  event.preventDefault();
   const formData = new FormData(form);
   const entry = {};
 
@@ -476,6 +541,8 @@ function renderEntries() {
     return;
   }
 
+  tableBody.innerHTML = '';
+
   entries.forEach((entry, index) => {
     const row = document.createElement('tr');
     const assessment = entry.eligibilityAssessment || evaluateEligibility(entry);
@@ -586,6 +653,13 @@ function loadEntries() {
     const key = storageKeyForUser(ENTRIES_KEY_BASE);
     if (!key) return [];
     const stored = localStorage.getItem(key);
+  const serialized = entries.map(({ eligibilityAssessment, ...rest }) => rest);
+  localStorage.setItem(storageKey, JSON.stringify(serialized));
+}
+
+function loadEntries() {
+  try {
+    const stored = localStorage.getItem(storageKey);
     if (!stored) return [];
     const parsed = JSON.parse(stored);
     return Array.isArray(parsed) ? parsed : [];
@@ -601,6 +675,8 @@ function loadProfile() {
     const key = storageKeyForUser(PROFILE_KEY_BASE);
     if (!key) return {};
     const stored = localStorage.getItem(key);
+  try {
+    const stored = localStorage.getItem(profileStorageKey);
     if (!stored) return {};
     const parsed = JSON.parse(stored);
     return parsed && typeof parsed === 'object' ? parsed : {};
@@ -673,6 +749,171 @@ function detectPasskeySupport() {
     .catch((error) => {
       console.warn('Unable to detect passkey support:', error);
       passkeySupported = false;
+  localStorage.setItem(profileStorageKey, JSON.stringify(profile));
+}
+
+function populateProfileForm() {
+  profileFieldIds.forEach((id) => {
+    const field = profileForm.elements[id];
+    if (!field) return;
+    field.value = profile[id] || '';
+  });
+}
+
+function handleProfileSubmit(event) {
+  event.preventDefault();
+  const formData = new FormData(profileForm);
+  const updatedProfile = {};
+
+  profileFieldIds.forEach((id) => {
+    const value = formData.get(id) || '';
+    updatedProfile[id] = value.trim ? value.trim() : value;
+  });
+
+  updatedProfile.lastUpdated = new Date().toISOString();
+  profile = updatedProfile;
+  saveProfile();
+  updateProfileSummary();
+  entries = entries.map(upgradeEntry);
+  saveEntries();
+  renderEntries();
+  updateEligibilityPreview();
+}
+
+function handleProfileClear() {
+  if (!Object.keys(profile).length) {
+    profileForm.reset();
+    updateEligibilityPreview();
+    return;
+  }
+
+  const confirmation = confirm('Clear your stored profile details? Eligibility comparisons will reset.');
+  if (!confirmation) return;
+
+  profile = {};
+  localStorage.removeItem(profileStorageKey);
+  profileForm.reset();
+  updateProfileSummary();
+  entries = entries.map(upgradeEntry);
+  saveEntries();
+  renderEntries();
+  updateEligibilityPreview();
+}
+
+function updateProfileSummary() {
+  if (profile.lastUpdated) {
+    const date = new Date(profile.lastUpdated);
+    profileLastUpdated.textContent = `Last updated ${date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}`;
+  } else {
+    profileLastUpdated.textContent = 'Profile not saved yet.';
+  }
+}
+
+function updateEligibilityPreview() {
+  if (!eligibilityPreview) return;
+  const tempEntry = {};
+  fieldIds.forEach((id) => {
+    const field = form.elements[id];
+    if (!field) return;
+    tempEntry[id] = field.value || '';
+  });
+  const assessment = evaluateEligibility(tempEntry);
+  renderEligibilityPreview(assessment);
+}
+
+function renderEligibilityPreview(assessment) {
+  if (!assessment || (!assessment.summary && assessment.status === 'unknown')) {
+    eligibilityPreview.classList.add('d-none');
+    eligibilityPreview.innerHTML = '';
+    return;
+  }
+
+  const statusClass = {
+    strong: 'eligibility-strong',
+    review: 'eligibility-review',
+    gap: 'eligibility-gap',
+    unknown: 'eligibility-unknown'
+  }[assessment.status] || 'eligibility-unknown';
+
+  const matchesList = assessment.matches.length
+    ? `<p class="mb-1 fw-semibold text-success">You match:</p><ul class="mb-2">${assessment.matches.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`
+    : '';
+  const gapsList = assessment.gaps.length
+    ? `<p class="mb-1 fw-semibold text-danger">Needs attention:</p><ul class="mb-0">${assessment.gaps.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`
+    : '';
+
+  eligibilityPreview.className = `eligibility-feedback ${statusClass}`;
+  eligibilityPreview.innerHTML = `
+    <strong>${escapeHtml(assessment.summary)}</strong>
+    ${assessment.detail ? `<p class="mb-2">${escapeHtml(assessment.detail)}</p>` : ''}
+    ${matchesList}
+    ${gapsList}
+  `;
+  eligibilityPreview.classList.remove('d-none');
+}
+
+function extractMetadata(doc, url) {
+  const metadata = {};
+  const textContent = doc.body ? doc.body.textContent || '' : '';
+  const condensedText = textContent ? textContent.replace(/\s+/g, ' ').toLowerCase() : '';
+
+  const meta = (selector, attribute = 'content') => {
+    const element = doc.querySelector(selector);
+    return element ? element.getAttribute(attribute) : '';
+  };
+
+  const titleTag = doc.querySelector('title')?.textContent?.trim() || '';
+
+  metadata.title = meta('meta[property="og:title"]') || meta('meta[name="og:title"]') || titleTag;
+  metadata.organization = chooseOrganization(doc, url, textContent) || deriveOrganizationFromDomain(url);
+  metadata.opportunityType = deriveOpportunityType(condensedText, meta('meta[property="og:type"]'));
+  metadata.tags = meta('meta[name="keywords"]');
+  metadata.location = deriveLocation(doc, condensedText);
+  metadata.remote = deriveRemote(condensedText);
+  metadata.deadline = deriveDeadline(textContent);
+  metadata.programDates = deriveProgramDates(textContent);
+  metadata.duration = deriveDuration(textContent);
+  metadata.compensation = deriveCompensation(textContent);
+  metadata.eligibility = deriveEligibility(textContent);
+  metadata.materials = deriveMaterials(textContent);
+  metadata.applyLink = deriveApplyLink(doc, url) || url;
+  metadata.contactEmail = deriveContactEmail(textContent);
+  metadata.source = safeHostname(url);
+  metadata.notes = meta('meta[name="description"]');
+
+  return metadata;
+}
+
+function chooseOrganization(doc, url, textContent) {
+  const candidates = new Set();
+  const addCandidate = (value) => {
+    if (!value) return;
+    const cleaned = value
+      .replace(/\s+/g, ' ')
+      .replace(/[|»·–-]{2,}/g, ' ')
+      .replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, '')
+      .trim();
+    if (cleaned && cleaned.length <= 80) {
+      candidates.add(cleaned);
+    }
+  };
+
+  const metaSelectors = [
+    'meta[property="og:site_name"]',
+    'meta[name="og:site_name"]',
+    'meta[name="application-name"]',
+    'meta[name="author"]',
+    'meta[name="publisher"]',
+    'meta[property="article:publisher"]',
+    'meta[name="twitter:site"]',
+    'meta[name="twitter:creator"]'
+  ];
+  metaSelectors.forEach((selector) => {
+    doc.querySelectorAll(selector).forEach((el) => {
+      let value = el.getAttribute('content') || el.getAttribute('value');
+      if (!value) return;
+      if (value.startsWith('@')) value = value.slice(1);
+      addCandidate(value);
     });
 }
 
@@ -1212,6 +1453,238 @@ function scoreOrganizationCandidate(candidate, text, domainCore) {
 }
 
 function deriveOrganizationFromDomain(url) {
+  });
+
+  entries.unshift(entry);
+  saveEntries();
+  renderEntries();
+  form.reset();
+  setStatus('Opportunity added to your list.', 'text-success');
+}
+
+async function handleFetchDetails() {
+  const rawUrl = form.link.value.trim();
+  if (!rawUrl) {
+    setStatus('Enter a link to fetch details.', 'text-danger');
+    return;
+  }
+
+  let normalizedUrl = rawUrl;
+  if (!/^https?:\/\//i.test(normalizedUrl)) {
+    normalizedUrl = `https://${normalizedUrl}`;
+  }
+
+  setStatus('Fetching details…', 'text-secondary');
+
+  try {
+    const proxiedUrl = `https://r.jina.ai/${normalizedUrl}`;
+    const response = await fetch(proxiedUrl, { headers: { 'Accept': 'text/html' } });
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`);
+    }
+
+    const html = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    const metadata = extractMetadata(doc, normalizedUrl);
+    applyMetadata(metadata);
+
+    if (!form.addedOn.value) {
+      form.addedOn.value = new Date().toISOString().slice(0, 10);
+    }
+
+    setStatus('Details fetched. Review and update anything that needs polishing.', 'text-success');
+  } catch (error) {
+    console.error('Unable to fetch opportunity details:', error);
+    setStatus('Unable to fetch details automatically. You can fill out the fields manually.', 'text-danger');
+  }
+}
+
+function applyMetadata(metadata) {
+  Object.entries(metadata).forEach(([key, value]) => {
+    if (!value) return;
+    const field = form.elements[key];
+    if (!field) return;
+
+    if (field.tagName === 'SELECT') {
+      for (const option of field.options) {
+        if (option.value.toLowerCase() === String(value).toLowerCase()) {
+          field.value = option.value;
+          return;
+        }
+      }
+    }
+
+    if (!field.value) {
+      field.value = value;
+    }
+  });
+}
+
+function setStatus(message, className) {
+  statusMessage.textContent = message;
+  statusMessage.className = `status-message small mt-1 ${className}`.trim();
+}
+
+function handleClearAll() {
+  if (!entries.length) return;
+  const confirmation = confirm('Remove all saved opportunities? This cannot be undone.');
+  if (!confirmation) return;
+
+  entries = [];
+  saveEntries();
+  renderEntries();
+  setStatus('All opportunities removed.', 'text-secondary');
+}
+
+function handleTableClick(event) {
+  const button = event.target.closest('[data-action]');
+  if (!button) return;
+
+  const index = Number(button.dataset.index);
+  if (Number.isNaN(index)) return;
+
+  if (button.dataset.action === 'delete') {
+    entries.splice(index, 1);
+    saveEntries();
+    renderEntries();
+  }
+}
+
+function renderEntries() {
+  tableBody.innerHTML = '';
+  entries.forEach((entry, index) => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${formatDate(entry.addedOn)}</td>
+      <td>${renderLink(entry.link)}</td>
+      <td>${escapeHtml(entry.title)}</td>
+      <td>${escapeHtml(entry.organization)}</td>
+      <td>${escapeHtml(entry.opportunityType)}</td>
+      <td>${escapeHtml(entry.tags)}</td>
+      <td>${escapeHtml(entry.location)}</td>
+      <td>${escapeHtml(entry.remote)}</td>
+      <td>${escapeHtml(entry.deadline)}</td>
+      <td>${escapeHtml(entry.programDates)}</td>
+      <td>${escapeHtml(entry.duration)}</td>
+      <td>${escapeHtml(entry.compensation)}</td>
+      <td>${escapeHtml(entry.eligibility)}</td>
+      <td>${escapeHtml(entry.materials)}</td>
+      <td>${renderLink(entry.applyLink)}</td>
+      <td>${escapeHtml(entry.contactEmail)}</td>
+      <td>${escapeHtml(entry.source)}</td>
+      <td>${formatMultiline(entry.notes)}</td>
+      <td><span class="badge bg-light text-dark border">${escapeHtml(entry.status)}</span></td>
+      <td><span class="badge ${priorityClass(entry.priority)}">${escapeHtml(entry.priority)}</span></td>
+      <td>${escapeHtml(entry.nextAction)}</td>
+      <td>${formatDate(entry.nextActionDate)}</td>
+      <td class="text-end">
+        <button class="btn btn-sm btn-outline-danger" data-action="delete" data-index="${index}">Remove</button>
+      </td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+
+function normalizeUrl(url) {
+  if (!url) return '';
+  const trimmed = url.trim();
+  if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(trimmed)) return trimmed;
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  if (trimmed.startsWith('//')) return `https:${trimmed}`;
+  return `https://${trimmed}`;
+}
+
+function priorityClass(priority) {
+  switch ((priority || '').toLowerCase()) {
+    case 'high':
+      return 'bg-danger-subtle text-danger border-0';
+    case 'low':
+      return 'bg-secondary-subtle text-secondary border-0';
+    default:
+      return 'bg-primary-subtle text-primary border-0';
+  }
+}
+
+function renderLink(url) {
+  if (!url) return '';
+  const safeUrl = escapeHtml(url);
+  const display = escapeHtml(url.replace(/^https?:\/\//, ''));
+  return `<a href="${safeUrl}" target="_blank" rel="noopener">${display}</a>`;
+}
+
+function formatDate(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return escapeHtml(value);
+  }
+  return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function formatMultiline(value) {
+  if (!value) return '';
+  return escapeHtml(value).replace(/\n/g, '<br>');
+}
+
+function escapeHtml(value) {
+  if (value == null) return '';
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function saveEntries() {
+  localStorage.setItem(storageKey, JSON.stringify(entries));
+}
+
+function loadEntries() {
+  try {
+    const stored = localStorage.getItem(storageKey);
+    if (!stored) return [];
+    const parsed = JSON.parse(stored);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    console.warn('Unable to load saved opportunities from localStorage:', error);
+    return [];
+  }
+}
+
+function extractMetadata(doc, url) {
+  const metadata = {};
+  const textContent = doc.body ? doc.body.textContent : '';
+  const condensedText = textContent ? textContent.replace(/\s+/g, ' ').toLowerCase() : '';
+  const meta = (selector, attribute = 'content') => {
+    const element = doc.querySelector(selector);
+    return element ? element.getAttribute(attribute) : '';
+  };
+
+  metadata.title = meta('meta[property="og:title"]') || doc.querySelector('title')?.textContent?.trim() || '';
+  metadata.organization = meta('meta[property="og:site_name"]') || deriveOrganization(url);
+  metadata.opportunityType = deriveOpportunityType(condensedText, meta('meta[property="og:type"]'));
+  metadata.tags = meta('meta[name="keywords"]');
+  metadata.location = deriveLocation(doc, condensedText);
+  metadata.remote = deriveRemote(condensedText);
+  metadata.deadline = deriveDeadline(textContent);
+  metadata.programDates = deriveProgramDates(textContent);
+  metadata.duration = deriveDuration(textContent);
+  metadata.compensation = deriveCompensation(textContent);
+  metadata.eligibility = deriveEligibility(textContent);
+  metadata.materials = deriveMaterials(textContent);
+  metadata.applyLink = deriveApplyLink(doc, url) || url;
+  metadata.contactEmail = deriveContactEmail(textContent);
+  metadata.source = new URL(url).hostname.replace(/^www\./, '');
+  metadata.notes = meta('meta[name="description"]');
+
+  return metadata;
+}
+
+function deriveOrganization(url) {
   try {
     const hostname = new URL(url).hostname.replace(/^www\./, '');
     const segments = hostname.split('.');
@@ -1281,6 +1754,12 @@ function deriveDeadline(text) {
     text.match(/apply by[:\s]*([a-z]{3,9} \d{1,2}(?:st|nd|rd|th)?,? \d{4})/i) ||
     text.match(/due[:\s]*([a-z]{3,9} \d{1,2}(?:st|nd|rd|th)?,? \d{4})/i);
   return deadlineMatch ? cleanupDate(deadlineMatch[1]) : '';
+
+function deriveDeadline(text) {
+  if (!text) return '';
+  const deadlineMatch = text.match(/deadline[:\s]*([a-z]{3,9} \d{1,2},? \d{4})/i) ||
+    text.match(/apply by[:\s]*([a-z]{3,9} \d{1,2},? \d{4})/i);
+  return deadlineMatch ? deadlineMatch[1].trim() : '';
 }
 
 function deriveProgramDates(text) {
