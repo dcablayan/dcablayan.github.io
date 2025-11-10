@@ -85,6 +85,15 @@ profileForm.addEventListener('input', (event) => {
   }
 });
 
+
+let entries = loadEntries();
+renderEntries();
+
+fetchButton.addEventListener('click', handleFetchDetails);
+form.addEventListener('submit', handleSubmit);
+clearAllButton.addEventListener('click', handleClearAll);
+tableBody.addEventListener('click', handleTableClick);
+
 function handleSubmit(event) {
   event.preventDefault();
   const formData = new FormData(form);
@@ -591,6 +600,238 @@ function scoreOrganizationCandidate(candidate, text, domainCore) {
 }
 
 function deriveOrganizationFromDomain(url) {
+  });
+
+  entries.unshift(entry);
+  saveEntries();
+  renderEntries();
+  form.reset();
+  setStatus('Opportunity added to your list.', 'text-success');
+}
+
+async function handleFetchDetails() {
+  const rawUrl = form.link.value.trim();
+  if (!rawUrl) {
+    setStatus('Enter a link to fetch details.', 'text-danger');
+    return;
+  }
+
+  let normalizedUrl = rawUrl;
+  if (!/^https?:\/\//i.test(normalizedUrl)) {
+    normalizedUrl = `https://${normalizedUrl}`;
+  }
+
+  setStatus('Fetching details…', 'text-secondary');
+
+  try {
+    const proxiedUrl = `https://r.jina.ai/${normalizedUrl}`;
+    const response = await fetch(proxiedUrl, { headers: { 'Accept': 'text/html' } });
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`);
+    }
+
+    const html = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    const metadata = extractMetadata(doc, normalizedUrl);
+    applyMetadata(metadata);
+
+    if (!form.addedOn.value) {
+      form.addedOn.value = new Date().toISOString().slice(0, 10);
+    }
+
+    setStatus('Details fetched. Review and update anything that needs polishing.', 'text-success');
+  } catch (error) {
+    console.error('Unable to fetch opportunity details:', error);
+    setStatus('Unable to fetch details automatically. You can fill out the fields manually.', 'text-danger');
+  }
+}
+
+function applyMetadata(metadata) {
+  Object.entries(metadata).forEach(([key, value]) => {
+    if (!value) return;
+    const field = form.elements[key];
+    if (!field) return;
+
+    if (field.tagName === 'SELECT') {
+      for (const option of field.options) {
+        if (option.value.toLowerCase() === String(value).toLowerCase()) {
+          field.value = option.value;
+          return;
+        }
+      }
+    }
+
+    if (!field.value) {
+      field.value = value;
+    }
+  });
+}
+
+function setStatus(message, className) {
+  statusMessage.textContent = message;
+  statusMessage.className = `status-message small mt-1 ${className}`.trim();
+}
+
+function handleClearAll() {
+  if (!entries.length) return;
+  const confirmation = confirm('Remove all saved opportunities? This cannot be undone.');
+  if (!confirmation) return;
+
+  entries = [];
+  saveEntries();
+  renderEntries();
+  setStatus('All opportunities removed.', 'text-secondary');
+}
+
+function handleTableClick(event) {
+  const button = event.target.closest('[data-action]');
+  if (!button) return;
+
+  const index = Number(button.dataset.index);
+  if (Number.isNaN(index)) return;
+
+  if (button.dataset.action === 'delete') {
+    entries.splice(index, 1);
+    saveEntries();
+    renderEntries();
+  }
+}
+
+function renderEntries() {
+  tableBody.innerHTML = '';
+  entries.forEach((entry, index) => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${formatDate(entry.addedOn)}</td>
+      <td>${renderLink(entry.link)}</td>
+      <td>${escapeHtml(entry.title)}</td>
+      <td>${escapeHtml(entry.organization)}</td>
+      <td>${escapeHtml(entry.opportunityType)}</td>
+      <td>${escapeHtml(entry.tags)}</td>
+      <td>${escapeHtml(entry.location)}</td>
+      <td>${escapeHtml(entry.remote)}</td>
+      <td>${escapeHtml(entry.deadline)}</td>
+      <td>${escapeHtml(entry.programDates)}</td>
+      <td>${escapeHtml(entry.duration)}</td>
+      <td>${escapeHtml(entry.compensation)}</td>
+      <td>${escapeHtml(entry.eligibility)}</td>
+      <td>${escapeHtml(entry.materials)}</td>
+      <td>${renderLink(entry.applyLink)}</td>
+      <td>${escapeHtml(entry.contactEmail)}</td>
+      <td>${escapeHtml(entry.source)}</td>
+      <td>${formatMultiline(entry.notes)}</td>
+      <td><span class="badge bg-light text-dark border">${escapeHtml(entry.status)}</span></td>
+      <td><span class="badge ${priorityClass(entry.priority)}">${escapeHtml(entry.priority)}</span></td>
+      <td>${escapeHtml(entry.nextAction)}</td>
+      <td>${formatDate(entry.nextActionDate)}</td>
+      <td class="text-end">
+        <button class="btn btn-sm btn-outline-danger" data-action="delete" data-index="${index}">Remove</button>
+      </td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+
+function normalizeUrl(url) {
+  if (!url) return '';
+  const trimmed = url.trim();
+  if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(trimmed)) return trimmed;
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  if (trimmed.startsWith('//')) return `https:${trimmed}`;
+  return `https://${trimmed}`;
+}
+
+function priorityClass(priority) {
+  switch ((priority || '').toLowerCase()) {
+    case 'high':
+      return 'bg-danger-subtle text-danger border-0';
+    case 'low':
+      return 'bg-secondary-subtle text-secondary border-0';
+    default:
+      return 'bg-primary-subtle text-primary border-0';
+  }
+}
+
+function renderLink(url) {
+  if (!url) return '';
+  const safeUrl = escapeHtml(url);
+  const display = escapeHtml(url.replace(/^https?:\/\//, ''));
+  return `<a href="${safeUrl}" target="_blank" rel="noopener">${display}</a>`;
+}
+
+function formatDate(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return escapeHtml(value);
+  }
+  return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function formatMultiline(value) {
+  if (!value) return '';
+  return escapeHtml(value).replace(/\n/g, '<br>');
+}
+
+function escapeHtml(value) {
+  if (value == null) return '';
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function saveEntries() {
+  localStorage.setItem(storageKey, JSON.stringify(entries));
+}
+
+function loadEntries() {
+  try {
+    const stored = localStorage.getItem(storageKey);
+    if (!stored) return [];
+    const parsed = JSON.parse(stored);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    console.warn('Unable to load saved opportunities from localStorage:', error);
+    return [];
+  }
+}
+
+function extractMetadata(doc, url) {
+  const metadata = {};
+  const textContent = doc.body ? doc.body.textContent : '';
+  const condensedText = textContent ? textContent.replace(/\s+/g, ' ').toLowerCase() : '';
+  const meta = (selector, attribute = 'content') => {
+    const element = doc.querySelector(selector);
+    return element ? element.getAttribute(attribute) : '';
+  };
+
+  metadata.title = meta('meta[property="og:title"]') || doc.querySelector('title')?.textContent?.trim() || '';
+  metadata.organization = meta('meta[property="og:site_name"]') || deriveOrganization(url);
+  metadata.opportunityType = deriveOpportunityType(condensedText, meta('meta[property="og:type"]'));
+  metadata.tags = meta('meta[name="keywords"]');
+  metadata.location = deriveLocation(doc, condensedText);
+  metadata.remote = deriveRemote(condensedText);
+  metadata.deadline = deriveDeadline(textContent);
+  metadata.programDates = deriveProgramDates(textContent);
+  metadata.duration = deriveDuration(textContent);
+  metadata.compensation = deriveCompensation(textContent);
+  metadata.eligibility = deriveEligibility(textContent);
+  metadata.materials = deriveMaterials(textContent);
+  metadata.applyLink = deriveApplyLink(doc, url) || url;
+  metadata.contactEmail = deriveContactEmail(textContent);
+  metadata.source = new URL(url).hostname.replace(/^www\./, '');
+  metadata.notes = meta('meta[name="description"]');
+
+  return metadata;
+}
+
+function deriveOrganization(url) {
   try {
     const hostname = new URL(url).hostname.replace(/^www\./, '');
     const segments = hostname.split('.');
@@ -660,6 +901,12 @@ function deriveDeadline(text) {
     text.match(/apply by[:\s]*([a-z]{3,9} \d{1,2}(?:st|nd|rd|th)?,? \d{4})/i) ||
     text.match(/due[:\s]*([a-z]{3,9} \d{1,2}(?:st|nd|rd|th)?,? \d{4})/i);
   return deadlineMatch ? cleanupDate(deadlineMatch[1]) : '';
+
+function deriveDeadline(text) {
+  if (!text) return '';
+  const deadlineMatch = text.match(/deadline[:\s]*([a-z]{3,9} \d{1,2},? \d{4})/i) ||
+    text.match(/apply by[:\s]*([a-z]{3,9} \d{1,2},? \d{4})/i);
+  return deadlineMatch ? deadlineMatch[1].trim() : '';
 }
 
 function deriveProgramDates(text) {

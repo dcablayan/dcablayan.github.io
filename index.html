@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Opportunity Command Center</title>
+  <title>Opportunity Tracker</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -205,6 +206,54 @@
       color: #1f2937;
     }
 
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f6f8fb;
+      color: #1f2933;
+    }
+    .page-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1rem 4rem;
+    }
+    .card {
+      border: none;
+      border-radius: 1rem;
+      box-shadow: 0 20px 60px -30px rgba(15, 23, 42, 0.35);
+    }
+    .card-header {
+      border-bottom: 0;
+      background: transparent;
+    }
+    .card-header h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+    .section-description {
+      color: #52606d;
+      font-size: 0.95rem;
+    }
+    .form-label {
+      font-weight: 500;
+      color: #334155;
+    }
+    .table thead th {
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.05rem;
+      background: #f8fafc;
+      border-bottom-width: 1px;
+    }
+    .table tbody td {
+      vertical-align: top;
+      font-size: 0.85rem;
+    }
+    .table-responsive {
+      border-radius: 1rem;
+      overflow: hidden;
+    }
     .badge-outline {
       background: rgba(59, 130, 246, 0.08);
       color: #1d4ed8;
@@ -268,6 +317,16 @@
       header.hero {
         margin-bottom: 2rem;
       }
+    .btn-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .status-message {
+      min-height: 1.5rem;
+    }
+    textarea.form-control {
+      min-height: 90px;
     }
   </style>
 </head>
@@ -532,6 +591,147 @@ STAT 202 - Statistics"></textarea>
           <div class="col-12 text-end mt-3">
             <button type="submit" class="btn btn-primary btn-lg">Add to dashboard</button>
           </div>
+    <header class="mb-5 text-center">
+      <h1 class="fw-bold display-5">Opportunity Tracker</h1>
+      <p class="text-secondary mx-auto" style="max-width: 640px;">
+        Paste a link to a job, internship, scholarship, or program opportunity and the tracker will crawl the page, extract key details,
+        and save everything in your personalized list. Update the fields before saving to keep your search organized.
+      </p>
+    </header>
+
+    <section class="card mb-4">
+      <div class="card-header d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+        <div>
+          <h2>Add an Opportunity</h2>
+          <p class="section-description mb-0">Fetch details from a link, then fine-tune any field before adding it to your list.</p>
+        </div>
+        <button class="btn btn-outline-danger btn-sm" id="clear-all" type="button">
+          <span class="btn-icon">Clear All</span>
+        </button>
+      </div>
+      <div class="card-body">
+        <form id="opportunity-form" class="row g-3">
+          <div class="col-12 col-md-8">
+            <label for="link" class="form-label">Link</label>
+            <div class="input-group">
+              <input type="url" class="form-control" id="link" name="link" placeholder="https://" required>
+              <button class="btn btn-outline-primary" type="button" id="fetch-details">Fetch details</button>
+            </div>
+            <div id="fetch-status" class="status-message small text-secondary mt-1"></div>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="addedOn" class="form-label">Added On</label>
+            <input type="date" class="form-control" id="addedOn" name="addedOn">
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" placeholder="Opportunity title">
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="organization" class="form-label">Organization</label>
+            <input type="text" class="form-control" id="organization" name="organization" placeholder="Company or host">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="opportunityType" class="form-label">Opportunity Type</label>
+            <input type="text" class="form-control" id="opportunityType" name="opportunityType" placeholder="Internship, Scholarship, ...">
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="tags" class="form-label">Tags</label>
+            <input type="text" class="form-control" id="tags" name="tags" placeholder="AI, Hardware, Policy">
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" class="form-control" id="location" name="location" placeholder="City, State or Country">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="remote" class="form-label">Remote</label>
+            <select class="form-select" id="remote" name="remote">
+              <option value="">Select...</option>
+              <option value="Yes">Yes</option>
+              <option value="Hybrid">Hybrid</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="deadline" class="form-label">Deadline</label>
+            <input type="text" class="form-control" id="deadline" name="deadline" placeholder="April 5, 2025">
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="programDates" class="form-label">Program Dates</label>
+            <input type="text" class="form-control" id="programDates" name="programDates" placeholder="June - August 2025">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="duration" class="form-label">Duration</label>
+            <input type="text" class="form-control" id="duration" name="duration" placeholder="10 weeks">
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="compensation" class="form-label">Compensation</label>
+            <input type="text" class="form-control" id="compensation" name="compensation" placeholder="$4,000 stipend">
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="eligibility" class="form-label">Eligibility</label>
+            <input type="text" class="form-control" id="eligibility" name="eligibility" placeholder="U.S. high school juniors">
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="materials" class="form-label">Materials</label>
+            <input type="text" class="form-control" id="materials" name="materials" placeholder="Resume, Cover Letter, Transcript">
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="applyLink" class="form-label">Apply Link</label>
+            <input type="url" class="form-control" id="applyLink" name="applyLink" placeholder="Direct application URL">
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="contactEmail" class="form-label">Contact Email</label>
+            <input type="email" class="form-control" id="contactEmail" name="contactEmail" placeholder="contact@example.com">
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="source" class="form-label">Source</label>
+            <input type="text" class="form-control" id="source" name="source" placeholder="Where you found it">
+          </div>
+
+          <div class="col-12">
+            <label for="notes" class="form-label">Notes</label>
+            <textarea class="form-control" id="notes" name="notes" placeholder="Important reminders or thoughts"></textarea>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="status" class="form-label">Status</label>
+            <select class="form-select" id="status" name="status">
+              <option value="Wishlist">Wishlist</option>
+              <option value="Applied">Applied</option>
+              <option value="Interviewing">Interviewing</option>
+              <option value="Offer">Offer</option>
+              <option value="Declined">Declined</option>
+              <option value="Not Pursuing">Not Pursuing</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="priority" class="form-label">Priority</label>
+            <select class="form-select" id="priority" name="priority">
+              <option value="High">High</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="nextAction" class="form-label">Next Action</label>
+            <input type="text" class="form-control" id="nextAction" name="nextAction" placeholder="Follow up, Submit essay, ...">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="nextActionDate" class="form-label">Next Action Date</label>
+            <input type="date" class="form-control" id="nextActionDate" name="nextActionDate">
+          </div>
+
+          <div class="col-12 text-end mt-3">
+            <button type="submit" class="btn btn-primary btn-lg">Add to list</button>
+          </div>
         </form>
       </div>
     </section>
@@ -540,6 +740,9 @@ STAT 202 - Statistics"></textarea>
       <div class="card-header">
         <h2 class="mb-1">Saved Opportunities</h2>
         <p class="section-description mb-0">A consolidated table including metadata, eligibility, and next actions.</p>
+    <section class="card">
+      <div class="card-header">
+        <h2 class="mb-0">Saved Opportunities</h2>
       </div>
       <div class="card-body">
         <div class="table-responsive">
@@ -551,6 +754,11 @@ STAT 202 - Statistics"></textarea>
                 <th scope="col">Title</th>
                 <th scope="col">Organization</th>
                 <th scope="col">Type</th>
+                <th scope="col">Added On</th>
+                <th scope="col">Link</th>
+                <th scope="col">Title</th>
+                <th scope="col">Organization</th>
+                <th scope="col">Opportunity Type</th>
                 <th scope="col">Tags</th>
                 <th scope="col">Location</th>
                 <th scope="col">Remote</th>
