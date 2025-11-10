@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Opportunity Atlas · Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="script.js"></script>
+</head>
+<body data-page="dashboard">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-logo">OA</span>
+      <h1>Opportunity Atlas</h1>
+    </div>
+    <nav class="nav-links">
+      <a href="#overview">Overview</a>
+      <a href="#opportunities">Opportunities</a>
+      <a href="#profile">Profile</a>
+    </nav>
+    <div class="inline-actions" id="userActions">
+      <div class="user-chip" id="userChip" hidden>
+        <img id="userAvatar" alt="User avatar" />
+        <span id="userName"></span>
+      </div>
+      <button class="btn btn-outline" id="signOut">Sign out</button>
+    </div>
+  </header>
+
+  <main class="dashboard-shell">
+    <section class="panel" id="overview">
+      <div class="section-heading">
+        <div>
+          <h2>Mission Control</h2>
+          <p style="margin:0; color: var(--text-muted);">Monitor deadlines, eligibility, and workload at a glance.</p>
+        </div>
+        <button class="btn btn-primary" id="addOpportunity">Log new opportunity</button>
+      </div>
+      <div class="metrics" id="metrics"></div>
+    </section>
+
+    <section class="dashboard-grid">
+      <section class="panel" id="upcomingPanel">
+        <div class="section-heading">
+          <h2>Deadlines coming up</h2>
+          <span class="badge" id="deadlineBadge" data-variant="warning">Pending sync</span>
+        </div>
+        <div class="deadline-list" id="deadlineList"></div>
+      </section>
+
+      <section class="panel" id="actionsPanel">
+        <div class="section-heading">
+          <h2>Next actions</h2>
+          <span class="badge" id="actionBadge" data-variant="warning">Pending sync</span>
+        </div>
+        <div class="action-list" id="actionList"></div>
+      </section>
+    </section>
+
+    <section class="panel" id="opportunities">
+      <div class="section-heading">
+        <div>
+          <h2>Opportunity inventory</h2>
+          <p style="margin:0; color: var(--text-muted);">All tracked opportunities, eligibility, and workflow status.</p>
+        </div>
+        <div class="inline-actions" style="gap:0.5rem;">
+          <select id="statusFilter">
+            <option value="all">All statuses</option>
+            <option>Not Started</option>
+            <option>In Progress</option>
+            <option>Submitted</option>
+            <option>Interview</option>
+            <option>Offer</option>
+          </select>
+          <select id="priorityFilter">
+            <option value="all">All priorities</option>
+            <option>High</option>
+            <option>Medium</option>
+            <option>Low</option>
+          </select>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="opportunity-table" id="opportunityTable">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Organization</th>
+              <th>Deadline</th>
+              <th>Status</th>
+              <th>Eligibility</th>
+              <th>Priority</th>
+              <th>Next Action</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="table-empty" id="emptyState">No opportunities logged yet. Use “Log new opportunity” to get started.</div>
+    </section>
+
+    <section class="panel" id="profile">
+      <div class="section-heading">
+        <div>
+          <h2>Your profile &amp; eligibility inputs</h2>
+          <p style="margin:0; color: var(--text-muted);">These details drive eligibility scoring and reminders.</p>
+        </div>
+        <span class="badge" id="profileStatus" data-variant="warning">Incomplete</span>
+      </div>
+      <form id="profileForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="profileName">Full name</label>
+            <input id="profileName" name="name" type="text" placeholder="Ada Lovelace" required />
+          </div>
+          <div class="form-group">
+            <label for="profileEmail">Email</label>
+            <input id="profileEmail" name="email" type="email" disabled />
+          </div>
+          <div class="form-group">
+            <label for="profileLocation">Location</label>
+            <input id="profileLocation" name="location" type="text" placeholder="San Francisco, CA" />
+          </div>
+          <div class="form-group">
+            <label for="profileRemote">Remote friendly?</label>
+            <select id="profileRemote" name="remotePreference">
+              <option value="unspecified">Unspecified</option>
+              <option value="yes">Yes</option>
+              <option value="hybrid">Hybrid</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="profileSkills">Key skills (comma separated)</label>
+          <textarea id="profileSkills" name="skills" placeholder="Python, Project management, UX research"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="profileCourses">Recent coursework (comma separated)</label>
+          <textarea id="profileCourses" name="courses" placeholder="Machine Learning, Human-Computer Interaction"></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save profile</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <dialog id="opportunityDialog">
+    <form id="opportunityForm" method="dialog">
+      <h3 style="margin-top:0;">Log a new opportunity</h3>
+      <p style="margin-top:-0.5rem; color: var(--text-muted);">Paste a link and we will prefill what we can, then review the details.</p>
+      <div class="form-group">
+        <label for="opportunityLink">Link</label>
+        <input type="url" id="opportunityLink" name="link" placeholder="https://company.com/apply" required />
+      </div>
+      <button type="button" class="btn btn-outline" id="fetchMetadata">Fetch details</button>
+
+      <div class="form-grid" style="margin-top:1.5rem;">
+        <div class="form-group">
+          <label for="opportunityTitle">Title</label>
+          <input type="text" id="opportunityTitle" name="title" required />
+        </div>
+        <div class="form-group">
+          <label for="opportunityOrganization">Organization</label>
+          <input type="text" id="opportunityOrganization" name="organization" required />
+          <small id="organizationValidation" style="color: var(--text-muted);"></small>
+        </div>
+        <div class="form-group">
+          <label for="opportunityType">Opportunity Type</label>
+          <input type="text" id="opportunityType" name="opportunityType" placeholder="Internship, Fellowship, etc." />
+        </div>
+        <div class="form-group">
+          <label for="opportunityTags">Tags</label>
+          <input type="text" id="opportunityTags" name="tags" placeholder="AI, Social Impact" />
+        </div>
+        <div class="form-group">
+          <label for="opportunityLocation">Location</label>
+          <input type="text" id="opportunityLocation" name="location" />
+        </div>
+        <div class="form-group">
+          <label for="opportunityRemote">Remote</label>
+          <select id="opportunityRemote" name="remote">
+            <option value="unspecified">Unspecified</option>
+            <option value="yes">Yes</option>
+            <option value="hybrid">Hybrid</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="opportunityDeadline">Deadline</label>
+          <input type="date" id="opportunityDeadline" name="deadline" />
+        </div>
+        <div class="form-group">
+          <label for="opportunityProgramDates">Program Dates</label>
+          <input type="text" id="opportunityProgramDates" name="programDates" placeholder="June - August 2025" />
+        </div>
+        <div class="form-group">
+          <label for="opportunityDuration">Duration</label>
+          <input type="text" id="opportunityDuration" name="duration" placeholder="10 weeks" />
+        </div>
+        <div class="form-group">
+          <label for="opportunityCompensation">Compensation</label>
+          <input type="text" id="opportunityCompensation" name="compensation" placeholder="$28/hr" />
+        </div>
+        <div class="form-group">
+          <label for="opportunityEligibility">Eligibility</label>
+          <textarea id="opportunityEligibility" name="eligibility"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="opportunityMaterials">Materials</label>
+          <textarea id="opportunityMaterials" name="materials"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="opportunityApplyLink">Apply Link</label>
+          <input type="url" id="opportunityApplyLink" name="applyLink" />
+        </div>
+        <div class="form-group">
+          <label for="opportunityContactEmail">Contact Email</label>
+          <input type="email" id="opportunityContactEmail" name="contactEmail" />
+        </div>
+        <div class="form-group">
+          <label for="opportunitySource">Source</label>
+          <input type="text" id="opportunitySource" name="source" placeholder="LinkedIn, Referral" />
+        </div>
+        <div class="form-group">
+          <label for="opportunityNotes">Notes</label>
+          <textarea id="opportunityNotes" name="notes"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="opportunityStatus">Status</label>
+          <select id="opportunityStatus" name="status">
+            <option>Not Started</option>
+            <option>In Progress</option>
+            <option>Submitted</option>
+            <option>Interview</option>
+            <option>Offer</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="opportunityPriority">Priority</label>
+          <select id="opportunityPriority" name="priority">
+            <option>High</option>
+            <option>Medium</option>
+            <option>Low</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="opportunityNextAction">Next Action</label>
+          <input type="text" id="opportunityNextAction" name="nextAction" placeholder="Draft cover letter" />
+        </div>
+        <div class="form-group">
+          <label for="opportunityNextActionDate">Next Action Date</label>
+          <input type="date" id="opportunityNextActionDate" name="nextActionDate" />
+        </div>
+      </div>
+      <div class="form-actions" style="margin-top:1.75rem;">
+        <button type="button" class="btn btn-outline" id="cancelOpportunity">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save opportunity</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+</body>
+</html>
