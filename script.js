@@ -1,3 +1,34 @@
+const STORAGE_PREFIX = 'opportunity-tracker';
+const ENTRIES_KEY_BASE = `${STORAGE_PREFIX}-entries`;
+const PROFILE_KEY_BASE = `${STORAGE_PREFIX}-profile`;
+const AUTH_STATE_KEY = `${STORAGE_PREFIX}-auth-state`;
+const PASSKEY_STORE_KEY = `${STORAGE_PREFIX}-passkeys`;
+
+const fieldIds = [
+  'addedOn',
+  'link',
+  'title',
+  'organization',
+  'opportunityType',
+  'tags',
+  'location',
+  'remote',
+  'deadline',
+  'programDates',
+  'duration',
+  'compensation',
+  'eligibility',
+  'materials',
+  'applyLink',
+  'contactEmail',
+  'source',
+  'notes',
+  'status',
+  'priority',
+  'nextAction',
+  'nextActionDate'
+];
+
 const storageKey = 'opportunity-tracker-entries';
 const profileStorageKey = 'opportunity-tracker-profile';
 const fieldIds = [
@@ -58,6 +89,272 @@ const metricsElements = {
 const nextActionsList = document.getElementById('next-actions-list');
 const eligibilityWatchlist = document.getElementById('eligibility-watchlist');
 const deadlineRadar = document.getElementById('deadline-radar');
+const authModal = document.getElementById('auth-modal');
+const authModalClose = document.getElementById('auth-modal-close');
+const authOpeners = document.querySelectorAll('[data-open-auth]');
+const authSignedOut = document.getElementById('auth-signed-out');
+const authSignedIn = document.getElementById('auth-signed-in');
+const authAvatar = document.getElementById('auth-avatar');
+const authUserName = document.getElementById('auth-user-name');
+const authUserEmail = document.getElementById('auth-user-email');
+const authProviderBadge = document.getElementById('auth-provider-badge');
+const authCallout = document.getElementById('auth-callout');
+const signOutButton = document.getElementById('sign-out-button');
+const authGuards = document.querySelectorAll('[data-auth-guard]');
+const googleSignInButtonContainer = document.getElementById('google-signin-button');
+const googleSignInPlaceholder = document.getElementById('google-signin-placeholder');
+const passkeyRegisterToggle = document.getElementById('passkey-register-toggle');
+const passkeyRegisterForm = document.getElementById('passkey-register-form');
+const passkeySignInButton = document.getElementById('passkey-sign-in');
+const passkeyStatus = document.getElementById('passkey-status');
+const passkeyNameInput = document.getElementById('passkey-name');
+const passkeyEmailInput = document.getElementById('passkey-email');
+
+const googleClientId = (document.body?.dataset?.googleClientId || '').trim() || (window.AUTH_CONFIG?.googleClientId || '');
+
+let passkeyRegistry = loadPasskeyRegistry();
+let passkeySupported = null;
+
+let currentUser = loadCurrentUser();
+let profile = {};
+let entries = [];
+
+initializeApp();
+
+function initializeApp() {
+  setupEventListeners();
+  detectPasskeySupport();
+  initializeGoogleSignIn();
+  reloadUserScopedState();
+  updateAuthUi();
+  enforceAuthLocks();
+  if (!currentUser) {
+    setStatus('Sign in to fetch details and add opportunities.', 'text-secondary');
+  }
+}
+
+function setupEventListeners() {
+  if (fetchButton) {
+    fetchButton.addEventListener('click', handleFetchDetails);
+  }
+  if (form) {
+    form.addEventListener('submit', handleSubmit);
+    form.addEventListener('input', (event) => {
+      if (event.target.name === 'eligibility' || event.target.name === 'tags') {
+        updateEligibilityPreview();
+      }
+    });
+  }
+  if (clearAllButton) {
+    clearAllButton.addEventListener('click', handleClearAll);
+  }
+  if (tableBody) {
+    tableBody.addEventListener('click', handleTableClick);
+  }
+  if (profileForm) {
+    profileForm.addEventListener('submit', handleProfileSubmit);
+    profileForm.addEventListener('input', (event) => {
+      if (['skills', 'courses', 'resumeHighlights', 'educationLevel', 'gpa', 'citizenship', 'majors'].includes(event.target.name)) {
+        updateEligibilityPreview();
+      }
+    });
+  }
+  if (clearProfileButton) {
+    clearProfileButton.addEventListener('click', handleProfileClear);
+  }
+
+  authOpeners.forEach((trigger) => {
+    trigger.addEventListener('click', openAuthModal);
+  });
+  if (authModalClose) {
+    authModalClose.addEventListener('click', closeAuthModal);
+  }
+  if (authModal) {
+    authModal.addEventListener('click', (event) => {
+      if (event.target === authModal) {
+        closeAuthModal();
+      }
+    });
+  }
+  if (signOutButton) {
+    signOutButton.addEventListener('click', handleSignOut);
+  }
+  if (passkeyRegisterToggle) {
+    passkeyRegisterToggle.addEventListener('click', togglePasskeyRegisterForm);
+  }
+  if (passkeyRegisterForm) {
+    passkeyRegisterForm.addEventListener('submit', handlePasskeyRegister);
+  }
+  if (passkeySignInButton) {
+    passkeySignInButton.addEventListener('click', handlePasskeySignIn);
+  }
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeAuthModal();
+    }
+  });
+}
+
+function reloadUserScopedState() {
+  if (currentUser) {
+    profile = loadProfile();
+    entries = loadEntries().map(upgradeEntry);
+  } else {
+    profile = {};
+    entries = [];
+    if (form) {
+      form.reset();
+    }
+    if (profileForm) {
+      profileForm.reset();
+    }
+  }
+  populateProfileForm();
+  updateProfileSummary();
+  renderEntries();
+  updateEligibilityPreview();
+}
+
+function updateAuthUi() {
+  const signedIn = Boolean(currentUser);
+  if (authSignedOut) {
+    authSignedOut.classList.toggle('d-none', signedIn);
+  }
+  if (authSignedIn) {
+    authSignedIn.classList.toggle('d-none', !signedIn);
+  }
+  if (authCallout) {
+    authCallout.classList.toggle('d-none', signedIn);
+  }
+  if (authProviderBadge) {
+    authProviderBadge.classList.toggle('d-none', !signedIn);
+  }
+  if (signedIn) {
+    if (authUserName) {
+      authUserName.textContent = currentUser.name || 'Signed in';
+    }
+    if (authUserEmail) {
+      authUserEmail.textContent = currentUser.email || '';
+      authUserEmail.classList.toggle('d-none', !currentUser.email);
+    }
+    if (authProviderBadge) {
+      authProviderBadge.textContent = currentUser.provider === 'passkey' ? 'Passkey' : 'Google';
+    }
+    if (authAvatar) {
+      if (currentUser.avatar) {
+        authAvatar.src = currentUser.avatar;
+        authAvatar.alt = `${currentUser.name || 'Signed in user'} avatar`;
+        authAvatar.hidden = false;
+      } else {
+        authAvatar.hidden = true;
+      }
+    }
+  } else {
+    if (authUserName) authUserName.textContent = '';
+    if (authUserEmail) {
+      authUserEmail.textContent = '';
+      authUserEmail.classList.add('d-none');
+    }
+    if (authProviderBadge) authProviderBadge.textContent = '';
+    if (authAvatar) {
+      authAvatar.src = '';
+      authAvatar.hidden = true;
+    }
+  }
+}
+
+function enforceAuthLocks() {
+  const locked = !currentUser;
+  authGuards.forEach((element) => {
+    element.classList.toggle('auth-locked', locked);
+  });
+  toggleControlsDisabled(form, locked);
+  toggleControlsDisabled(profileForm, locked);
+  if (locked) {
+    updateEligibilityPreview();
+  }
+}
+
+function toggleControlsDisabled(container, disabled) {
+  if (!container) return;
+  const controls = container.querySelectorAll('input, select, textarea, button');
+  controls.forEach((control) => {
+    if (control.dataset?.authIgnore === 'true') return;
+    control.disabled = disabled;
+  });
+}
+
+function ensureAuthenticated(actionDescription) {
+  if (currentUser) return true;
+  if (statusMessage && actionDescription) {
+    setStatus(`Sign in to ${actionDescription}.`, 'text-danger');
+  }
+  openAuthModal();
+  return false;
+}
+
+function openAuthModal() {
+  if (!authModal) return;
+  authModal.classList.add('active');
+  authModal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  setPasskeyStatus('');
+}
+
+function closeAuthModal() {
+  if (!authModal) return;
+  authModal.classList.remove('active');
+  authModal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  hidePasskeyRegisterForm();
+  setPasskeyStatus('');
+}
+
+function hidePasskeyRegisterForm() {
+  if (!passkeyRegisterForm) return;
+  passkeyRegisterForm.classList.add('d-none');
+  passkeyRegisterForm.reset();
+  if (passkeyRegisterToggle) {
+    passkeyRegisterToggle.setAttribute('aria-expanded', 'false');
+  }
+}
+
+function handleSignOut() {
+  setCurrentUser(null);
+  closeAuthModal();
+  setStatus('Signed out. Sign in to continue tracking opportunities.', 'text-secondary');
+}
+
+function setCurrentUser(user) {
+  currentUser = user;
+  if (user) {
+    try {
+      const persisted = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        provider: user.provider,
+        avatar: user.avatar
+      };
+      localStorage.setItem(AUTH_STATE_KEY, JSON.stringify(persisted));
+    } catch (error) {
+      console.warn('Unable to persist auth state:', error);
+    }
+  } else {
+    localStorage.removeItem(AUTH_STATE_KEY);
+  }
+  reloadUserScopedState();
+  updateAuthUi();
+  enforceAuthLocks();
+}
+
+function handleSubmit(event) {
+  event.preventDefault();
+  if (!ensureAuthenticated('add opportunities')) {
+    return;
+  }
+  if (!form) return;
 
 let profile = loadProfile();
 let entries = loadEntries().map(upgradeEntry);
@@ -121,6 +418,10 @@ function handleSubmit(event) {
 }
 
 async function handleFetchDetails() {
+  if (!ensureAuthenticated('fetch opportunity details')) {
+    return;
+  }
+  if (!form) return;
   const rawUrl = form.link.value.trim();
   if (!rawUrl) {
     setStatus('Enter a link to fetch details.', 'text-danger');
@@ -182,11 +483,15 @@ function applyMetadata(metadata) {
 }
 
 function setStatus(message, className) {
+  if (!statusMessage) return;
   statusMessage.textContent = message;
   statusMessage.className = `status-message small mt-1 ${className}`.trim();
 }
 
 function handleClearAll() {
+  if (!ensureAuthenticated('clear saved opportunities')) {
+    return;
+  }
   if (!entries.length) return;
   const confirmation = confirm('Remove all saved opportunities? This cannot be undone.');
   if (!confirmation) return;
@@ -205,6 +510,9 @@ function handleTableClick(event) {
   if (Number.isNaN(index)) return;
 
   if (button.dataset.action === 'delete') {
+    if (!ensureAuthenticated('modify saved opportunities')) {
+      return;
+    }
     entries.splice(index, 1);
     saveEntries();
     renderEntries();
@@ -212,6 +520,27 @@ function handleTableClick(event) {
 }
 
 function renderEntries() {
+  if (!tableBody) return;
+  tableBody.innerHTML = '';
+
+  if (!currentUser) {
+    tableBody.innerHTML = '<tr><td colspan="25" class="text-center text-muted py-4">Sign in to see your saved opportunities.</td></tr>';
+    if (clearAllButton) {
+      clearAllButton.disabled = true;
+    }
+    updateDashboard();
+    return;
+  }
+
+  if (!entries.length) {
+    tableBody.innerHTML = '<tr><td colspan="25" class="text-center text-muted py-4">No opportunities yet. Fetch a link and add it to your dashboard.</td></tr>';
+    if (clearAllButton) {
+      clearAllButton.disabled = true;
+    }
+    updateDashboard();
+    return;
+  }
+
   tableBody.innerHTML = '';
 
   entries.forEach((entry, index) => {
@@ -249,6 +578,9 @@ function renderEntries() {
     tableBody.appendChild(row);
   });
 
+  if (clearAllButton) {
+    clearAllButton.disabled = entries.length === 0;
+  }
   updateDashboard();
 }
 
@@ -304,6 +636,23 @@ function escapeHtml(value) {
 }
 
 function saveEntries() {
+  if (!currentUser) return;
+  const key = storageKeyForUser(ENTRIES_KEY_BASE);
+  if (!key) return;
+  const serialized = entries.map(({ eligibilityAssessment, ...rest }) => rest);
+  try {
+    localStorage.setItem(key, JSON.stringify(serialized));
+  } catch (error) {
+    console.warn('Unable to persist opportunities:', error);
+  }
+}
+
+function loadEntries() {
+  if (!currentUser) return [];
+  try {
+    const key = storageKeyForUser(ENTRIES_KEY_BASE);
+    if (!key) return [];
+    const stored = localStorage.getItem(key);
   const serialized = entries.map(({ eligibilityAssessment, ...rest }) => rest);
   localStorage.setItem(storageKey, JSON.stringify(serialized));
 }
@@ -321,6 +670,11 @@ function loadEntries() {
 }
 
 function loadProfile() {
+  if (!currentUser) return {};
+  try {
+    const key = storageKeyForUser(PROFILE_KEY_BASE);
+    if (!key) return {};
+    const stored = localStorage.getItem(key);
   try {
     const stored = localStorage.getItem(profileStorageKey);
     if (!stored) return {};
@@ -333,6 +687,68 @@ function loadProfile() {
 }
 
 function saveProfile() {
+  if (!currentUser) return;
+  const key = storageKeyForUser(PROFILE_KEY_BASE);
+  if (!key) return;
+  try {
+    localStorage.setItem(key, JSON.stringify(profile));
+  } catch (error) {
+    console.warn('Unable to save profile to localStorage:', error);
+  }
+}
+
+function storageKeyForUser(baseKey) {
+  if (!currentUser || !currentUser.id) return '';
+  return `${baseKey}::${currentUser.id}`;
+}
+
+function loadCurrentUser() {
+  try {
+    const stored = localStorage.getItem(AUTH_STATE_KEY);
+    if (!stored) return null;
+    const parsed = JSON.parse(stored);
+    if (parsed && typeof parsed === 'object' && parsed.id) {
+      return parsed;
+    }
+  } catch (error) {
+    console.warn('Unable to restore auth state:', error);
+  }
+  return null;
+}
+
+function loadPasskeyRegistry() {
+  try {
+    const stored = localStorage.getItem(PASSKEY_STORE_KEY);
+    if (!stored) return [];
+    const parsed = JSON.parse(stored);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((item) => item && item.id);
+  } catch (error) {
+    console.warn('Unable to load saved passkeys:', error);
+    return [];
+  }
+}
+
+function savePasskeyRegistry() {
+  try {
+    localStorage.setItem(PASSKEY_STORE_KEY, JSON.stringify(passkeyRegistry));
+  } catch (error) {
+    console.warn('Unable to save passkey registry:', error);
+  }
+}
+
+function detectPasskeySupport() {
+  if (!window.PublicKeyCredential || !navigator.credentials) {
+    passkeySupported = false;
+    return;
+  }
+  PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
+    .then((available) => {
+      passkeySupported = Boolean(available) && window.isSecureContext;
+    })
+    .catch((error) => {
+      console.warn('Unable to detect passkey support:', error);
+      passkeySupported = false;
   localStorage.setItem(profileStorageKey, JSON.stringify(profile));
 }
 
@@ -395,6 +811,443 @@ function updateProfileSummary() {
 
 function updateEligibilityPreview() {
   if (!eligibilityPreview) return;
+  const tempEntry = {};
+  fieldIds.forEach((id) => {
+    const field = form.elements[id];
+    if (!field) return;
+    tempEntry[id] = field.value || '';
+  });
+  const assessment = evaluateEligibility(tempEntry);
+  renderEligibilityPreview(assessment);
+}
+
+function renderEligibilityPreview(assessment) {
+  if (!assessment || (!assessment.summary && assessment.status === 'unknown')) {
+    eligibilityPreview.classList.add('d-none');
+    eligibilityPreview.innerHTML = '';
+    return;
+  }
+
+  const statusClass = {
+    strong: 'eligibility-strong',
+    review: 'eligibility-review',
+    gap: 'eligibility-gap',
+    unknown: 'eligibility-unknown'
+  }[assessment.status] || 'eligibility-unknown';
+
+  const matchesList = assessment.matches.length
+    ? `<p class="mb-1 fw-semibold text-success">You match:</p><ul class="mb-2">${assessment.matches.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`
+    : '';
+  const gapsList = assessment.gaps.length
+    ? `<p class="mb-1 fw-semibold text-danger">Needs attention:</p><ul class="mb-0">${assessment.gaps.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`
+    : '';
+
+  eligibilityPreview.className = `eligibility-feedback ${statusClass}`;
+  eligibilityPreview.innerHTML = `
+    <strong>${escapeHtml(assessment.summary)}</strong>
+    ${assessment.detail ? `<p class="mb-2">${escapeHtml(assessment.detail)}</p>` : ''}
+    ${matchesList}
+    ${gapsList}
+  `;
+  eligibilityPreview.classList.remove('d-none');
+}
+
+function extractMetadata(doc, url) {
+  const metadata = {};
+  const textContent = doc.body ? doc.body.textContent || '' : '';
+  const condensedText = textContent ? textContent.replace(/\s+/g, ' ').toLowerCase() : '';
+
+  const meta = (selector, attribute = 'content') => {
+    const element = doc.querySelector(selector);
+    return element ? element.getAttribute(attribute) : '';
+  };
+
+  const titleTag = doc.querySelector('title')?.textContent?.trim() || '';
+
+  metadata.title = meta('meta[property="og:title"]') || meta('meta[name="og:title"]') || titleTag;
+  metadata.organization = chooseOrganization(doc, url, textContent) || deriveOrganizationFromDomain(url);
+  metadata.opportunityType = deriveOpportunityType(condensedText, meta('meta[property="og:type"]'));
+  metadata.tags = meta('meta[name="keywords"]');
+  metadata.location = deriveLocation(doc, condensedText);
+  metadata.remote = deriveRemote(condensedText);
+  metadata.deadline = deriveDeadline(textContent);
+  metadata.programDates = deriveProgramDates(textContent);
+  metadata.duration = deriveDuration(textContent);
+  metadata.compensation = deriveCompensation(textContent);
+  metadata.eligibility = deriveEligibility(textContent);
+  metadata.materials = deriveMaterials(textContent);
+  metadata.applyLink = deriveApplyLink(doc, url) || url;
+  metadata.contactEmail = deriveContactEmail(textContent);
+  metadata.source = safeHostname(url);
+  metadata.notes = meta('meta[name="description"]');
+
+  return metadata;
+}
+
+function chooseOrganization(doc, url, textContent) {
+  const candidates = new Set();
+  const addCandidate = (value) => {
+    if (!value) return;
+    const cleaned = value
+      .replace(/\s+/g, ' ')
+      .replace(/[|»·–-]{2,}/g, ' ')
+      .replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, '')
+      .trim();
+    if (cleaned && cleaned.length <= 80) {
+      candidates.add(cleaned);
+    }
+  };
+
+  const metaSelectors = [
+    'meta[property="og:site_name"]',
+    'meta[name="og:site_name"]',
+    'meta[name="application-name"]',
+    'meta[name="author"]',
+    'meta[name="publisher"]',
+    'meta[property="article:publisher"]',
+    'meta[name="twitter:site"]',
+    'meta[name="twitter:creator"]'
+  ];
+  metaSelectors.forEach((selector) => {
+    doc.querySelectorAll(selector).forEach((el) => {
+      let value = el.getAttribute('content') || el.getAttribute('value');
+      if (!value) return;
+      if (value.startsWith('@')) value = value.slice(1);
+      addCandidate(value);
+    });
+}
+
+function initializeGoogleSignIn() {
+  if (!googleSignInButtonContainer) return;
+  if (!googleClientId) {
+    googleSignInButtonContainer.classList.add('d-none');
+    if (googleSignInPlaceholder) {
+      googleSignInPlaceholder.classList.remove('d-none');
+    }
+    return;
+  }
+
+  const render = () => {
+    if (!window.google || !window.google.accounts || !window.google.accounts.id) {
+      setTimeout(render, 250);
+      return;
+    }
+    window.google.accounts.id.initialize({
+      client_id: googleClientId,
+      callback: handleGoogleCredential,
+      auto_select: false,
+      cancel_on_tap_outside: false
+    });
+    window.google.accounts.id.renderButton(googleSignInButtonContainer, {
+      theme: 'filled_blue',
+      size: 'large',
+      text: 'signin_with',
+      shape: 'pill'
+    });
+    googleSignInButtonContainer.classList.remove('d-none');
+    if (googleSignInPlaceholder) {
+      googleSignInPlaceholder.classList.add('d-none');
+    }
+  };
+
+  render();
+}
+
+function handleGoogleCredential(response) {
+  if (!response || !response.credential) {
+    setPasskeyStatus('Google sign-in was not completed.', 'danger');
+    return;
+  }
+  const payload = decodeJwtPayload(response.credential);
+  const user = {
+    id: `google-${payload.sub || Date.now()}`,
+    name: payload.name || payload.given_name || 'Google user',
+    email: payload.email || '',
+    provider: 'google',
+    avatar: payload.picture || ''
+  };
+  setCurrentUser(user);
+  setStatus('Signed in with Google. You can now add opportunities.', 'text-success');
+  closeAuthModal();
+}
+
+function decodeJwtPayload(token) {
+  try {
+    const parts = token.split('.');
+    if (parts.length < 2) return {};
+    const normalized = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = normalized + '='.repeat((4 - (normalized.length % 4)) % 4);
+    const decoded = atob(padded);
+    return JSON.parse(decoded);
+  } catch (error) {
+    console.warn('Unable to decode Google credential:', error);
+    return {};
+  }
+}
+
+function togglePasskeyRegisterForm() {
+  if (!passkeyRegisterForm) return;
+  const willShow = passkeyRegisterForm.classList.contains('d-none');
+  passkeyRegisterForm.classList.toggle('d-none', !willShow);
+  if (passkeyRegisterToggle) {
+    passkeyRegisterToggle.setAttribute('aria-expanded', String(willShow));
+  }
+  if (willShow && passkeyNameInput) {
+    passkeyNameInput.focus();
+  }
+  if (!willShow) {
+    passkeyRegisterForm.reset();
+  }
+  setPasskeyStatus('');
+}
+
+async function handlePasskeyRegister(event) {
+  event.preventDefault();
+  setPasskeyStatus('');
+  if (!isPasskeyEnvironmentReady()) {
+    return;
+  }
+  if (passkeySupported === false) {
+    setPasskeyStatus('Passkeys are not supported on this device yet.', 'danger');
+    return;
+  }
+  const name = (passkeyNameInput?.value || '').trim();
+  const email = (passkeyEmailInput?.value || '').trim();
+  if (!name) {
+    setPasskeyStatus('Enter your name so the passkey is labeled correctly.', 'danger');
+    if (passkeyNameInput) passkeyNameInput.focus();
+    return;
+  }
+
+  try {
+    const challenge = randomBuffer(32);
+    const userId = randomBuffer(32);
+    const rpId = window.location.hostname || 'localhost';
+    const publicKey = {
+      challenge,
+      rp: { name: 'Opportunity Command Center', id: rpId },
+      user: { id: userId, name: email || name, displayName: name },
+      pubKeyCredParams: [
+        { type: 'public-key', alg: -7 },
+        { type: 'public-key', alg: -257 }
+      ],
+      authenticatorSelection: { residentKey: 'preferred', userVerification: 'preferred' },
+      timeout: 60000,
+      attestation: 'none'
+    };
+
+    const credential = await navigator.credentials.create({ publicKey });
+    if (!credential) {
+      setPasskeyStatus('No credential was returned.', 'danger');
+      return;
+    }
+
+    const credentialId = bufferToBase64Url(credential.rawId);
+    if (!passkeyRegistry.find((entry) => entry.id === credentialId)) {
+      passkeyRegistry.push({ id: credentialId, name, email });
+      savePasskeyRegistry();
+    }
+
+    setCurrentUser({ id: `passkey-${credentialId}`, name, email, provider: 'passkey' });
+    setStatus('Signed in with your passkey. You can now add opportunities.', 'text-success');
+    closeAuthModal();
+  } catch (error) {
+    console.warn('Passkey registration failed:', error);
+    if (error && error.name === 'NotAllowedError') {
+      setPasskeyStatus('Passkey registration was cancelled.', 'danger');
+    } else {
+      setPasskeyStatus('Unable to create a passkey. Try again on a supported device.', 'danger');
+    }
+  }
+}
+
+async function handlePasskeySignIn() {
+  setPasskeyStatus('');
+  if (!isPasskeyEnvironmentReady()) {
+    return;
+  }
+  if (passkeySupported === false) {
+    setPasskeyStatus('Passkeys are not available on this device.', 'danger');
+    return;
+  }
+  if (!passkeyRegistry.length) {
+    setPasskeyStatus('No passkeys saved yet. Create one on this device first.', 'danger');
+    return;
+  }
+
+  try {
+    const challenge = randomBuffer(32);
+    const allowCredentials = passkeyRegistry.map((record) => ({
+      id: base64UrlToBuffer(record.id),
+      type: 'public-key',
+      transports: ['internal', 'hybrid']
+    }));
+
+    const assertion = await navigator.credentials.get({
+      publicKey: {
+        challenge,
+        allowCredentials,
+        timeout: 60000,
+        userVerification: 'preferred'
+      }
+    });
+
+    if (!assertion) {
+      setPasskeyStatus('No passkey assertion returned.', 'danger');
+      return;
+    }
+
+    const credentialId = bufferToBase64Url(assertion.rawId);
+    const record = passkeyRegistry.find((item) => item.id === credentialId);
+    if (!record) {
+      setPasskeyStatus('We could not match that passkey. Try creating a new one.', 'danger');
+      return;
+    }
+
+    setCurrentUser({
+      id: `passkey-${credentialId}`,
+      name: record.name || 'Passkey user',
+      email: record.email || '',
+      provider: 'passkey'
+    });
+    setStatus('Signed in with your passkey. You can now add opportunities.', 'text-success');
+    closeAuthModal();
+  } catch (error) {
+    console.warn('Passkey sign-in failed:', error);
+    if (error && error.name === 'NotAllowedError') {
+      setPasskeyStatus('Passkey sign-in was cancelled.', 'danger');
+    } else {
+      setPasskeyStatus('Unable to sign in with your passkey. Try again.', 'danger');
+    }
+  }
+}
+
+function setPasskeyStatus(message, tone = 'secondary') {
+  if (!passkeyStatus) return;
+  passkeyStatus.textContent = message || '';
+  passkeyStatus.className = `passkey-status text-${tone}`;
+}
+
+function isPasskeyEnvironmentReady() {
+  if (!window.isSecureContext) {
+    setPasskeyStatus('Passkeys require a secure context (HTTPS or localhost).', 'danger');
+    return false;
+  }
+  if (!window.PublicKeyCredential || !navigator.credentials) {
+    setPasskeyStatus('This browser does not support passkeys yet.', 'danger');
+    return false;
+  }
+  return true;
+}
+
+function randomBuffer(length) {
+  const buffer = new Uint8Array(length);
+  crypto.getRandomValues(buffer);
+  return buffer;
+}
+
+function bufferToBase64Url(buffer) {
+  const bytes = buffer instanceof ArrayBuffer ? new Uint8Array(buffer) : new Uint8Array(buffer.buffer || buffer);
+  let binary = '';
+  bytes.forEach((byte) => {
+    binary += String.fromCharCode(byte);
+  });
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+}
+
+function base64UrlToBuffer(value) {
+  const padded = value.replace(/-/g, '+').replace(/_/g, '/');
+  const normalized = padded + '='.repeat((4 - (padded.length % 4)) % 4);
+  const decoded = atob(normalized);
+  const buffer = new Uint8Array(decoded.length);
+  for (let i = 0; i < decoded.length; i += 1) {
+    buffer[i] = decoded.charCodeAt(i);
+  }
+  return buffer;
+}
+
+function populateProfileForm() {
+  profileFieldIds.forEach((id) => {
+    const field = profileForm.elements[id];
+    if (!field) return;
+    field.value = profile[id] || '';
+  });
+}
+
+function handleProfileSubmit(event) {
+  event.preventDefault();
+  if (!ensureAuthenticated('update your profile')) {
+    return;
+  }
+  if (!profileForm) return;
+  const formData = new FormData(profileForm);
+  const updatedProfile = {};
+
+  profileFieldIds.forEach((id) => {
+    const value = formData.get(id) || '';
+    updatedProfile[id] = value.trim ? value.trim() : value;
+  });
+
+  updatedProfile.lastUpdated = new Date().toISOString();
+  profile = updatedProfile;
+  saveProfile();
+  updateProfileSummary();
+  entries = entries.map(upgradeEntry);
+  saveEntries();
+  renderEntries();
+  updateEligibilityPreview();
+}
+
+function handleProfileClear() {
+  if (!ensureAuthenticated('clear your profile')) {
+    return;
+  }
+  if (!profileForm) return;
+  if (!Object.keys(profile).length) {
+    profileForm.reset();
+    updateEligibilityPreview();
+    return;
+  }
+
+  const confirmation = confirm('Clear your stored profile details? Eligibility comparisons will reset.');
+  if (!confirmation) return;
+
+  profile = {};
+  const key = storageKeyForUser(PROFILE_KEY_BASE);
+  if (key) {
+    localStorage.removeItem(key);
+  }
+  profileForm.reset();
+  updateProfileSummary();
+  entries = entries.map(upgradeEntry);
+  saveEntries();
+  renderEntries();
+  updateEligibilityPreview();
+}
+
+function updateProfileSummary() {
+  if (!profileLastUpdated) return;
+  if (!currentUser) {
+    profileLastUpdated.textContent = 'Sign in to manage your profile.';
+    return;
+  }
+  if (profile.lastUpdated) {
+    const date = new Date(profile.lastUpdated);
+    profileLastUpdated.textContent = `Last updated ${date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}`;
+  } else {
+    profileLastUpdated.textContent = 'Profile not saved yet.';
+  }
+}
+
+function updateEligibilityPreview() {
+  if (!eligibilityPreview) return;
+  if (!currentUser) {
+    eligibilityPreview.className = 'eligibility-feedback eligibility-unknown';
+    eligibilityPreview.innerHTML = '<strong>Sign in to unlock eligibility guidance.</strong><p class="mb-0">Authenticate to compare opportunity requirements against your saved skills and coursework.</p>';
+    eligibilityPreview.classList.remove('d-none');
+    return;
+  }
+  if (!form) return;
   const tempEntry = {};
   fieldIds.forEach((id) => {
     const field = form.elements[id];
@@ -1256,6 +2109,10 @@ function renderMetrics() {
 }
 
 function renderNextActions() {
+  if (!currentUser) {
+    nextActionsList.innerHTML = '<li class="empty-state">Sign in to surface upcoming next actions.</li>';
+    return;
+  }
   const items = entries
     .map((entry) => ({
       entry,
@@ -1293,6 +2150,10 @@ function renderNextActions() {
 }
 
 function renderEligibilityWatchlist() {
+  if (!currentUser) {
+    eligibilityWatchlist.innerHTML = '<li class="empty-state">Sign in to monitor eligibility gaps and watchlists.</li>';
+    return;
+  }
   const items = entries
     .map((entry) => ({ entry, assessment: entry.eligibilityAssessment || evaluateEligibility(entry) }))
     .filter(({ assessment }) => assessment.status === 'gap' || assessment.status === 'review')
@@ -1321,6 +2182,10 @@ function renderEligibilityWatchlist() {
 }
 
 function renderDeadlineRadar() {
+  if (!currentUser) {
+    deadlineRadar.innerHTML = '<li class="empty-state">Sign in to visualize deadlines by urgency.</li>';
+    return;
+  }
   const today = startOfDay(new Date());
   const items = entries
     .map((entry) => ({ entry, deadline: parseFlexibleDate(entry.deadline) }))
