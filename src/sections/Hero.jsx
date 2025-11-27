@@ -2,6 +2,11 @@ import { motion } from 'framer-motion';
 import { ArrowDown } from 'lucide-react';
 
 export default function Hero() {
+    const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
+    const openContactModal = () => setIsContactModalOpen(true);
+    const closeContactModal = () => setIsContactModalOpen(false);
+
     return (
         <section className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden">
             {/* Animated background gradient */}
@@ -53,7 +58,10 @@ export default function Hero() {
                         <button className="px-8 py-4 rounded-lg chrome-surface hover:neon-glow-blue transition-all duration-300 text-white font-medium">
                             View Projects
                         </button>
-                        <button className="px-8 py-4 rounded-lg glass hover:neon-glow-purple transition-all duration-300 text-white font-medium">
+                        <button
+                            onClick={openContactModal} // Add onClick handler
+                            className="px-8 py-4 rounded-lg glass hover:neon-glow-purple transition-all duration-300 text-white font-medium"
+                        >
                             Contact Me
                         </button>
                     </motion.div>
@@ -76,6 +84,9 @@ export default function Hero() {
                     </motion.div>
                 </motion.div>
             </div>
+
+            {/* Contact Modal */}
+            <ContactModal isOpen={isContactModalOpen} onClose={closeContactModal} />
         </section>
     );
 }
