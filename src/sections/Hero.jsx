@@ -24,12 +24,12 @@ const ContactModal = ({ isOpen, onClose }) => {
                         {/* Close button */}
                         <button
                             onClick={onClose}
-                            className="absolute top-6 right-6 w-10 h-10 rounded-full glass hover:neon-glow-purple transition-all duration-300 flex items-center justify-center text-white"
+                            className="absolute top-4 right-4 w-10 h-10 rounded-full glass hover:neon-glow-purple transition-all duration-300 flex items-center justify-center text-white z-50"
                         >
                             <X className="w-5 h-5" />
                         </button>
 
-                        <div className="grid md:grid-cols-2 gap-12 items-center">
+                        <div className="grid md:grid-cols-2 gap-12 items-center mt-8">
                             {/* Left Side: Title & Info */}
                             <div>
                                 <h3 className="text-5xl font-bold chrome-gradient mb-6">
