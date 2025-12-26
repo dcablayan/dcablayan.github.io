@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Sun, Moon, FileText, Mail, Linkedin, Github, ExternalLink, ArrowUpRight } from 'lucide-react';
+import { Sun, Moon, FileText, Mail, Linkedin, Github, ArrowUpRight } from 'lucide-react';
 
 // Navigation
 function Navbar({ theme, toggleTheme }) {
@@ -44,7 +44,7 @@ function Hero() {
           Hi, I'm Dylan Cablayan!
         </h1>
         <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>
-          CS + Data Science @ UH Mānoa • OpenAI ChatGPT Lab Member • Former NASA SEES Intern • VC Analyst @ Energy Innovation Capital
+          ChatGPT Lab @ OpenAI & Intern @ Blue Startups | CS @ UH | ex-NASA
         </p>
       </div>
     </section>
@@ -59,19 +59,22 @@ function About() {
         <h2 className="section-title">About</h2>
         <div className="space-y-4" style={{ color: 'var(--text-secondary)' }}>
           <p>
-            I'm a Computer Science and Data Science student at the University of Hawai'i at Mānoa, passionate about
-            artificial intelligence, machine learning, and their applications to real-world problems.
+            I'm a Computer Science student at the <a href="https://manoa.hawaii.edu" target="_blank" rel="noopener noreferrer">University of Hawai'i at Mānoa</a> through
+            the Kaieie Transfer Program, with a background in Natural Science and Information & Computer Science from Kapi'olani Community College (4.0 GPA).
           </p>
           <p>
-            Currently, I'm a member of the <a href="https://openai.com" target="_blank" rel="noopener noreferrer">OpenAI ChatGPT Lab</a>,
-            one of 28 students selected across the U.S. & Canada to help develop student-facing AI features. I also work as a
-            deal sourcing analyst at <a href="#" target="_blank" rel="noopener noreferrer">Energy Innovation Capital</a>,
-            evaluating early-stage clean energy startups.
+            Currently, I'm a member of the <a href="https://openai.com" target="_blank" rel="noopener noreferrer">OpenAI ChatGPT Lab</a> (1 of 28 students, Cohort 3)
+            and an intern at <a href="https://bluestartups.com" target="_blank" rel="noopener noreferrer">Blue Startups</a>, Hawaii's top tech accelerator.
+            I also do venture capital deal sourcing at <a href="https://extern.com" target="_blank" rel="noopener noreferrer">Energy Innovation Capital</a> through Extern.
           </p>
           <p>
-            Previously, I interned at <a href="https://nasa.gov" target="_blank" rel="noopener noreferrer">NASA</a> through their
-            SEES program, contributing to GRACE-FO research on ice sheet melting and sea level changes. I've also worked at
-            Blue Startups managing portfolio tracking for 160+ companies.
+            Previously, I was a research intern at <a href="https://nasa.gov" target="_blank" rel="noopener noreferrer">NASA</a> through the SEES program
+            at UT Austin's Center for Space Research, worked on data science at <a href="https://hohonu.io" target="_blank" rel="noopener noreferrer">Hohonu</a>,
+            and completed Stanford's AI in Healthcare bootcamp. I'm also a <a href="https://ycombinator.com" target="_blank" rel="noopener noreferrer">Y Combinator</a> Startup School participant.
+          </p>
+          <p>
+            I'm passionate about AI/ML, startups, and civic tech. I've advocated for legislation (SB 2975 & HB 1654) supporting work-based learning
+            and helped create Hawaii's first Filipino culture curriculum now taught at 7 schools.
           </p>
         </div>
       </div>
@@ -89,7 +92,6 @@ function Skills() {
         { name: 'JavaScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg' },
         { name: 'TypeScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg' },
         { name: 'Java', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg' },
-        { name: 'C++', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg' },
         { name: 'SQL', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg' },
       ],
     },
@@ -156,55 +158,90 @@ function Research() {
       company: 'OpenAI',
       role: 'ChatGPT Lab Member',
       period: 'Oct 2025 - Present',
-      description: 'Selected as 1 of 28 students across the U.S. & Canada to help develop and test student-facing ChatGPT features under active NDA.',
+      description: '1 of 28 students selected (Cohort 3) to help develop and test student-facing ChatGPT features.',
       logo: 'https://cdn.worldvectorlogo.com/logos/openai-2.svg',
       link: 'https://openai.com',
-    },
-    {
-      company: 'Energy Innovation Capital',
-      role: 'VC Deal Sourcing Analyst',
-      period: 'Oct 2025 - Present',
-      description: 'Sourcing and evaluating 20+ high-potential clean energy startup investments per quarter. Completed due diligence on 12 portfolio candidates.',
-      logo: '/eic-logo.png',
     },
     {
       company: 'Blue Startups',
       role: 'Intern',
       period: 'Aug 2025 - Present',
-      description: 'Managing portfolio tracking and CRM workflows for 160+ companies. Reconciled $75M+ in expenditures and coordinated 30+ program workshops.',
+      description: "Helping run Hawaii's top tech accelerator.",
       logo: '/blue-startups-logo.png',
       link: 'https://bluestartups.com',
     },
     {
-      company: 'Hohonu.io',
+      company: 'Extern',
+      role: 'Energy Innovation Capital - VC Deal Sourcing',
+      period: 'Oct 2025 - Present',
+      description: 'Venture capital deal sourcing and startup analysis for clean energy investments.',
+      logo: '/eic-logo.png',
+    },
+    {
+      company: 'Hohonu',
       role: 'Data Science Intern',
-      period: 'Jun - Aug 2025',
-      description: 'Optimized tide-gauge forecasting algorithms with 43% accuracy improvement. Developed Mercator visualizations for 100+ sensors.',
+      period: 'Jun - Jul 2025',
+      description: 'First startup experience. Worked on tides, data science, and machine learning.',
       logo: '/hohonu-logo.png',
       link: 'https://hohonu.io',
     },
     {
-      company: 'NASA SEES',
-      role: 'Research Intern',
+      company: 'After-School All-Stars Hawaii',
+      role: 'Program Leader',
+      period: 'Feb - Jul 2025',
+      description: 'Tutored and coached Title 1 middle school students.',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apple/apple-original.svg',
+    },
+    {
+      company: 'NASA',
+      role: 'Research Intern (SEES Program)',
       period: 'May - Jul 2024',
-      description: 'GRACE-FO research team analyzing ice sheet melting and sea level changes. Published at SEES symposium, presented at AGU Conference.',
+      description: 'Research project at UT Austin Center for Space Research. Presented at AGU Conference.',
       logo: 'https://cdn.worldvectorlogo.com/logos/nasa-6.svg',
       link: 'https://nasa.gov',
     },
     {
+      company: 'Civics Unplugged',
+      role: 'Civic Innovation Academy Fellow',
+      period: 'Aug 2024',
+      description: 'UCLA program on youth civic involvement. Placed 2nd in AI cancer research competition by Ellison Institute.',
+      logo: '/civics-logo.png',
+    },
+    {
+      company: 'Twiggs Space Lab',
+      role: 'Microgravity Research',
+      period: 'Jul 2024',
+      description: 'CubeSats and microgravity research in Austin, Texas.',
+      logo: '/twiggs-logo.png',
+    },
+    {
       company: 'Stanford AIMI',
-      role: 'AI Bootcamp Participant',
+      role: 'Summer Health AI Bootcamp',
       period: 'Jun 2024',
-      description: 'Selected as 1 of 36 students (~2% acceptance) for inaugural AI in healthcare bootcamp with Stanford medical faculty.',
+      description: 'AI in Healthcare specialization including ML fundamentals, evaluations, and health equity.',
       logo: '/stanford-logo.png',
       link: 'https://aimi.stanford.edu',
     },
     {
-      company: 'UH Laboratory of Analytics',
-      role: 'CS Intern',
-      period: 'Sep 2023 - Jul 2024',
-      description: 'Developed NLP application transcribing patient-physician conversations to JSON using Python and GPT-4.',
-      logo: '/sail-logo.png',
+      company: 'UH Mānoa',
+      role: 'CS Intern - Laboratory of Applications in Informatics & Analytics',
+      period: 'Aug 2023 - Jun 2024',
+      description: 'Created a natural language processing app for patient-physician conversation transcription.',
+      logo: '/uh-logo.png',
+    },
+    {
+      company: 'Chamber of Commerce Hawaii',
+      role: 'Student Leadership Board',
+      period: 'Sep 2023 - Apr 2024',
+      description: 'Advocated for SB 2975 & HB 1654, bills supporting work-based learning for high school students.',
+      logo: '/chamber-logo.png',
+    },
+    {
+      company: 'Nalukai Foundation',
+      role: 'Cohort 10 Student "Founder"',
+      period: 'Jun - Jul 2023',
+      description: 'Startup accelerator for high school students. Recognized by Governor Josh Green.',
+      logo: '/nalukai-logo.png',
     },
   ];
 
@@ -217,7 +254,7 @@ function Research() {
             <div key={index} className="experience-card">
               <img src={exp.logo} alt={exp.company} className="experience-logo" />
               <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
                     <h3 className="font-semibold" style={{ color: 'var(--text-primary)' }}>
                       {exp.company}
@@ -251,28 +288,39 @@ function Research() {
 function Projects() {
   const projects = [
     {
-      title: 'GRACE-FO Ice Sheet Analysis',
-      description: 'Analyzed gravitational and sea level changes from NASA satellite data. Published at SEES symposium and presented at AGU Conference in Washington D.C.',
-      tags: ['Python', 'Data Science', 'Research'],
-      links: { paper: '#' },
+      title: 'Filipino Curriculum Project',
+      description: 'Created a Filipino history and culture course for students in the Hawaii DOE, now actively being taught at 7 schools.',
+      tags: ['Education', 'Curriculum', 'Advocacy'],
+      period: 'Jan 2023 - Aug 2024',
+      links: {},
     },
     {
-      title: 'Patient-Physician NLP Transcriber',
-      description: 'NLP application that transcribes medical conversations into structured JSON objects using GPT-4 integration.',
-      tags: ['Python', 'NLP', 'GPT-4'],
-      links: { github: '#' },
+      title: 'Synth - AI Contract Review',
+      description: 'Contract review & financial analysis AI chatbot with working demo. Won 2nd place at Hawaii State DECA Innovation Plan competition.',
+      tags: ['AI', 'NLP', 'Fintech'],
+      period: 'Jan 2024',
+      links: {},
     },
     {
-      title: 'Tide Gauge Forecasting',
-      description: 'Optimized forecasting algorithms achieving 43% accuracy improvement. Built visualizations for 100+ sensor data points.',
-      tags: ['Python', 'ML', 'Data Viz'],
-      links: { demo: '#' },
+      title: 'NLP Medical Transcription App',
+      description: 'Natural language processing application that transcribes patient-physician conversations to structured JSON using GPT-4.',
+      tags: ['Python', 'NLP', 'GPT-4', 'Healthcare'],
+      period: '2023 - 2024',
+      links: {},
     },
     {
-      title: 'Portfolio Website',
-      description: 'Clean, responsive portfolio built with React and TailwindCSS featuring dark/light mode.',
-      tags: ['React', 'TailwindCSS'],
-      links: { github: 'https://github.com/dcablayan/dcablayan.github.io' },
+      title: 'AI in Cancer Research',
+      description: 'Research on NLP systems in clinical settings. Won 2nd place at Ellison Medical Institute Medical Sciences Challenge.',
+      tags: ['AI', 'Healthcare', 'Research'],
+      period: 'Aug 2024',
+      links: {},
+    },
+    {
+      title: 'NASA GRACE-FO Research',
+      description: 'Analyzed gravitational and sea level changes due to ice sheet melting. Presented at AGU Conference in Washington D.C.',
+      tags: ['Data Science', 'Research', 'Climate'],
+      period: 'May - Jul 2024',
+      links: {},
     },
   ];
 
@@ -283,13 +331,18 @@ function Projects() {
         <div className="grid gap-4">
           {projects.map((project, index) => (
             <div key={index} className="project-card">
-              <h3 className="font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
-                {project.title}
-              </h3>
+              <div className="flex items-start justify-between gap-4 mb-1 flex-wrap">
+                <h3 className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                  {project.title}
+                </h3>
+                <span className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                  {project.period}
+                </span>
+              </div>
               <p className="text-sm mb-3" style={{ color: 'var(--text-secondary)' }}>
                 {project.description}
               </p>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex flex-wrap gap-2">
                   {project.tags.map((tag) => (
                     <span key={tag} className="tag">{tag}</span>
@@ -306,9 +359,9 @@ function Projects() {
                       Demo <ArrowUpRight size={14} />
                     </a>
                   )}
-                  {project.links.paper && (
-                    <a href={project.links.paper} target="_blank" rel="noopener noreferrer" className="link-arrow">
-                      Paper <ArrowUpRight size={14} />
+                  {project.links.site && (
+                    <a href={project.links.site} target="_blank" rel="noopener noreferrer" className="link-arrow">
+                      View <ArrowUpRight size={14} />
                     </a>
                   )}
                 </div>
