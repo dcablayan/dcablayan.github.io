@@ -1,5 +1,37 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Sun, Moon, FileText, Mail, Linkedin, Github, ArrowUpRight } from 'lucide-react';
+
+// Gradient Background with scroll parallax
+function GradientBackground() {
+  const bgRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!bgRef.current) return;
+      const scrollY = window.scrollY;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = scrollY / maxScroll;
+
+      // Move gradients based on scroll
+      const x1 = 20 + scrollPercent * 30;
+      const y1 = 20 + scrollPercent * 40;
+      const x2 = 80 - scrollPercent * 30;
+      const y2 = 80 - scrollPercent * 40;
+
+      bgRef.current.style.setProperty('--mouse-x', `${x1}%`);
+      bgRef.current.style.setProperty('--mouse-y', `${y1}%`);
+      bgRef.current.style.setProperty('--mouse-x2', `${x2}%`);
+      bgRef.current.style.setProperty('--mouse-y2', `${y2}%`);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial call
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return <div ref={bgRef} className="gradient-bg" />;
+}
 
 // Navigation
 function Navbar({ theme, toggleTheme }) {
@@ -12,7 +44,7 @@ function Navbar({ theme, toggleTheme }) {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-[var(--bg-primary)] border-b border-[var(--border)]">
+    <nav className="sticky top-0 z-50 bg-[var(--bg-primary)]/80 backdrop-blur-sm border-b border-[var(--border)]">
       <div className="container flex items-center justify-between py-4">
         <div className="flex items-center gap-6">
           {navLinks.map((link) => (
@@ -44,7 +76,7 @@ function Hero() {
           Hi, I'm Dylan Cablayan!
         </h1>
         <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>
-          ChatGPT Lab @ OpenAI & Intern @ Blue Startups | CS @ UH | ex-NASA
+          <span className="hl-openai">ChatGPT Lab @ OpenAI</span> & Intern @ <span className="hl-blue">Blue Startups</span> | CS @ <span className="hl-uh">UH Mānoa</span> | ex-<span className="hl-nasa">NASA</span>
         </p>
       </div>
     </section>
@@ -59,18 +91,18 @@ function About() {
         <h2 className="section-title">About</h2>
         <div className="space-y-4" style={{ color: 'var(--text-secondary)' }}>
           <p>
-            I'm a Computer Science student at the <a href="https://manoa.hawaii.edu" target="_blank" rel="noopener noreferrer">University of Hawai'i at Mānoa</a> through
+            I'm a Computer Science student at the <span className="hl-uh">University of Hawai'i at Mānoa</span> through
             the Kaieie Transfer Program, with a background in Natural Science and Information & Computer Science from Kapi'olani Community College (4.0 GPA).
           </p>
           <p>
-            Currently, I'm a member of the <a href="https://openai.com" target="_blank" rel="noopener noreferrer">OpenAI ChatGPT Lab</a> (1 of 28 students, Cohort 3)
-            and an intern at <a href="https://bluestartups.com" target="_blank" rel="noopener noreferrer">Blue Startups</a>, Hawaii's top tech accelerator.
-            I also do venture capital deal sourcing at <a href="https://extern.com" target="_blank" rel="noopener noreferrer">Energy Innovation Capital</a> through Extern.
+            Currently, I'm a member of the <span className="hl-openai">OpenAI ChatGPT Lab</span> (1 of 28 students, Cohort 3)
+            and an intern at <span className="hl-blue">Blue Startups</span>, Hawaii's top tech accelerator.
+            I also do venture capital deal sourcing at Energy Innovation Capital through Extern.
           </p>
           <p>
-            Previously, I was a research intern at <a href="https://nasa.gov" target="_blank" rel="noopener noreferrer">NASA</a> through the SEES program
-            at UT Austin's Center for Space Research, worked on data science at <a href="https://hohonu.io" target="_blank" rel="noopener noreferrer">Hohonu</a>,
-            and completed Stanford's AI in Healthcare bootcamp. I'm also a <a href="https://ycombinator.com" target="_blank" rel="noopener noreferrer">Y Combinator</a> Startup School participant.
+            Previously, I was a research intern at <span className="hl-nasa">NASA</span> through the SEES program
+            at UT Austin's Center for Space Research, worked on data science at Hohonu,
+            and completed <span className="hl-stanford">Stanford's</span> AI in Healthcare bootcamp. I'm also a <span className="hl-yc">Y Combinator</span> Startup School participant.
           </p>
           <p>
             I'm passionate about AI/ML, startups, and civic tech. I've advocated for legislation (SB 2975 & HB 1654) supporting work-based learning
@@ -439,6 +471,7 @@ function App() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
+      <GradientBackground />
       <Navbar theme={theme} toggleTheme={toggleTheme} />
       <main>
         <Hero />
