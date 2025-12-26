@@ -10,18 +10,18 @@ function GradientBackground() {
       if (!bgRef.current) return;
       const scrollY = window.scrollY;
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      const scrollPercent = scrollY / maxScroll;
+      const scrollPercent = Math.min(scrollY / maxScroll, 1);
 
       // Move gradients based on scroll
-      const x1 = 20 + scrollPercent * 30;
-      const y1 = 20 + scrollPercent * 40;
-      const x2 = 80 - scrollPercent * 30;
-      const y2 = 80 - scrollPercent * 40;
+      const x1 = 20 + scrollPercent * 40;
+      const y1 = 20 + scrollPercent * 50;
+      const x2 = 80 - scrollPercent * 40;
+      const y2 = 80 - scrollPercent * 50;
 
-      bgRef.current.style.setProperty('--mouse-x', `${x1}%`);
-      bgRef.current.style.setProperty('--mouse-y', `${y1}%`);
-      bgRef.current.style.setProperty('--mouse-x2', `${x2}%`);
-      bgRef.current.style.setProperty('--mouse-y2', `${y2}%`);
+      bgRef.current.style.setProperty('--grad-x', `${x1}%`);
+      bgRef.current.style.setProperty('--grad-y', `${y1}%`);
+      bgRef.current.style.setProperty('--grad-x2', `${x2}%`);
+      bgRef.current.style.setProperty('--grad-y2', `${y2}%`);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -76,7 +76,7 @@ function Hero() {
           Hi, I'm Dylan Cablayan!
         </h1>
         <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>
-          <span className="hl-openai">ChatGPT Lab @ OpenAI</span> & Intern @ <span className="hl-blue">Blue Startups</span> | CS @ <span className="hl-uh">UH Mānoa</span> | ex-<span className="hl-nasa">NASA</span>
+          <span className="highlight">ChatGPT Lab @ OpenAI</span> & Intern @ <span className="highlight">Blue Startups</span> | CS @ <span className="highlight">UH Mānoa</span> | ex-<span className="highlight">NASA</span>
         </p>
       </div>
     </section>
@@ -91,18 +91,18 @@ function About() {
         <h2 className="section-title">About</h2>
         <div className="space-y-4" style={{ color: 'var(--text-secondary)' }}>
           <p>
-            I'm a Computer Science student at the <span className="hl-uh">University of Hawai'i at Mānoa</span> through
+            I'm a Computer Science student at the <span className="highlight">University of Hawai'i at Mānoa</span> through
             the Kaieie Transfer Program, with a background in Natural Science and Information & Computer Science from Kapi'olani Community College (4.0 GPA).
           </p>
           <p>
-            Currently, I'm a member of the <span className="hl-openai">OpenAI ChatGPT Lab</span> (1 of 28 students, Cohort 3)
-            and an intern at <span className="hl-blue">Blue Startups</span>, Hawaii's top tech accelerator.
+            Currently, I'm a member of the <span className="highlight">OpenAI ChatGPT Lab</span> (1 of 28 students, Cohort 3)
+            and an intern at <span className="highlight">Blue Startups</span>, Hawaii's top tech accelerator.
             I also do venture capital deal sourcing at Energy Innovation Capital through Extern.
           </p>
           <p>
-            Previously, I was a research intern at <span className="hl-nasa">NASA</span> through the SEES program
+            Previously, I was a research intern at <span className="highlight">NASA</span> through the SEES program
             at UT Austin's Center for Space Research, worked on data science at Hohonu,
-            and completed <span className="hl-stanford">Stanford's</span> AI in Healthcare bootcamp. I'm also a <span className="hl-yc">Y Combinator</span> Startup School participant.
+            and completed <span className="highlight">Stanford's</span> AI in Healthcare bootcamp. I'm also a <span className="highlight">Y Combinator</span> Startup School participant.
           </p>
           <p>
             I'm passionate about AI/ML, startups, and civic tech. I've advocated for legislation (SB 2975 & HB 1654) supporting work-based learning
@@ -191,7 +191,6 @@ function Research() {
       role: 'ChatGPT Lab Member',
       period: 'Oct 2025 - Present',
       description: '1 of 28 students selected (Cohort 3) to help develop and test student-facing ChatGPT features.',
-      logo: 'https://cdn.worldvectorlogo.com/logos/openai-2.svg',
       link: 'https://openai.com',
     },
     {
@@ -199,7 +198,6 @@ function Research() {
       role: 'Intern',
       period: 'Aug 2025 - Present',
       description: "Helping run Hawaii's top tech accelerator.",
-      logo: '/blue-startups-logo.png',
       link: 'https://bluestartups.com',
     },
     {
@@ -207,14 +205,12 @@ function Research() {
       role: 'Energy Innovation Capital - VC Deal Sourcing',
       period: 'Oct 2025 - Present',
       description: 'Venture capital deal sourcing and startup analysis for clean energy investments.',
-      logo: '/eic-logo.png',
     },
     {
       company: 'Hohonu',
       role: 'Data Science Intern',
       period: 'Jun - Jul 2025',
       description: 'First startup experience. Worked on tides, data science, and machine learning.',
-      logo: '/hohonu-logo.png',
       link: 'https://hohonu.io',
     },
     {
@@ -222,14 +218,12 @@ function Research() {
       role: 'Program Leader',
       period: 'Feb - Jul 2025',
       description: 'Tutored and coached Title 1 middle school students.',
-      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apple/apple-original.svg',
     },
     {
       company: 'NASA',
       role: 'Research Intern (SEES Program)',
       period: 'May - Jul 2024',
       description: 'Research project at UT Austin Center for Space Research. Presented at AGU Conference.',
-      logo: 'https://cdn.worldvectorlogo.com/logos/nasa-6.svg',
       link: 'https://nasa.gov',
     },
     {
@@ -237,21 +231,18 @@ function Research() {
       role: 'Civic Innovation Academy Fellow',
       period: 'Aug 2024',
       description: 'UCLA program on youth civic involvement. Placed 2nd in AI cancer research competition by Ellison Institute.',
-      logo: '/civics-logo.png',
     },
     {
       company: 'Twiggs Space Lab',
       role: 'Microgravity Research',
       period: 'Jul 2024',
       description: 'CubeSats and microgravity research in Austin, Texas.',
-      logo: '/twiggs-logo.png',
     },
     {
       company: 'Stanford AIMI',
       role: 'Summer Health AI Bootcamp',
       period: 'Jun 2024',
       description: 'AI in Healthcare specialization including ML fundamentals, evaluations, and health equity.',
-      logo: '/stanford-logo.png',
       link: 'https://aimi.stanford.edu',
     },
     {
@@ -259,21 +250,18 @@ function Research() {
       role: 'CS Intern - Laboratory of Applications in Informatics & Analytics',
       period: 'Aug 2023 - Jun 2024',
       description: 'Created a natural language processing app for patient-physician conversation transcription.',
-      logo: '/uh-logo.png',
     },
     {
       company: 'Chamber of Commerce Hawaii',
       role: 'Student Leadership Board',
       period: 'Sep 2023 - Apr 2024',
       description: 'Advocated for SB 2975 & HB 1654, bills supporting work-based learning for high school students.',
-      logo: '/chamber-logo.png',
     },
     {
       company: 'Nalukai Foundation',
       role: 'Cohort 10 Student "Founder"',
       period: 'Jun - Jul 2023',
       description: 'Startup accelerator for high school students. Recognized by Governor Josh Green.',
-      logo: '/nalukai-logo.png',
     },
   ];
 
@@ -284,7 +272,6 @@ function Research() {
         <div>
           {experiences.map((exp, index) => (
             <div key={index} className="experience-card">
-              <img src={exp.logo} alt={exp.company} className="experience-logo" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
@@ -470,18 +457,20 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
+    <div className="min-h-screen relative" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <GradientBackground />
-      <Navbar theme={theme} toggleTheme={toggleTheme} />
-      <main>
-        <Hero />
-        <About />
-        <Skills />
-        <Research />
-        <Projects />
-        <Contact />
-      </main>
-      <Footer />
+      <div className="relative z-10">
+        <Navbar theme={theme} toggleTheme={toggleTheme} />
+        <main>
+          <Hero />
+          <About />
+          <Skills />
+          <Research />
+          <Projects />
+          <Contact />
+        </main>
+        <Footer />
+      </div>
     </div>
   );
 }
