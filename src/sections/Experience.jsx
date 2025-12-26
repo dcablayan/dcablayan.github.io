@@ -189,7 +189,7 @@ export default function Experience() {
     };
 
     return (
-        <section className="relative min-h-screen py-20 px-6 overflow-hidden">
+        <section id="experience" className="relative min-h-screen py-20 px-6 overflow-hidden">
             {/* Background grid */}
             <div className="absolute inset-0 opacity-10">
                 <div className="h-full w-full bg-[radial-gradient(circle,#8a2be2_1px,transparent_1px)] bg-[size:3rem_3rem]" />
