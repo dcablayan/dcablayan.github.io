@@ -67,6 +67,37 @@ function Navbar({ theme, toggleTheme }) {
   );
 }
 
+// Rotating text animation
+function RotatingText() {
+  const roles = [
+    'student',
+    'researcher',
+    'developer',
+    'startup intern',
+    'AI enthusiast',
+  ];
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsVisible(false);
+      setTimeout(() => {
+        setCurrentIndex((prev) => (prev + 1) % roles.length);
+        setIsVisible(true);
+      }, 300);
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <span className={`rotating-text ${isVisible ? 'visible' : ''}`}>
+      {roles[currentIndex]}
+    </span>
+  );
+}
+
 // Hero Section
 function Hero() {
   return (
@@ -75,7 +106,10 @@ function Hero() {
         <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
           Hi, I'm Dylan Cablayan!
         </h1>
-        <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>
+        <p className="text-xl mb-2" style={{ color: 'var(--text-secondary)' }}>
+          I am a <RotatingText />
+        </p>
+        <p className="text-lg" style={{ color: 'var(--text-muted)' }}>
           <span className="highlight">ChatGPT Lab @ OpenAI</span> & Intern @ <span className="highlight">Blue Startups</span> | CS @ <span className="highlight">UH Mānoa</span> | ex-<span className="highlight">NASA</span>
         </p>
       </div>

@@ -120,6 +120,21 @@ a:hover {
   font-weight: 500;
 }
 
+/* Rotating text animation */
+.rotating-text {
+  display: inline-block;
+  color: var(--uh-green);
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.rotating-text.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* Card styles */
 .card {
   background-color: var(--bg-secondary);
