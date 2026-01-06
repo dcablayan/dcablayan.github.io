@@ -87,7 +87,7 @@ function Navbar() {
             </a>
           ))}
         </div>
-        <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="resume-btn">
+        <a href="https://drive.google.com/file/d/1bvjtaNJXKyeXRoWOk1HszDoAtFgOW_74/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="resume-btn">
           Resume
         </a>
       </div>
