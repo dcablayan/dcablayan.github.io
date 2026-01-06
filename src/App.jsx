@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Sun, Moon, FileText, Mail, Linkedin, Github, ExternalLink } from 'lucide-react';
+import { FileText, Mail, Linkedin, Github, ExternalLink } from 'lucide-react';
 
 // Stars Background
 function Stars() {
@@ -68,7 +68,7 @@ function FloatingShapes() {
 }
 
 // Navigation
-function Navbar({ theme, toggleTheme }) {
+function Navbar() {
   const navLinks = [
     { name: 'About', href: '#about' },
     { name: 'Skills', href: '#skills' },
@@ -87,14 +87,9 @@ function Navbar({ theme, toggleTheme }) {
             </a>
           ))}
         </div>
-        <div className="nav-actions">
-          <button onClick={toggleTheme} className="theme-toggle" aria-label="Toggle theme">
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="resume-btn">
-            Resume
-          </a>
-        </div>
+        <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="resume-btn">
+          Resume
+        </a>
       </div>
     </nav>
   );
@@ -358,30 +353,13 @@ function Contact() {
 
 // Main App
 function App() {
-  const [theme, setTheme] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('theme');
-      if (saved) return saved;
-    }
-    return 'dark';
-  });
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
-  };
-
   return (
     <div className="app">
       <Stars />
       <Clouds />
       <FloatingShapes />
       <div className="content">
-        <Navbar theme={theme} toggleTheme={toggleTheme} />
+        <Navbar />
         <main>
           <Hero />
           <About />
