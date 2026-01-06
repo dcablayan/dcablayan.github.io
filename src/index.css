@@ -4,7 +4,8 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+:root,
+[data-theme="dark"] {
   --bg-primary: #1a1a2e;
   --bg-secondary: #16213e;
   --text-primary: #ffffff;
@@ -22,6 +23,11 @@
   --text-muted: #8888a8;
   --highlight: #d4850c;
   --uh-green: #024731;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
 }
 
 * {
