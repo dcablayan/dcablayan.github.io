@@ -217,41 +217,35 @@ function Research() {
       role: 'ChatGPT Lab Member',
       description: '1 of 28 students selected (Cohort 3) to develop student-facing ChatGPT features.',
       link: 'https://openai.com',
-      color: 'green',
     },
     {
       company: 'Blue Startups',
       role: 'Intern',
       description: "Helping run Hawaii's top tech accelerator.",
       link: 'https://bluestartups.com',
-      color: 'blue',
     },
     {
       company: 'NASA',
       role: 'Research Intern (SEES)',
       description: 'Research at UT Austin Center for Space Research. Presented at AGU Conference.',
       link: 'https://nasa.gov',
-      color: 'red',
     },
     {
       company: 'Stanford AIMI',
       role: 'Health AI Bootcamp',
       description: 'AI in Healthcare specialization including ML fundamentals and health equity.',
       link: 'https://aimi.stanford.edu',
-      color: 'purple',
     },
     {
       company: 'Hohonu',
       role: 'Data Science Intern',
       description: 'First startup experience. Tides, data science, and machine learning.',
       link: 'https://hohonu.io',
-      color: 'cyan',
     },
     {
       company: 'UH Mānoa',
       role: 'CS Research Intern',
       description: 'NLP app for patient-physician conversation transcription.',
-      color: 'green',
     },
   ];
 
@@ -260,7 +254,7 @@ function Research() {
       <h2 className="section-title">My Work Experiences</h2>
       <div className="cards-grid">
         {experiences.map((exp, index) => (
-          <div key={index} className={`card card-${exp.color}`}>
+          <div key={index} className="card card-yellow">
             <div className="card-content">
               <h3 className="card-title">{exp.company}</h3>
               <p className="card-role">{exp.role}</p>
@@ -284,27 +278,22 @@ function Projects() {
     {
       title: 'Filipino Curriculum',
       description: 'Created Filipino history and culture course for Hawaii DOE, taught at 7 schools.',
-      color: 'yellow',
     },
     {
       title: 'Synth - AI Contract Review',
       description: 'Contract review & financial analysis AI chatbot. 2nd at Hawaii DECA.',
-      color: 'pink',
     },
     {
       title: 'NLP Medical Transcription',
       description: 'Transcribes patient-physician conversations to structured JSON using GPT-4.',
-      color: 'cyan',
     },
     {
       title: 'NASA GRACE-FO Research',
       description: 'Analyzed gravitational and sea level changes from ice sheet melting.',
-      color: 'blue',
     },
     {
       title: 'AI Cancer Research',
       description: '2nd place at Ellison Medical Institute Medical Sciences Challenge.',
-      color: 'purple',
     },
   ];
 
@@ -313,7 +302,7 @@ function Projects() {
       <h2 className="section-title">My Projects</h2>
       <div className="cards-grid">
         {projects.map((project, index) => (
-          <div key={index} className={`card card-${project.color}`}>
+          <div key={index} className="card card-yellow">
             <div className="card-content">
               <h3 className="card-title">{project.title}</h3>
               <p className="card-description">{project.description}</p>
