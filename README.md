@@ -5,8 +5,6 @@ A clean, minimal portfolio website built with React and TailwindCSS.
 **Live Site**: [https://dcablayan.github.io](https://dcablayan.github.io)
 
 ## Features
-
-- Clean, minimal design inspired by [jayyeung.vercel.app](https://jayyeung.vercel.app)
 - Dark/light mode toggle with system preference detection
 - Responsive layout
 - Fast loading (< 70KB gzipped)
@@ -70,7 +68,3 @@ git add .
 git commit -m "Update"
 git push origin main
 ```
-
-## License
-
-MIT
