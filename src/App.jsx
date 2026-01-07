@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Mail, Linkedin, Github, ExternalLink } from 'lucide-react';
+import { Mail, Linkedin, Github, ExternalLink, Twitter, BookOpen } from 'lucide-react';
 
 // Utility: Linear interpolation for smooth animations
 const lerp = (start, end, factor) => start + (end - start) * factor;
@@ -479,6 +479,8 @@ function Contact() {
     { name: 'Email', href: 'mailto:dylancablayan07@gmail.com', icon: Mail },
     { name: 'LinkedIn', href: 'https://linkedin.com/in/dylancablayan', icon: Linkedin },
     { name: 'GitHub', href: 'https://github.com/dcablayan', icon: Github },
+    { name: 'X', href: 'https://x.com/dylancablayan', icon: Twitter },
+    { name: 'ResearchGate', href: 'https://www.researchgate.net/profile/Dylan-Cablayan', icon: BookOpen },
   ];
 
   return (
