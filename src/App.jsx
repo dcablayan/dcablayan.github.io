@@ -315,9 +315,16 @@ function BlueprintSchematics() {
       <SatelliteSchematic style={getStyle(0.12, 25, '5%', '5%')} />
       <NeuralNetworkSchematic style={getStyle(0.14, 20, '8%', '75%')} />
 
+      {/* Upper center */}
+      <StockSchematic style={getStyle(0.13, 18, '18%', '38%')} />
+
       {/* Middle row */}
       <StockSchematic style={getStyle(0.18, 22, '40%', '2%')} />
+      <SatelliteSchematic style={getStyle(0.17, 20, '35%', '42%')} />
       <SatelliteSchematic style={getStyle(0.15, 16, '45%', '78%')} />
+
+      {/* Lower center */}
+      <NeuralNetworkSchematic style={getStyle(0.19, 15, '58%', '35%')} />
 
       {/* Bottom row */}
       <NeuralNetworkSchematic style={getStyle(0.16, 18, '75%', '8%')} />
