@@ -311,30 +311,17 @@ function BlueprintSchematics() {
 
   return (
     <div className="blueprint-schematics">
-      {/* Row 1 - Top */}
-      <SatelliteSchematic style={getStyle(0.12, 25, '2%', '-12%')} />
-      <StockSchematic style={getStyle(0.16, 18, '5%', '35%')} />
-      <NeuralNetworkSchematic style={getStyle(0.14, 20, '3%', '72%')} />
+      {/* Top row - corners */}
+      <SatelliteSchematic style={getStyle(0.12, 25, '5%', '5%')} />
+      <NeuralNetworkSchematic style={getStyle(0.14, 20, '8%', '75%')} />
 
-      {/* Row 2 - Upper middle */}
-      <NeuralNetworkSchematic style={getStyle(0.18, 22, '22%', '-8%')} />
-      <SatelliteSchematic style={getStyle(0.15, 16, '25%', '40%')} />
-      <StockSchematic style={getStyle(0.2, 18, '20%', '78%')} />
+      {/* Middle row */}
+      <StockSchematic style={getStyle(0.18, 22, '40%', '2%')} />
+      <SatelliteSchematic style={getStyle(0.15, 16, '45%', '78%')} />
 
-      {/* Row 3 - Center */}
-      <StockSchematic style={getStyle(0.14, 20, '42%', '-5%')} />
-      <NeuralNetworkSchematic style={getStyle(0.17, 15, '45%', '38%')} />
-      <SatelliteSchematic style={getStyle(0.19, 22, '40%', '75%')} />
-
-      {/* Row 4 - Lower middle */}
-      <SatelliteSchematic style={getStyle(0.16, 18, '62%', '-10%')} />
-      <StockSchematic style={getStyle(0.21, 16, '65%', '42%')} />
-      <NeuralNetworkSchematic style={getStyle(0.13, 20, '60%', '80%')} />
-
-      {/* Row 5 - Bottom */}
-      <NeuralNetworkSchematic style={getStyle(0.18, 22, '82%', '-5%')} />
-      <SatelliteSchematic style={getStyle(0.15, 18, '85%', '35%')} />
-      <StockSchematic style={getStyle(0.2, 16, '80%', '75%')} />
+      {/* Bottom row */}
+      <NeuralNetworkSchematic style={getStyle(0.16, 18, '75%', '8%')} />
+      <StockSchematic style={getStyle(0.2, 18, '72%', '72%')} />
     </div>
   );
 }
