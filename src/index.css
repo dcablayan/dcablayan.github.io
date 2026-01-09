@@ -81,9 +81,21 @@ body {
   color: var(--blueprint-blue);
   opacity: 0.4;
   /* GPU acceleration */
-  will-change: transform;
+  will-change: transform, filter, opacity;
   backface-visibility: hidden;
   transform: translate3d(0, 0, 0);
+  /* Enable hover interactions */
+  pointer-events: auto;
+  cursor: pointer;
+  /* Smooth transition for hover glow */
+  transition: filter 0.4s ease, opacity 0.4s ease;
+}
+
+.schematic:hover {
+  opacity: 0.7;
+  filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.6))
+          drop-shadow(0 0 40px rgba(59, 130, 246, 0.4))
+          drop-shadow(0 0 60px rgba(59, 130, 246, 0.2));
 }
 
 .satellite-schematic {
