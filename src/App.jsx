@@ -564,7 +564,7 @@ function Experience() {
     },
     {
       company: 'UH Mānoa',
-      role: 'CS Research Intern - LAIA Lab',
+      role: 'CS Research Intern - SAIL Lab',
       date: 'Aug 2023 - Jun 2024',
       description: 'Developed NLP application for transcribing patient-physician conversations into structured JSON format using GPT-4 at the Laboratory of Applications in Informatics & Analytics.',
     },
