@@ -35,8 +35,8 @@ function BlueprintGrid() {
       const smallGridSize = 10;
 
       // Draw small grid
-      ctx.strokeStyle = 'rgba(59, 130, 246, 0.08)';
-      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = 'rgba(59, 130, 246, 0.05)';
+      ctx.lineWidth = 0.3;
       ctx.beginPath();
       for (let x = 0; x <= canvas.width; x += smallGridSize) {
         ctx.moveTo(x, 0);
@@ -49,8 +49,8 @@ function BlueprintGrid() {
       ctx.stroke();
 
       // Draw main grid
-      ctx.strokeStyle = 'rgba(59, 130, 246, 0.15)';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(59, 130, 246, 0.1)';
+      ctx.lineWidth = 0.5;
       ctx.beginPath();
       for (let x = 0; x <= canvas.width; x += gridSize) {
         ctx.moveTo(x, 0);
