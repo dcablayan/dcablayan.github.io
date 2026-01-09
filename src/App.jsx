@@ -10,86 +10,201 @@ const isMobile = () => {
   return window.innerWidth <= 768 || 'ontouchstart' in window;
 };
 
-// Layer 1: Starfield with slow parallax (0.2x speed) + twinkling
-function Starfield() {
+// Blueprint Grid Background
+function BlueprintGrid() {
   const canvasRef = useRef(null);
-  const scrollRef = useRef(0);
-  const targetScrollRef = useRef(0);
-  const animationRef = useRef(null);
-  const starsRef = useRef([]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    const mobile = isMobile();
 
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = Math.max(
         document.documentElement.scrollHeight,
-        window.innerHeight * 2
+        window.innerHeight * 3
       );
-      generateStars();
+      draw();
     };
 
-    const generateStars = () => {
-      starsRef.current = [];
-      const starCount = mobile ? 100 : 250;
-      for (let i = 0; i < starCount; i++) {
-        starsRef.current.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          radius: Math.random() * 1.5 + 0.5,
-          baseOpacity: Math.random() * 0.6 + 0.3,
-          twinkleSpeed: Math.random() * 0.02 + 0.01,
-          twinkleOffset: Math.random() * Math.PI * 2,
-        });
-      }
-    };
-
-    const draw = (time) => {
+    const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      if (!mobile) {
-        scrollRef.current = lerp(scrollRef.current, targetScrollRef.current, 0.1);
+      // Grid settings
+      const gridSize = 40;
+      const smallGridSize = 10;
+
+      // Draw small grid
+      ctx.strokeStyle = 'rgba(59, 130, 246, 0.08)';
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      for (let x = 0; x <= canvas.width; x += smallGridSize) {
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
       }
+      for (let y = 0; y <= canvas.height; y += smallGridSize) {
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+      }
+      ctx.stroke();
 
-      starsRef.current.forEach((star) => {
-        const twinkle = Math.sin(time * star.twinkleSpeed + star.twinkleOffset);
-        const opacity = star.baseOpacity + twinkle * 0.2;
-        const parallaxY = mobile ? 0 : scrollRef.current * 0.2;
-
-        ctx.beginPath();
-        ctx.arc(star.x, star.y - parallaxY, star.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0.1, Math.min(1, opacity))})`;
-        ctx.fill();
-      });
-
-      animationRef.current = requestAnimationFrame(draw);
-    };
-
-    const handleScroll = () => {
-      targetScrollRef.current = window.scrollY;
+      // Draw main grid
+      ctx.strokeStyle = 'rgba(59, 130, 246, 0.15)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let x = 0; x <= canvas.width; x += gridSize) {
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+      }
+      for (let y = 0; y <= canvas.height; y += gridSize) {
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+      }
+      ctx.stroke();
     };
 
     resize();
     window.addEventListener('resize', resize);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    animationRef.current = requestAnimationFrame(draw);
 
     return () => {
       window.removeEventListener('resize', resize);
-      window.removeEventListener('scroll', handleScroll);
-      cancelAnimationFrame(animationRef.current);
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="starfield-canvas" />;
+  return <canvas ref={canvasRef} className="blueprint-grid" />;
 }
 
-// Layer 2: Floating Geometric Assets with mid-ground parallax + mouse follow
-function FloatingAssets() {
-  const containerRef = useRef(null);
+// SVG Schematic: GRACE-FO Satellite
+function SatelliteSchematic({ style }) {
+  return (
+    <svg viewBox="0 0 200 150" className="schematic satellite-schematic" style={style}>
+      {/* Satellite body */}
+      <rect x="70" y="50" width="60" height="40" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      {/* Solar panels */}
+      <rect x="10" y="55" width="55" height="30" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="135" y="55" width="55" height="30" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      {/* Panel lines */}
+      <line x1="25" y1="55" x2="25" y2="85" stroke="currentColor" strokeWidth="0.8" />
+      <line x1="40" y1="55" x2="40" y2="85" stroke="currentColor" strokeWidth="0.8" />
+      <line x1="50" y1="55" x2="50" y2="85" stroke="currentColor" strokeWidth="0.8" />
+      <line x1="150" y1="55" x2="150" y2="85" stroke="currentColor" strokeWidth="0.8" />
+      <line x1="165" y1="55" x2="165" y2="85" stroke="currentColor" strokeWidth="0.8" />
+      <line x1="175" y1="55" x2="175" y2="85" stroke="currentColor" strokeWidth="0.8" />
+      {/* Antenna */}
+      <circle cx="100" cy="40" r="8" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <line x1="100" y1="32" x2="100" y2="20" stroke="currentColor" strokeWidth="1.5" />
+      {/* Thruster */}
+      <rect x="85" y="90" width="30" height="15" fill="none" stroke="currentColor" strokeWidth="1" />
+      {/* Detail lines */}
+      <line x1="75" y1="60" x2="125" y2="60" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2,2" />
+      <line x1="75" y1="70" x2="125" y2="70" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2,2" />
+      <line x1="75" y1="80" x2="125" y2="80" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2,2" />
+      {/* Measurement lines */}
+      <line x1="70" y1="115" x2="130" y2="115" stroke="currentColor" strokeWidth="0.5" />
+      <line x1="70" y1="112" x2="70" y2="118" stroke="currentColor" strokeWidth="0.5" />
+      <line x1="130" y1="112" x2="130" y2="118" stroke="currentColor" strokeWidth="0.5" />
+      <text x="100" y="125" textAnchor="middle" fontSize="8" fill="currentColor" opacity="0.7">GRACE-FO</text>
+    </svg>
+  );
+}
+
+// SVG Schematic: Stock Chart
+function StockSchematic({ style }) {
+  return (
+    <svg viewBox="0 0 180 140" className="schematic stock-schematic" style={style}>
+      {/* Chart frame */}
+      <rect x="20" y="15" width="140" height="100" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      {/* Axes */}
+      <line x1="35" y1="25" x2="35" y2="105" stroke="currentColor" strokeWidth="1" />
+      <line x1="35" y1="105" x2="150" y2="105" stroke="currentColor" strokeWidth="1" />
+      {/* Grid lines */}
+      <line x1="35" y1="45" x2="150" y2="45" stroke="currentColor" strokeWidth="0.3" strokeDasharray="3,3" />
+      <line x1="35" y1="65" x2="150" y2="65" stroke="currentColor" strokeWidth="0.3" strokeDasharray="3,3" />
+      <line x1="35" y1="85" x2="150" y2="85" stroke="currentColor" strokeWidth="0.3" strokeDasharray="3,3" />
+      {/* Candlesticks */}
+      <line x1="50" y1="40" x2="50" y2="70" stroke="currentColor" strokeWidth="1" />
+      <rect x="46" y="45" width="8" height="15" fill="none" stroke="currentColor" strokeWidth="1" />
+      <line x1="70" y1="35" x2="70" y2="60" stroke="currentColor" strokeWidth="1" />
+      <rect x="66" y="40" width="8" height="12" fill="currentColor" opacity="0.3" stroke="currentColor" strokeWidth="1" />
+      <line x1="90" y1="50" x2="90" y2="80" stroke="currentColor" strokeWidth="1" />
+      <rect x="86" y="55" width="8" height="18" fill="none" stroke="currentColor" strokeWidth="1" />
+      <line x1="110" y1="30" x2="110" y2="55" stroke="currentColor" strokeWidth="1" />
+      <rect x="106" y="35" width="8" height="12" fill="currentColor" opacity="0.3" stroke="currentColor" strokeWidth="1" />
+      <line x1="130" y1="25" x2="130" y2="50" stroke="currentColor" strokeWidth="1" />
+      <rect x="126" y="30" width="8" height="14" fill="currentColor" opacity="0.3" stroke="currentColor" strokeWidth="1" />
+      {/* Trend line */}
+      <path d="M 45 65 Q 80 55, 100 60 T 140 35" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="4,2" />
+      {/* Labels */}
+      <text x="90" y="128" textAnchor="middle" fontSize="8" fill="currentColor" opacity="0.7">MARKET DATA</text>
+    </svg>
+  );
+}
+
+// SVG Schematic: Neural Network
+function NeuralNetworkSchematic({ style }) {
+  return (
+    <svg viewBox="0 0 220 160" className="schematic neural-schematic" style={style}>
+      {/* Input layer */}
+      <circle cx="30" cy="30" r="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="30" cy="60" r="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="30" cy="90" r="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="30" cy="120" r="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
+
+      {/* Hidden layer 1 */}
+      <circle cx="80" cy="35" r="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="80" cy="65" r="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="80" cy="95" r="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="80" cy="125" r="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
+
+      {/* Hidden layer 2 */}
+      <circle cx="130" cy="45" r="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="130" cy="80" r="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="130" cy="115" r="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
+
+      {/* Output layer */}
+      <circle cx="180" cy="60" r="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="180" cy="100" r="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
+
+      {/* Connections - Input to Hidden 1 */}
+      <line x1="40" y1="30" x2="70" y2="35" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="40" y1="30" x2="70" y2="65" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="40" y1="60" x2="70" y2="35" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="40" y1="60" x2="70" y2="65" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="40" y1="60" x2="70" y2="95" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="40" y1="90" x2="70" y2="65" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="40" y1="90" x2="70" y2="95" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="40" y1="90" x2="70" y2="125" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="40" y1="120" x2="70" y2="95" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="40" y1="120" x2="70" y2="125" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+
+      {/* Connections - Hidden 1 to Hidden 2 */}
+      <line x1="90" y1="35" x2="120" y2="45" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="90" y1="35" x2="120" y2="80" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="90" y1="65" x2="120" y2="45" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="90" y1="65" x2="120" y2="80" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="90" y1="95" x2="120" y2="80" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="90" y1="95" x2="120" y2="115" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="90" y1="125" x2="120" y2="80" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="90" y1="125" x2="120" y2="115" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+
+      {/* Connections - Hidden 2 to Output */}
+      <line x1="140" y1="45" x2="170" y2="60" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="140" y1="45" x2="170" y2="100" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="140" y1="80" x2="170" y2="60" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="140" y1="80" x2="170" y2="100" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="140" y1="115" x2="170" y2="60" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+      <line x1="140" y1="115" x2="170" y2="100" stroke="currentColor" strokeWidth="0.5" opacity="0.6" />
+
+      {/* Labels */}
+      <text x="30" y="148" textAnchor="middle" fontSize="6" fill="currentColor" opacity="0.7">INPUT</text>
+      <text x="105" y="148" textAnchor="middle" fontSize="6" fill="currentColor" opacity="0.7">HIDDEN LAYERS</text>
+      <text x="180" y="148" textAnchor="middle" fontSize="6" fill="currentColor" opacity="0.7">OUTPUT</text>
+    </svg>
+  );
+}
+
+// Blueprint Schematics Container with parallax
+function BlueprintSchematics() {
   const [transform, setTransform] = useState({ x: 0, y: 0, scrollY: 0 });
   const targetRef = useRef({ x: 0, y: 0, scrollY: 0 });
   const currentRef = useRef({ x: 0, y: 0, scrollY: 0 });
@@ -111,9 +226,9 @@ function FloatingAssets() {
     };
 
     const animate = () => {
-      currentRef.current.x = lerp(currentRef.current.x, targetRef.current.x, 0.05);
-      currentRef.current.y = lerp(currentRef.current.y, targetRef.current.y, 0.05);
-      currentRef.current.scrollY = lerp(currentRef.current.scrollY, targetRef.current.scrollY, 0.08);
+      currentRef.current.x = lerp(currentRef.current.x, targetRef.current.x, 0.03);
+      currentRef.current.y = lerp(currentRef.current.y, targetRef.current.y, 0.03);
+      currentRef.current.scrollY = lerp(currentRef.current.scrollY, targetRef.current.scrollY, 0.05);
 
       setTransform({
         x: currentRef.current.x,
@@ -137,73 +252,27 @@ function FloatingAssets() {
 
   const mobile = isMobile();
 
-  const assets = [
-    { id: 1, className: 'asset asset-diamond-1', parallaxSpeed: 0.3, mouseMultiplier: 15, rotation: 45 },
-    { id: 2, className: 'asset asset-diamond-2', parallaxSpeed: 0.5, mouseMultiplier: 25, rotation: -30 },
-    { id: 3, className: 'asset asset-circle-1', parallaxSpeed: 0.4, mouseMultiplier: 20, rotation: 0 },
-    { id: 4, className: 'asset asset-triangle-1', parallaxSpeed: 0.35, mouseMultiplier: 18, rotation: 15 },
-  ];
+  const getStyle = (parallaxSpeed, mouseMultiplier, baseTop, baseLeft) => {
+    if (mobile) {
+      return { top: baseTop, left: baseLeft };
+    }
+    const translateY = -transform.scrollY * parallaxSpeed;
+    const mouseX = transform.x * mouseMultiplier;
+    const mouseY = transform.y * mouseMultiplier;
+    return {
+      top: baseTop,
+      left: baseLeft,
+      transform: `translate3d(${mouseX}px, ${translateY + mouseY}px, 0)`,
+    };
+  };
 
   return (
-    <div ref={containerRef} className="floating-assets">
-      {assets.map((asset) => {
-        const translateY = mobile ? 0 : -transform.scrollY * asset.parallaxSpeed;
-        const mouseX = mobile ? 0 : transform.x * asset.mouseMultiplier;
-        const mouseY = mobile ? 0 : transform.y * asset.mouseMultiplier;
-        const rotate = asset.rotation + (mobile ? 0 : transform.x * 5);
-
-        return (
-          <div
-            key={asset.id}
-            className={asset.className}
-            style={{
-              transform: `translate3d(${mouseX}px, ${translateY + mouseY}px, 0) rotate(${rotate}deg)`,
-            }}
-          />
-        );
-      })}
-    </div>
-  );
-}
-
-// Floating Clouds with parallax
-function Clouds() {
-  const [scrollY, setScrollY] = useState(0);
-  const targetRef = useRef(0);
-  const currentRef = useRef(0);
-  const animationRef = useRef(null);
-
-  useEffect(() => {
-    const mobile = isMobile();
-    if (mobile) return;
-
-    const handleScroll = () => {
-      targetRef.current = window.scrollY;
-    };
-
-    const animate = () => {
-      currentRef.current = lerp(currentRef.current, targetRef.current, 0.06);
-      setScrollY(currentRef.current);
-      animationRef.current = requestAnimationFrame(animate);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    animationRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      cancelAnimationFrame(animationRef.current);
-    };
-  }, []);
-
-  const mobile = isMobile();
-
-  return (
-    <div className="clouds">
-      <div className="cloud cloud-1" style={{ transform: mobile ? 'none' : `translate3d(0, ${-scrollY * 0.15}px, 0)` }} />
-      <div className="cloud cloud-2" style={{ transform: mobile ? 'none' : `translate3d(0, ${-scrollY * 0.25}px, 0)` }} />
-      <div className="cloud cloud-3" style={{ transform: mobile ? 'none' : `translate3d(0, ${-scrollY * 0.1}px, 0)` }} />
-      <div className="cloud cloud-4" style={{ transform: mobile ? 'none' : `translate3d(0, ${-scrollY * 0.2}px, 0)` }} />
+    <div className="blueprint-schematics">
+      <SatelliteSchematic style={getStyle(0.15, 20, '15%', '-5%')} />
+      <StockSchematic style={getStyle(0.25, 15, '45%', '85%')} />
+      <NeuralNetworkSchematic style={getStyle(0.2, 18, '70%', '5%')} />
+      <SatelliteSchematic style={getStyle(0.18, 12, '85%', '80%')} />
+      <NeuralNetworkSchematic style={getStyle(0.22, 16, '25%', '75%')} />
     </div>
   );
 }
@@ -593,9 +662,8 @@ function Footer() {
 function App() {
   return (
     <div className="app">
-      <Starfield />
-      <Clouds />
-      <FloatingAssets />
+      <BlueprintGrid />
+      <BlueprintSchematics />
       <div className="content">
         <Navbar />
         <main>
