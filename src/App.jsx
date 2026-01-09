@@ -469,21 +469,22 @@ function About() {
       <h2 className="section-title">About Me</h2>
       <div className="about-content">
         <p>
-          I'm a Computer Science student at <span className="highlight">UH Mānoa</span> through the Ka'ie'ie Transfer Program,
-          with a background in Natural Science and Information & Computer Science from Kapi'olani Community College where I graduated with a 4.0 GPA.
+          I'm a Computer Science student at the <span className="highlight">University of Hawaiʻi at Mānoa</span> through the Kaʻieʻie Transfer Program,
+          concurrently taking classes at both UH Mānoa and Kapiʻolani Community College as I work toward completing degrees from both institutions.
+          My academic background is in Natural Science and Information & Computer Science, and I currently maintain a 4.0 GPA.
         </p>
         <p>
-          Currently, I'm a member of the <span className="highlight">OpenAI ChatGPT Lab</span> (1 of 28 students selected for Cohort 3)
-          and an intern at <span className="highlight">Blue Startups</span>, Hawaii's top tech accelerator. I also do venture capital
+          I'm a member of the <span className="highlight">OpenAI ChatGPT Lab</span> (1 of 28 students selected for Cohort 3)
+          and an intern at <span className="highlight">Blue Startups</span>, Hawaiʻi's leading tech accelerator. I also support venture capital
           deal sourcing at Energy Innovation Capital.
         </p>
         <p>
-          My passion lies at the intersection of AI/ML, startups, and civic tech. I've advocated for legislation supporting
-          work-based learning (SB 2975 & HB 1654) and helped create Hawaii's first Filipino culture curriculum, now taught at 7 schools.
+          My interests sit at the intersection of AI/ML, startups, and civic tech. I've advocated for legislation supporting
+          work-based learning (SB 2975 and HB 1654) and helped develop Hawaiʻi's first Filipino culture curriculum, now taught in seven schools statewide.
         </p>
         <p>
-          When I'm not coding, you'll find me exploring new AI research papers, mentoring students, or working on projects
-          that make a positive impact in my community.
+          Outside of class and work, I spend my time exploring new AI research, mentoring other students, building projects focused on real-world impact,
+          and enjoying solo travel and archery.
         </p>
       </div>
     </section>
@@ -564,7 +565,7 @@ function Experience() {
     },
     {
       company: 'UH Mānoa',
-      role: 'CS Research Intern - LAIA Lab',
+      role: 'CS Research Intern - SAIL Lab',
       date: 'Aug 2023 - Jun 2024',
       description: 'Developed NLP application for transcribing patient-physician conversations into structured JSON format using GPT-4 at the Laboratory of Applications in Informatics & Analytics.',
     },
