@@ -602,7 +602,7 @@ function Projects() {
   const projects = [
     {
       title: 'Filipino Curriculum Project',
-      description: 'Led the creation of Hawaii\'s first Filipino history and culture curriculum for the DOE. Now actively taught at 7 schools across the state, reaching hundreds of students.',
+      description: 'Worked alongside other high school students to develop Hawaiʻi\'s first Filipino history and culture curriculum for the DOE. Now actively taught at 7 schools across the state, reaching hundreds of students.',
       tags: ['Education', 'Curriculum Design', 'Cultural Advocacy'],
       date: 'Jan 2023 - Aug 2024',
       link: 'https://sites.google.com/view/filipinocurriculum/home',
