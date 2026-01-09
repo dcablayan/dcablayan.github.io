@@ -87,18 +87,18 @@ body {
 }
 
 .satellite-schematic {
-  width: 280px;
-  height: 210px;
+  width: 420px;
+  height: 300px;
 }
 
 .stock-schematic {
-  width: 240px;
-  height: 190px;
+  width: 380px;
+  height: 300px;
 }
 
 .neural-schematic {
-  width: 300px;
-  height: 220px;
+  width: 440px;
+  height: 320px;
 }
 
 
@@ -590,13 +590,13 @@ body {
 
   /* Reduce schematic visibility on mobile */
   .schematic {
-    opacity: 0.2;
+    opacity: 0.15;
   }
 
   .satellite-schematic,
   .stock-schematic,
   .neural-schematic {
-    width: 150px;
+    width: 200px;
     height: auto;
   }
 }
@@ -633,13 +633,13 @@ body {
 
   /* Reduce schematic size on tablet */
   .schematic {
-    opacity: 0.3;
+    opacity: 0.25;
   }
 
   .satellite-schematic,
   .stock-schematic,
   .neural-schematic {
-    width: 180px;
+    width: 280px;
     height: auto;
   }
 }
