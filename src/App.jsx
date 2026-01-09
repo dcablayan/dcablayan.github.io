@@ -74,36 +74,63 @@ function BlueprintGrid() {
   return <canvas ref={canvasRef} className="blueprint-grid" />;
 }
 
-// SVG Schematic: GRACE-FO Satellite
+// SVG Schematic: GRACE-FO Satellite (accurate trapezoidal design)
 function SatelliteSchematic({ style }) {
   return (
-    <svg viewBox="0 0 200 150" className="schematic satellite-schematic" style={style}>
-      {/* Satellite body */}
-      <rect x="70" y="50" width="60" height="40" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      {/* Solar panels */}
-      <rect x="10" y="55" width="55" height="30" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="135" y="55" width="55" height="30" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      {/* Panel lines */}
-      <line x1="25" y1="55" x2="25" y2="85" stroke="currentColor" strokeWidth="0.8" />
-      <line x1="40" y1="55" x2="40" y2="85" stroke="currentColor" strokeWidth="0.8" />
-      <line x1="50" y1="55" x2="50" y2="85" stroke="currentColor" strokeWidth="0.8" />
-      <line x1="150" y1="55" x2="150" y2="85" stroke="currentColor" strokeWidth="0.8" />
-      <line x1="165" y1="55" x2="165" y2="85" stroke="currentColor" strokeWidth="0.8" />
-      <line x1="175" y1="55" x2="175" y2="85" stroke="currentColor" strokeWidth="0.8" />
-      {/* Antenna */}
-      <circle cx="100" cy="40" r="8" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      <line x1="100" y1="32" x2="100" y2="20" stroke="currentColor" strokeWidth="1.5" />
-      {/* Thruster */}
-      <rect x="85" y="90" width="30" height="15" fill="none" stroke="currentColor" strokeWidth="1" />
-      {/* Detail lines */}
-      <line x1="75" y1="60" x2="125" y2="60" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2,2" />
-      <line x1="75" y1="70" x2="125" y2="70" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2,2" />
-      <line x1="75" y1="80" x2="125" y2="80" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2,2" />
-      {/* Measurement lines */}
-      <line x1="70" y1="115" x2="130" y2="115" stroke="currentColor" strokeWidth="0.5" />
-      <line x1="70" y1="112" x2="70" y2="118" stroke="currentColor" strokeWidth="0.5" />
-      <line x1="130" y1="112" x2="130" y2="118" stroke="currentColor" strokeWidth="0.5" />
-      <text x="100" y="125" textAnchor="middle" fontSize="8" fill="currentColor" opacity="0.7">GRACE-FO</text>
+    <svg viewBox="0 0 280 200" className="schematic satellite-schematic" style={style}>
+      {/* Main trapezoidal body - 3D isometric view */}
+      {/* Front face (gold thermal blanket) */}
+      <polygon
+        points="40,120 100,140 100,80 40,60"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      {/* Top face (solar panels) */}
+      <polygon
+        points="40,60 100,80 200,50 140,30"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      {/* Side face */}
+      <polygon
+        points="100,80 100,140 200,110 200,50"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      {/* Solar panel grid lines on top */}
+      <line x1="60" y1="65" x2="120" y2="55" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="80" y1="70" x2="140" y2="60" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="100" y1="75" x2="160" y2="65" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="120" y1="80" x2="180" y2="70" stroke="currentColor" strokeWidth="0.6" />
+      {/* Vertical panel lines */}
+      <line x1="70" y1="45" x2="70" y2="72" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="100" y1="50" x2="100" y2="80" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="130" y1="45" x2="130" y2="68" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="160" y1="40" x2="160" y2="60" stroke="currentColor" strokeWidth="0.6" />
+      {/* Sensor/instrument on front face */}
+      <circle cx="70" cy="90" r="12" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="70" cy="90" r="6" fill="none" stroke="currentColor" strokeWidth="1" />
+      {/* Small instruments on front */}
+      <rect x="50" y="105" width="8" height="8" fill="none" stroke="currentColor" strokeWidth="0.8" />
+      <rect x="82" y="100" width="6" height="6" fill="none" stroke="currentColor" strokeWidth="0.8" />
+      {/* Laser Ranging Interferometer (back) */}
+      <polygon points="200,50 220,45 220,55" fill="none" stroke="currentColor" strokeWidth="1" />
+      {/* Laser beams */}
+      <line x1="220" y1="48" x2="260" y2="35" stroke="currentColor" strokeWidth="0.8" strokeDasharray="4,2" />
+      <line x1="220" y1="52" x2="260" y2="45" stroke="currentColor" strokeWidth="0.8" strokeDasharray="4,2" />
+      {/* Dimension lines */}
+      <line x1="40" y1="155" x2="200" y2="155" stroke="currentColor" strokeWidth="0.5" />
+      <line x1="40" y1="150" x2="40" y2="160" stroke="currentColor" strokeWidth="0.5" />
+      <line x1="200" y1="150" x2="200" y2="160" stroke="currentColor" strokeWidth="0.5" />
+      {/* Cross-section indicator */}
+      <line x1="20" y1="60" x2="20" y2="120" stroke="currentColor" strokeWidth="0.5" />
+      <line x1="15" y1="60" x2="25" y2="60" stroke="currentColor" strokeWidth="0.5" />
+      <line x1="15" y1="120" x2="25" y2="120" stroke="currentColor" strokeWidth="0.5" />
+      {/* Label */}
+      <text x="120" y="175" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.7">GRACE-FO</text>
     </svg>
   );
 }
@@ -268,11 +295,22 @@ function BlueprintSchematics() {
 
   return (
     <div className="blueprint-schematics">
-      <SatelliteSchematic style={getStyle(0.15, 20, '15%', '-5%')} />
-      <StockSchematic style={getStyle(0.25, 15, '45%', '85%')} />
-      <NeuralNetworkSchematic style={getStyle(0.2, 18, '70%', '5%')} />
-      <SatelliteSchematic style={getStyle(0.18, 12, '85%', '80%')} />
-      <NeuralNetworkSchematic style={getStyle(0.22, 16, '25%', '75%')} />
+      {/* Top left - Satellite */}
+      <SatelliteSchematic style={getStyle(0.12, 25, '5%', '-8%')} />
+      {/* Top right - Neural Network */}
+      <NeuralNetworkSchematic style={getStyle(0.18, 20, '8%', '65%')} />
+      {/* Middle left - Stock Chart */}
+      <StockSchematic style={getStyle(0.15, 18, '35%', '-5%')} />
+      {/* Middle right - Satellite */}
+      <SatelliteSchematic style={getStyle(0.2, 15, '40%', '70%')} />
+      {/* Lower left - Neural Network */}
+      <NeuralNetworkSchematic style={getStyle(0.14, 22, '60%', '5%')} />
+      {/* Lower right - Stock Chart */}
+      <StockSchematic style={getStyle(0.22, 16, '65%', '75%')} />
+      {/* Bottom left - Satellite */}
+      <SatelliteSchematic style={getStyle(0.16, 20, '85%', '-10%')} />
+      {/* Bottom right - Neural Network */}
+      <NeuralNetworkSchematic style={getStyle(0.19, 18, '88%', '60%')} />
     </div>
   );
 }
