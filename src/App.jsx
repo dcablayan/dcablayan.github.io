@@ -75,94 +75,115 @@ function BlueprintGrid() {
 }
 
 // SVG Schematic: GRACE-FO Satellite (orthographic blueprint)
-// Scale: 1 unit = 0.4px for fitting in viewBox
-// Main body: 200×120×100, Solar panel: 260×6×120, Hinge: 20×20×20
-// Front instrument: 40×40×20, Antenna: 10×10×25, Side instrument: 30×25×20
+// Trapezoidal bus with solar panel and long instrument boom
 function SatelliteSchematic({ style }) {
   return (
     <svg viewBox="0 0 320 220" className="schematic satellite-schematic" style={style}>
-      {/* === TOP VIEW (upper left) - Looking down, shows X-Y plane === */}
-      {/* Main body: 200×120 → 80×48 scaled */}
-      <rect x="20" y="22" width="80" height="48" fill="none" stroke="currentColor" strokeWidth="1.2" />
-      {/* Solar panel hinge: 20×20 → 8×8, on -Y side (bottom of bus in top view) */}
-      <rect x="56" y="70" width="8" height="8" fill="none" stroke="currentColor" strokeWidth="0.8" />
-      {/* Solar panel: 260×6 → 104×2.4, extends from hinge along -Y */}
-      <rect x="8" y="78" width="104" height="48" fill="none" stroke="currentColor" strokeWidth="1" />
-      {/* Panel cell grid lines */}
-      <line x1="8" y1="90" x2="112" y2="90" stroke="currentColor" strokeWidth="0.3" />
-      <line x1="8" y1="102" x2="112" y2="102" stroke="currentColor" strokeWidth="0.3" />
-      <line x1="8" y1="114" x2="112" y2="114" stroke="currentColor" strokeWidth="0.3" />
-      <line x1="34" y1="78" x2="34" y2="126" stroke="currentColor" strokeWidth="0.3" />
-      <line x1="60" y1="78" x2="60" y2="126" stroke="currentColor" strokeWidth="0.3" />
-      <line x1="86" y1="78" x2="86" y2="126" stroke="currentColor" strokeWidth="0.3" />
-      {/* Front instrument: 40×40 → 16×16, on +X face (right side) */}
-      <rect x="100" y="38" width="8" height="16" fill="none" stroke="currentColor" strokeWidth="0.6" />
-      {/* Antenna mast: 10×10 → 4×4, on top near front */}
-      <rect x="88" y="32" width="4" height="4" fill="none" stroke="currentColor" strokeWidth="0.6" />
-      {/* Side instrument: 30×25 → 12×10, on +Y face (top of bus in top view) */}
-      <rect x="50" y="12" width="12" height="10" fill="none" stroke="currentColor" strokeWidth="0.6" />
-      {/* Top view label */}
-      <text x="60" y="8" textAnchor="middle" fontSize="6" fill="currentColor" opacity="0.6">TOP</text>
+      {/* === TOP VIEW (upper area) === */}
+      {/* Trapezoidal bus - top view (wider at back, narrower at front) */}
+      <polygon points="25,18 95,18 85,58 35,58" fill="none" stroke="currentColor" strokeWidth="1.2" />
+      {/* Solar panel with grid */}
+      <rect x="95" y="8" width="70" height="60" fill="none" stroke="currentColor" strokeWidth="1" />
+      {/* Panel grid lines */}
+      <line x1="112" y1="8" x2="112" y2="68" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="129" y1="8" x2="129" y2="68" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="146" y1="8" x2="146" y2="68" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="95" y1="23" x2="165" y2="23" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="95" y1="38" x2="165" y2="38" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="95" y1="53" x2="165" y2="53" stroke="currentColor" strokeWidth="0.3" />
+      {/* Hinge block */}
+      <rect x="95" y="33" width="6" height="12" fill="none" stroke="currentColor" strokeWidth="0.6" />
+      {/* Antenna masts - top view */}
+      <rect x="40" y="22" width="3" height="3" fill="none" stroke="currentColor" strokeWidth="0.5" />
+      <rect x="75" y="22" width="3" height="3" fill="none" stroke="currentColor" strokeWidth="0.5" />
+      {/* Top dimension - total width */}
+      <line x1="25" y1="3" x2="165" y2="3" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="25" y1="0" x2="25" y2="6" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="165" y1="0" x2="165" y2="6" stroke="currentColor" strokeWidth="0.3" />
+      <text x="95" y="0" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.6">460</text>
+      {/* Bus width dimension */}
+      <line x1="25" y1="65" x2="95" y2="65" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="25" y1="62" x2="25" y2="68" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="95" y1="62" x2="95" y2="68" stroke="currentColor" strokeWidth="0.3" />
+      <text x="60" y="73" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.6">160</text>
+      {/* Label */}
+      <text x="130" y="42" fontSize="4" fill="currentColor" opacity="0.5">Spacecraft bus</text>
+      <line x1="95" y1="38" x2="115" y2="42" stroke="currentColor" strokeWidth="0.2" />
 
-      {/* === SIDE VIEW (right side) - Looking from +Y, shows X-Z plane === */}
-      {/* Main body: 200×100 → 80×40 scaled */}
-      <rect x="170" y="20" width="80" height="40" fill="none" stroke="currentColor" strokeWidth="1.2" />
-      {/* Solar panel edge (thin): 260×6 → 104×2.4, below bus */}
-      <rect x="158" y="60" width="104" height="3" fill="none" stroke="currentColor" strokeWidth="0.8" />
-      {/* Hinge connecting bus to panel */}
-      <rect x="206" y="60" width="8" height="8" fill="none" stroke="currentColor" strokeWidth="0.6" />
-      {/* Antenna mast: 10×25 → 4×10, on top */}
-      <rect x="238" y="10" width="4" height="10" fill="none" stroke="currentColor" strokeWidth="0.6" />
-      {/* Front instrument: 40×20 → 16×8, on right face */}
-      <rect x="250" y="32" width="8" height="16" fill="none" stroke="currentColor" strokeWidth="0.6" />
-      {/* Side view dimension - length */}
-      <line x1="170" y1="72" x2="250" y2="72" stroke="currentColor" strokeWidth="0.3" />
-      <line x1="170" y1="68" x2="170" y2="76" stroke="currentColor" strokeWidth="0.3" />
-      <line x1="250" y1="68" x2="250" y2="76" stroke="currentColor" strokeWidth="0.3" />
-      <text x="210" y="80" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.6">200</text>
-      {/* Side view dimension - height */}
-      <line x1="162" y1="20" x2="162" y2="60" stroke="currentColor" strokeWidth="0.3" />
-      <line x1="158" y1="20" x2="166" y2="20" stroke="currentColor" strokeWidth="0.3" />
-      <line x1="158" y1="60" x2="166" y2="60" stroke="currentColor" strokeWidth="0.3" />
-      <text x="156" y="43" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.6" transform="rotate(-90,156,43)">100</text>
-      {/* Side view label */}
-      <text x="210" y="8" textAnchor="middle" fontSize="6" fill="currentColor" opacity="0.6">SIDE</text>
+      {/* === SIDE VIEW (middle area) === */}
+      {/* Trapezoidal bus - side view */}
+      <polygon points="25,95 95,95 95,135 25,145" fill="none" stroke="currentColor" strokeWidth="1.2" />
+      {/* Long instrument boom extending from front */}
+      <line x1="95" y1="112" x2="180" y2="112" stroke="currentColor" strokeWidth="0.8" />
+      <line x1="95" y1="118" x2="180" y2="118" stroke="currentColor" strokeWidth="0.8" />
+      {/* Instrument housing at end of boom */}
+      <rect x="180" y="108" width="15" height="14" fill="none" stroke="currentColor" strokeWidth="0.6" />
+      {/* Solar panel edge (thin line) */}
+      <rect x="25" y="88" width="70" height="3" fill="none" stroke="currentColor" strokeWidth="0.6" />
+      {/* Antenna masts on top */}
+      <rect x="40" y="82" width="2" height="13" fill="none" stroke="currentColor" strokeWidth="0.5" />
+      <rect x="75" y="82" width="2" height="13" stroke="currentColor" strokeWidth="0.5" fill="none" />
+      {/* Side height dimension */}
+      <line x1="15" y1="95" x2="15" y2="145" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="12" y1="95" x2="18" y2="95" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="12" y1="145" x2="18" y2="145" stroke="currentColor" strokeWidth="0.3" />
+      <text x="8" y="122" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.6" transform="rotate(-90,8,122)">160</text>
+      {/* Side length dimension */}
+      <line x1="25" y1="152" x2="95" y2="152" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="25" y1="149" x2="25" y2="155" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="95" y1="149" x2="95" y2="155" stroke="currentColor" strokeWidth="0.3" />
+      <text x="60" y="160" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.6">120</text>
+      {/* Boom label */}
+      <text x="140" y="105" fontSize="4" fill="currentColor" opacity="0.5">Instrument housing (front)</text>
+      <line x1="140" y1="107" x2="140" y2="112" stroke="currentColor" strokeWidth="0.2" />
+      {/* Antenna label */}
+      <text x="58" y="80" fontSize="4" fill="currentColor" opacity="0.5">Antenna mast</text>
 
-      {/* === FRONT VIEW (bottom right) - Looking from -X, shows Y-Z plane === */}
-      {/* Main body: 120×100 → 48×40 scaled */}
-      <rect x="185" y="105" width="48" height="40" fill="none" stroke="currentColor" strokeWidth="1.2" />
-      {/* Solar panel: 120×6 → 48×2.4, on -Y side (left) */}
-      <rect x="130" y="105" width="48" height="3" fill="none" stroke="currentColor" strokeWidth="0.8" />
-      {/* Hinge */}
-      <rect x="178" y="118" width="7" height="8" fill="none" stroke="currentColor" strokeWidth="0.6" />
-      {/* Side instrument: on +Y side (right) */}
-      <rect x="233" y="118" width="10" height="8" fill="none" stroke="currentColor" strokeWidth="0.6" />
-      {/* Antenna mast on top */}
-      <rect x="207" y="95" width="4" height="10" fill="none" stroke="currentColor" strokeWidth="0.6" />
-      {/* Front instrument (center, shown as inner rectangle) */}
-      <rect x="201" y="117" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="0.6" />
-      {/* Front view dimension - width */}
-      <line x1="185" y1="152" x2="233" y2="152" stroke="currentColor" strokeWidth="0.3" />
-      <line x1="185" y1="148" x2="185" y2="156" stroke="currentColor" strokeWidth="0.3" />
-      <line x1="233" y1="148" x2="233" y2="156" stroke="currentColor" strokeWidth="0.3" />
-      <text x="209" y="162" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.6">120</text>
-      {/* Front view label */}
-      <text x="209" y="92" textAnchor="middle" fontSize="6" fill="currentColor" opacity="0.6">FRONT</text>
+      {/* === FRONT VIEW (right side) === */}
+      {/* Trapezoidal bus - front view (wider at top) */}
+      <polygon points="230,95 280,95 290,140 220,140" fill="none" stroke="currentColor" strokeWidth="1.2" />
+      {/* Solar panel edge on side */}
+      <rect x="280" y="100" width="3" height="35" fill="none" stroke="currentColor" strokeWidth="0.6" />
+      {/* Antenna masts */}
+      <rect x="242" y="82" width="2" height="13" fill="none" stroke="currentColor" strokeWidth="0.5" />
+      <rect x="266" y="82" width="2" height="13" fill="none" stroke="currentColor" strokeWidth="0.5" />
+      {/* Internal detail lines */}
+      <line x1="235" y1="105" x2="275" y2="105" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="232" y1="115" x2="278" y2="115" stroke="currentColor" strokeWidth="0.3" />
+      <rect x="245" y="118" width="20" height="15" fill="none" stroke="currentColor" strokeWidth="0.4" />
+      {/* Front width dimension */}
+      <line x1="220" y1="148" x2="290" y2="148" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="220" y1="145" x2="220" y2="151" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="290" y1="145" x2="290" y2="151" stroke="currentColor" strokeWidth="0.3" />
+      <text x="255" y="156" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.6">350</text>
+      {/* Front height dimension */}
+      <line x1="298" y1="95" x2="298" y2="140" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="295" y1="95" x2="301" y2="95" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="295" y1="140" x2="301" y2="140" stroke="currentColor" strokeWidth="0.3" />
+      <text x="308" y="120" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.6">100</text>
+
+      {/* === SMALL ISOMETRIC (bottom left) === */}
+      <g transform="translate(40, 175) scale(0.35)">
+        {/* Isometric trapezoidal bus */}
+        <polygon points="0,20 80,0 120,20 40,40" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <polygon points="0,20 0,60 40,80 40,40" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <polygon points="40,40 40,80 120,60 120,20" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <polygon points="80,0 80,40 120,60 120,20" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        {/* Solar panel */}
+        <polygon points="80,0 80,-30 160,-10 160,20" fill="none" stroke="currentColor" strokeWidth="1" />
+        {/* Antenna */}
+        <line x1="30" y1="10" x2="30" y2="-10" stroke="currentColor" strokeWidth="1" />
+      </g>
 
       {/* === TITLE BLOCK === */}
-      <rect x="5" y="175" width="115" height="40" fill="none" stroke="currentColor" strokeWidth="0.6" />
-      <line x1="5" y1="188" x2="120" y2="188" stroke="currentColor" strokeWidth="0.3" />
-      <text x="62" y="185" textAnchor="middle" fontSize="7" fill="currentColor" fontWeight="bold">GRACE-FO</text>
-      <text x="62" y="198" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.7">Gravity Recovery & Climate Experiment</text>
-      <text x="62" y="210" textAnchor="middle" fontSize="4" fill="currentColor" opacity="0.5">Scale 1:100 | Dims in units</text>
-
-      {/* === COMPONENT CALLOUTS === */}
-      {/* Solar array callout */}
-      <line x1="60" y1="126" x2="60" y2="140" stroke="currentColor" strokeWidth="0.3" />
-      <text x="60" y="148" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.6">SOLAR ARRAY</text>
-      {/* Bus callout */}
-      <line x1="60" y1="46" x2="60" y2="58" stroke="currentColor" strokeWidth="0.3" />
-      <text x="60" y="66" textAnchor="middle" fontSize="4" fill="currentColor" opacity="0.6">BUS</text>
+      <rect x="200" y="170" width="115" height="45" fill="none" stroke="currentColor" strokeWidth="0.8" />
+      <line x1="200" y1="185" x2="315" y2="185" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="200" y1="198" x2="315" y2="198" stroke="currentColor" strokeWidth="0.4" />
+      <text x="257" y="181" textAnchor="middle" fontSize="8" fill="currentColor"><tspan fontWeight="bold">GRACE-FO</tspan> Satellite</text>
+      <text x="257" y="194" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.7">Orthographic Blueprint</text>
+      <text x="230" y="208" textAnchor="middle" fontSize="4" fill="currentColor" opacity="0.6">Scale: 1:100</text>
+      <line x1="255" y1="202" x2="255" y2="212" stroke="currentColor" strokeWidth="0.3" />
+      <text x="285" y="208" textAnchor="middle" fontSize="4" fill="currentColor" opacity="0.6">Date: 2024</text>
     </svg>
   );
 }
