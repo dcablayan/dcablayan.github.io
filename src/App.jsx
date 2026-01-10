@@ -525,21 +525,21 @@ function Experience() {
     {
       company: 'OpenAI',
       role: 'ChatGPT Lab Member',
-      date: 'Jan 2025 - Present',
+      date: 'Oct 2025 - Present',
       description: '1 of 28 students selected (Cohort 3) to develop and test student-facing ChatGPT features and provide feedback directly to OpenAI.',
       link: 'https://openai.com',
     },
     {
       company: 'Blue Startups',
       role: 'Intern',
-      date: 'Jan 2025 - Present',
+      date: 'Aug 2025 - Present',
       description: "Supporting Hawaii's top tech accelerator with cohort operations, startup evaluation, and community building for the local startup ecosystem.",
       link: 'https://bluestartups.com',
     },
     {
       company: 'Energy Innovation Capital',
       role: 'VC Deal Sourcing (via Extern)',
-      date: 'Jan 2025 - Present',
+      date: 'Oct 2025 - Present',
       description: 'Conducting venture capital deal sourcing and startup analysis for clean energy investments.',
     },
     {
