@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Mail, Linkedin, Github, ExternalLink, Twitter, BookOpen, Menu, X, ChevronUp, Code2 } from 'lucide-react';
+import { Mail, Linkedin, Github, ExternalLink, Twitter, BookOpen, Menu, X, ChevronUp, Code2, Lock } from 'lucide-react';
 
 // Utility: Linear interpolation for smooth animations
 const lerp = (start, end, factor) => start + (end - start) * factor;
@@ -343,9 +343,75 @@ function ScrollToTop() {
   );
 }
 
+// Password Modal for Resume
+function PasswordModal({ isOpen, onClose, onSuccess }) {
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(false);
+  const [shake, setShake] = useState(false);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+    if (!isOpen) {
+      setPassword('');
+      setError(false);
+    }
+  }, [isOpen]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Simple password check
+    if (password === 'Dyl25') {
+      onSuccess();
+      onClose();
+      setPassword('');
+      setError(false);
+    } else {
+      setError(true);
+      setShake(true);
+      setTimeout(() => setShake(false), 500);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="password-modal-overlay" onClick={onClose}>
+      <div className={`password-modal ${shake ? 'shake' : ''}`} onClick={(e) => e.stopPropagation()}>
+        <button className="password-modal-close" onClick={onClose}>
+          <X size={20} />
+        </button>
+        <div className="password-modal-icon">
+          <Lock size={32} />
+        </div>
+        <h3 className="password-modal-title">Resume Access</h3>
+        <p className="password-modal-text">Please enter the password to view my resume.</p>
+        <form onSubmit={handleSubmit}>
+          <input
+            ref={inputRef}
+            type="password"
+            value={password}
+            onChange={(e) => { setPassword(e.target.value); setError(false); }}
+            placeholder="Enter password"
+            className={`password-input ${error ? 'error' : ''}`}
+          />
+          {error && <p className="password-error">Incorrect password. Please try again.</p>}
+          <button type="submit" className="password-submit">
+            View Resume
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 // Navigation with Mobile Menu
 function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const resumeUrl = 'https://drive.google.com/file/d/1bvjtaNJXKyeXRoWOk1HszDoAtFgOW_74/view?usp=sharing';
 
   const navLinks = [
     { name: 'About', href: '#about' },
@@ -359,41 +425,57 @@ function Navbar() {
     setMobileMenuOpen(false);
   };
 
+  const handleResumeClick = () => {
+    setShowPasswordModal(true);
+  };
+
+  const handlePasswordSuccess = () => {
+    window.open(resumeUrl, '_blank', 'noopener,noreferrer');
+  };
+
   return (
-    <nav className="navbar">
-      <div className="nav-container">
-        <div className="nav-links">
+    <>
+      <nav className="navbar">
+        <div className="nav-container">
+          <div className="nav-links">
+            {navLinks.map((link) => (
+              <a key={link.name} href={link.href} className="nav-link">
+                {link.name}
+              </a>
+            ))}
+          </div>
+
+          <div className="nav-right">
+            <button onClick={handleResumeClick} className="resume-btn">
+              Resume
+            </button>
+
+            <button
+              className="mobile-menu-btn"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        <div className={`mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
           {navLinks.map((link) => (
-            <a key={link.name} href={link.href} className="nav-link">
+            <a key={link.name} href={link.href} className="mobile-nav-link" onClick={handleLinkClick}>
               {link.name}
             </a>
           ))}
         </div>
+      </nav>
 
-        <div className="nav-right">
-          <a href="https://drive.google.com/file/d/1bvjtaNJXKyeXRoWOk1HszDoAtFgOW_74/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="resume-btn">
-            Resume
-          </a>
-
-          <button
-            className="mobile-menu-btn"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      <div className={`mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
-        {navLinks.map((link) => (
-          <a key={link.name} href={link.href} className="mobile-nav-link" onClick={handleLinkClick}>
-            {link.name}
-          </a>
-        ))}
-      </div>
-    </nav>
+      <PasswordModal
+        isOpen={showPasswordModal}
+        onClose={() => setShowPasswordModal(false)}
+        onSuccess={handlePasswordSuccess}
+      />
+    </>
   );
 }
 
@@ -714,36 +796,46 @@ function FluidSimulation() {
       const mouseX = mouseRef.current.x;
       const time = Date.now() * 0.001;
 
-      // Update wave points
+      // Update wave points - multiple passes for better propagation
+      // First pass: mouse influence
+      for (let i = 0; i < points.length; i++) {
+        const p = points[i];
+        const distToMouse = Math.abs(p.x - mouseX);
+        if (distToMouse < 60) {
+          const influence = (1 - distToMouse / 60) * 8;
+          p.vy -= influence * 0.2;
+        }
+      }
+
+      // Second pass: wave propagation (left to right)
+      for (let i = 1; i < points.length; i++) {
+        const p = points[i];
+        const left = points[i - 1];
+        p.vy += (left.y - p.y) * 0.15;
+      }
+
+      // Third pass: wave propagation (right to left)
+      for (let i = points.length - 2; i >= 0; i--) {
+        const p = points[i];
+        const right = points[i + 1];
+        p.vy += (right.y - p.y) * 0.15;
+      }
+
+      // Fourth pass: physics and damping
       for (let i = 0; i < points.length; i++) {
         const p = points[i];
         const targetY = height / 2;
 
-        // Mouse influence - create wave peak near mouse (upward)
-        const distToMouse = Math.abs(p.x - mouseX);
-        if (distToMouse < 100) {
-          const influence = (1 - distToMouse / 100) * 12;
-          p.vy -= influence * 0.25; // Negative to push upward (wave peak)
-        }
-
-        // Spring physics
+        // Spring back to center
         const dy = targetY - p.y;
-        p.vy += dy * 0.03;
-        p.vy *= 0.92;
+        p.vy += dy * 0.02;
+
+        // Damping
+        p.vy *= 0.96;
         p.y += p.vy;
 
-        // Neighbor influence (wave propagation)
-        if (i > 0) {
-          const left = points[i - 1];
-          p.vy += (left.y - p.y) * 0.01;
-        }
-        if (i < points.length - 1) {
-          const right = points[i + 1];
-          p.vy += (right.y - p.y) * 0.01;
-        }
-
         // Subtle ambient wave
-        p.y += Math.sin(time * 2 + i * 0.05) * 0.2;
+        p.y += Math.sin(time * 1.5 + i * 0.03) * 0.15;
       }
 
       // Draw wave line
