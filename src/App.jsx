@@ -773,6 +773,7 @@ function FluidSimulation() {
   const mouseRef = useRef({ x: -1000, y: 0 });
   const wavePointsRef = useRef([]);
   const animationRef = useRef(null);
+  const lastInteractionRef = useRef(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -795,6 +796,9 @@ function FluidSimulation() {
       const points = wavePointsRef.current;
       const mouseX = mouseRef.current.x;
       const time = Date.now() * 0.001;
+      const now = Date.now();
+      const timeSinceInteraction = now - lastInteractionRef.current;
+      const shouldSnapBack = timeSinceInteraction > 1000;
 
       // Update wave points - multiple passes for better propagation
       // First pass: mouse influence
@@ -822,20 +826,31 @@ function FluidSimulation() {
       }
 
       // Fourth pass: physics and damping
+      const margin = 10;
+      const minY = margin;
+      const maxY = height - margin;
+
       for (let i = 0; i < points.length; i++) {
         const p = points[i];
         const targetY = height / 2;
 
-        // Spring back to center
+        // Spring back to center (stronger if snapping back)
         const dy = targetY - p.y;
-        p.vy += dy * 0.02;
+        const springStrength = shouldSnapBack ? 0.15 : 0.02;
+        p.vy += dy * springStrength;
 
-        // Damping
-        p.vy *= 0.96;
+        // Damping (stronger if snapping back)
+        const dampingFactor = shouldSnapBack ? 0.85 : 0.96;
+        p.vy *= dampingFactor;
         p.y += p.vy;
 
-        // Subtle ambient wave
-        p.y += Math.sin(time * 1.5 + i * 0.03) * 0.15;
+        // Clamp to stay within bounds
+        p.y = Math.max(minY, Math.min(maxY, p.y));
+
+        // Subtle ambient wave (only when not snapping back)
+        if (!shouldSnapBack) {
+          p.y += Math.sin(time * 1.5 + i * 0.03) * 0.15;
+        }
       }
 
       // Draw wave line
@@ -870,6 +885,7 @@ function FluidSimulation() {
       const rect = canvas.getBoundingClientRect();
       mouseRef.current.x = e.clientX - rect.left;
       mouseRef.current.y = e.clientY - rect.top;
+      lastInteractionRef.current = Date.now();
     };
 
     const handleMouseLeave = () => {
@@ -880,6 +896,7 @@ function FluidSimulation() {
       const rect = canvas.getBoundingClientRect();
       const touch = e.touches[0];
       mouseRef.current.x = touch.clientX - rect.left;
+      lastInteractionRef.current = Date.now();
     };
 
     resize();
