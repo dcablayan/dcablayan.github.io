@@ -74,79 +74,118 @@ function BlueprintGrid() {
   return <canvas ref={canvasRef} className="blueprint-grid" />;
 }
 
-// SVG Schematic: GRACE-FO Satellite (refined trapezoidal design)
+// SVG Schematic: GRACE-FO Satellite (orthographic blueprint)
 function SatelliteSchematic({ style }) {
   return (
     <svg viewBox="0 0 320 220" className="schematic satellite-schematic" style={style}>
-      {/* Main body - trapezoidal wedge shape in 3D isometric */}
-      {/* Bottom face */}
-      <polygon
-        points="50,150 130,170 230,140 150,120"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.2"
-      />
-      {/* Front face (thermal blanket side) */}
-      <polygon
-        points="50,150 50,85 130,105 130,170"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      {/* Top face (solar panel array) */}
-      <polygon
-        points="50,85 130,105 230,75 150,55"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      {/* Right side face */}
-      <polygon
-        points="130,105 130,170 230,140 230,75"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      {/* Solar panel grid - horizontal lines */}
-      <line x1="70" y1="90" x2="150" y2="80" stroke="currentColor" strokeWidth="0.5" />
-      <line x1="90" y1="95" x2="170" y2="85" stroke="currentColor" strokeWidth="0.5" />
-      <line x1="110" y1="100" x2="190" y2="90" stroke="currentColor" strokeWidth="0.5" />
-      {/* Solar panel grid - vertical lines */}
-      <line x1="80" y1="75" x2="80" y2="97" stroke="currentColor" strokeWidth="0.5" />
-      <line x1="110" y1="70" x2="110" y2="100" stroke="currentColor" strokeWidth="0.5" />
-      <line x1="140" y1="65" x2="140" y2="95" stroke="currentColor" strokeWidth="0.5" />
-      <line x1="170" y1="60" x2="170" y2="85" stroke="currentColor" strokeWidth="0.5" />
-      <line x1="200" y1="55" x2="200" y2="80" stroke="currentColor" strokeWidth="0.5" />
-      {/* Star tracker / sensor on front face */}
-      <ellipse cx="90" cy="118" rx="15" ry="12" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      <ellipse cx="90" cy="118" rx="8" ry="6" fill="none" stroke="currentColor" strokeWidth="1" />
-      <circle cx="90" cy="118" r="3" fill="none" stroke="currentColor" strokeWidth="0.8" />
-      {/* Additional sensors on front */}
-      <rect x="60" y="135" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="0.8" />
-      <rect x="105" y="140" width="8" height="8" fill="none" stroke="currentColor" strokeWidth="0.8" />
-      {/* Laser Ranging Interferometer housing at back */}
-      <polygon
-        points="230,75 250,70 250,90 230,95"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1"
-      />
-      {/* LRI horn/antenna */}
-      <polygon points="250,75 270,65 270,75 250,85" fill="none" stroke="currentColor" strokeWidth="1" />
-      {/* Laser beams (dashed) */}
-      <line x1="270" y1="68" x2="310" y2="50" stroke="currentColor" strokeWidth="1" strokeDasharray="5,3" />
-      <line x1="270" y1="73" x2="310" y2="60" stroke="currentColor" strokeWidth="1" strokeDasharray="5,3" />
-      {/* Dimension annotations */}
-      <line x1="50" y1="185" x2="230" y2="185" stroke="currentColor" strokeWidth="0.4" />
-      <line x1="50" y1="180" x2="50" y2="190" stroke="currentColor" strokeWidth="0.4" />
-      <line x1="230" y1="180" x2="230" y2="190" stroke="currentColor" strokeWidth="0.4" />
-      <line x1="140" y1="183" x2="140" y2="187" stroke="currentColor" strokeWidth="0.4" />
-      {/* Height indicator */}
-      <line x1="30" y1="85" x2="30" y2="150" stroke="currentColor" strokeWidth="0.4" />
-      <line x1="25" y1="85" x2="35" y2="85" stroke="currentColor" strokeWidth="0.4" />
-      <line x1="25" y1="150" x2="35" y2="150" stroke="currentColor" strokeWidth="0.4" />
-      {/* Label */}
-      <text x="140" y="205" textAnchor="middle" fontSize="11" fill="currentColor" opacity="0.7">GRACE-FO</text>
+      {/* === TOP VIEW (upper left) === */}
+      {/* Bus outline - top view */}
+      <rect x="15" y="15" width="80" height="48" fill="none" stroke="currentColor" strokeWidth="1.2" />
+      {/* Solar panel - top view */}
+      <rect x="95" y="9" width="52" height="60" fill="none" stroke="currentColor" strokeWidth="1" />
+      {/* Hinge block */}
+      <rect x="95" y="31" width="6" height="12" fill="none" stroke="currentColor" strokeWidth="0.6" />
+      {/* Panel grid lines */}
+      <line x1="108" y1="9" x2="108" y2="69" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="121" y1="9" x2="121" y2="69" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="134" y1="9" x2="134" y2="69" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="95" y1="24" x2="147" y2="24" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="95" y1="39" x2="147" y2="39" stroke="currentColor" strokeWidth="0.3" />
+      <line x1="95" y1="54" x2="147" y2="54" stroke="currentColor" strokeWidth="0.3" />
+      {/* Antenna mast - top view (circle) */}
+      <circle cx="30" cy="27" r="4" fill="none" stroke="currentColor" strokeWidth="0.6" />
+      {/* Front sensor - top view */}
+      <rect x="10" y="31" width="5" height="12" fill="none" stroke="currentColor" strokeWidth="0.6" />
+      {/* Top view dimension - bus length */}
+      <line x1="15" y1="73" x2="95" y2="73" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="15" y1="69" x2="15" y2="77" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="95" y1="69" x2="95" y2="77" stroke="currentColor" strokeWidth="0.4" />
+      <text x="55" y="80" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.7">200</text>
+      {/* Top view label */}
+      <text x="55" y="10" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.6">TOP</text>
+
+      {/* === SIDE VIEW (lower left) === */}
+      {/* Bus outline - side view */}
+      <rect x="15" y="95" width="80" height="40" fill="none" stroke="currentColor" strokeWidth="1.2" />
+      {/* Solar panel edge - side view (thin line on top) */}
+      <line x1="95" y1="93" x2="147" y2="93" stroke="currentColor" strokeWidth="1" />
+      <line x1="95" y1="95" x2="147" y2="95" stroke="currentColor" strokeWidth="1" />
+      {/* Hinge */}
+      <rect x="95" y="95" width="6" height="8" fill="none" stroke="currentColor" strokeWidth="0.6" />
+      {/* Antenna mast - side view */}
+      <rect x="26" y="83" width="8" height="12" fill="none" stroke="currentColor" strokeWidth="0.6" />
+      {/* Front sensor block - side view */}
+      <rect x="10" y="107" width="5" height="16" fill="none" stroke="currentColor" strokeWidth="0.6" />
+      {/* Side box (opposite solar panel) */}
+      <rect x="95" y="115" width="10" height="15" fill="none" stroke="currentColor" strokeWidth="0.6" />
+      {/* Side view dimension - height */}
+      <line x1="5" y1="95" x2="5" y2="135" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="2" y1="95" x2="8" y2="95" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="2" y1="135" x2="8" y2="135" stroke="currentColor" strokeWidth="0.4" />
+      <text x="5" y="118" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.7" transform="rotate(-90, 5, 118)">100</text>
+      {/* Side view dimension - length */}
+      <line x1="15" y1="142" x2="95" y2="142" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="15" y1="138" x2="15" y2="146" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="95" y1="138" x2="95" y2="146" stroke="currentColor" strokeWidth="0.4" />
+      <text x="55" y="149" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.7">200</text>
+      {/* Side view label */}
+      <text x="55" y="91" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.6">SIDE</text>
+
+      {/* === FRONT VIEW (right side) === */}
+      {/* Bus outline - front view */}
+      <rect x="175" y="55" width="48" height="40" fill="none" stroke="currentColor" strokeWidth="1.2" />
+      {/* Solar panel - front view (extends up) */}
+      <rect x="223" y="35" width="3" height="60" fill="none" stroke="currentColor" strokeWidth="1" />
+      {/* Hinge */}
+      <rect x="223" y="70" width="3" height="8" fill="none" stroke="currentColor" strokeWidth="0.6" />
+      {/* Front sensor block - front view (center) */}
+      <rect x="191" y="67" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="0.8" />
+      <circle cx="199" cy="75" r="5" fill="none" stroke="currentColor" strokeWidth="0.5" />
+      {/* Antenna mast - front view */}
+      <rect x="195" y="43" width="8" height="12" fill="none" stroke="currentColor" strokeWidth="0.6" />
+      {/* Side box - front view */}
+      <rect x="167" y="70" width="8" height="15" fill="none" stroke="currentColor" strokeWidth="0.6" />
+      {/* Front view dimension - width */}
+      <line x1="175" y1="102" x2="223" y2="102" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="175" y1="98" x2="175" y2="106" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="223" y1="98" x2="223" y2="106" stroke="currentColor" strokeWidth="0.4" />
+      <text x="199" y="110" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.7">120</text>
+      {/* Front view dimension - panel span */}
+      <line x1="175" y1="30" x2="226" y2="30" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="175" y1="26" x2="175" y2="34" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="226" y1="26" x2="226" y2="34" stroke="currentColor" strokeWidth="0.4" />
+      <text x="200" y="26" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.7">180</text>
+      {/* Front view label */}
+      <text x="199" y="51" textAnchor="middle" fontSize="5" fill="currentColor" opacity="0.6">FRONT</text>
+
+      {/* === SMALL ISOMETRIC INSET (bottom center) === */}
+      <g transform="translate(165, 125) scale(0.4)">
+        {/* Isometric bus */}
+        <polygon points="0,30 40,10 120,30 80,50" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <polygon points="0,30 0,60 40,80 40,50" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <polygon points="40,10 40,40 120,60 120,30" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <polygon points="40,50 40,80 120,60 120,30" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        {/* Solar panel isometric */}
+        <polygon points="120,15 120,55 180,35 180,-5" fill="none" stroke="currentColor" strokeWidth="1" />
+      </g>
+
+      {/* === TITLE BLOCK === */}
+      <rect x="240" y="170" width="75" height="45" fill="none" stroke="currentColor" strokeWidth="0.8" />
+      <line x1="240" y1="182" x2="315" y2="182" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="240" y1="194" x2="315" y2="194" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="240" y1="203" x2="315" y2="203" stroke="currentColor" strokeWidth="0.4" />
+      <text x="277" y="179" textAnchor="middle" fontSize="6" fill="currentColor" fontWeight="bold">GRACE-FO</text>
+      <text x="277" y="191" textAnchor="middle" fontSize="4.5" fill="currentColor" opacity="0.8">Orthographic Blueprint</text>
+      <text x="277" y="200" textAnchor="middle" fontSize="4" fill="currentColor" opacity="0.7">Scale 1:100</text>
+      <text x="277" y="211" textAnchor="middle" fontSize="3.5" fill="currentColor" opacity="0.6">Dims in arbitrary units</text>
+
+      {/* === COMPONENT LABELS === */}
+      {/* Solar array label */}
+      <line x1="121" y1="5" x2="121" y2="-2" stroke="currentColor" strokeWidth="0.3" />
+      <text x="121" y="-4" textAnchor="middle" fontSize="4" fill="currentColor" opacity="0.6">Solar Array</text>
+      {/* Antenna label */}
+      <line x1="30" y1="23" x2="30" y2="5" stroke="currentColor" strokeWidth="0.3" />
+      <text x="30" y="3" textAnchor="middle" fontSize="4" fill="currentColor" opacity="0.6">Antenna</text>
     </svg>
   );
 }
