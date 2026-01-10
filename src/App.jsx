@@ -721,9 +721,9 @@ function FluidSimulation() {
 
         // Mouse influence - create wave peak near mouse (upward)
         const distToMouse = Math.abs(p.x - mouseX);
-        if (distToMouse < 120) {
-          const influence = (1 - distToMouse / 120) * 20;
-          p.vy -= influence * 0.4; // Negative to push upward (wave peak)
+        if (distToMouse < 100) {
+          const influence = (1 - distToMouse / 100) * 12;
+          p.vy -= influence * 0.25; // Negative to push upward (wave peak)
         }
 
         // Spring physics
