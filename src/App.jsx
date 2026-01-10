@@ -77,49 +77,58 @@ function BlueprintGrid() {
 // SVG Schematic: GRACE-FO Satellite (clean isometric view)
 function SatelliteSchematic({ style }) {
   return (
-    <svg viewBox="0 0 200 150" className="schematic satellite-schematic" style={style}>
-      {/* Isometric trapezoidal spacecraft bus */}
+    <svg viewBox="0 0 200 140" className="schematic satellite-schematic" style={style}>
+      {/* Main body - trapezoidal (wider at top, narrower at bottom) */}
       {/* Top face */}
-      <polygon points="40,35 100,20 140,35 80,50" fill="none" stroke="currentColor" strokeWidth="1.2" />
-      {/* Left face */}
-      <polygon points="40,35 40,75 80,90 80,50" fill="none" stroke="currentColor" strokeWidth="1.2" />
+      <polygon points="35,30 165,30 145,50 55,50" fill="none" stroke="currentColor" strokeWidth="1.2" />
+      {/* Front face (left side visible) */}
+      <polygon points="35,30 55,50 55,90 35,105" fill="none" stroke="currentColor" strokeWidth="1.2" />
       {/* Right face */}
-      <polygon points="80,50 80,90 140,75 140,35" fill="none" stroke="currentColor" strokeWidth="1.2" />
-      {/* Front face */}
-      <polygon points="100,20 100,60 140,75 140,35" fill="none" stroke="currentColor" strokeWidth="1.2" />
+      <polygon points="55,50 145,50 145,90 55,90" fill="none" stroke="currentColor" strokeWidth="1.2" />
+      {/* Back face (right side visible) */}
+      <polygon points="145,50 165,30 165,70 145,90" fill="none" stroke="currentColor" strokeWidth="1.2" />
+      {/* Bottom face edge */}
+      <line x1="35" y1="105" x2="55" y2="90" stroke="currentColor" strokeWidth="1.2" />
+      <line x1="145" y1="90" x2="165" y2="70" stroke="currentColor" strokeWidth="1.2" />
 
-      {/* Solar panel extending from side */}
-      <polygon points="40,35 40,75 10,85 10,45" fill="none" stroke="currentColor" strokeWidth="1" />
-      {/* Panel grid lines */}
-      <line x1="20" y1="52" x2="20" y2="82" stroke="currentColor" strokeWidth="0.4" />
-      <line x1="30" y1="48" x2="30" y2="78" stroke="currentColor" strokeWidth="0.4" />
-      <line x1="10" y1="58" x2="40" y2="48" stroke="currentColor" strokeWidth="0.4" />
-      <line x1="10" y1="72" x2="40" y2="62" stroke="currentColor" strokeWidth="0.4" />
+      {/* Solar panel extending from left */}
+      <polygon points="35,30 35,105 5,115 5,40" fill="none" stroke="currentColor" strokeWidth="1" />
+      {/* Panel frame inner */}
+      <polygon points="33,35 33,100 8,108 8,43" fill="none" stroke="currentColor" strokeWidth="0.4" />
+      {/* Panel horizontal grid lines */}
+      <line x1="5" y1="55" x2="35" y2="47" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="5" y1="70" x2="35" y2="62" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="5" y1="85" x2="35" y2="77" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="5" y1="100" x2="35" y2="92" stroke="currentColor" strokeWidth="0.4" />
+      {/* Panel vertical grid lines */}
+      <line x1="15" y1="42" x2="15" y2="112" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="25" y1="38" x2="25" y2="108" stroke="currentColor" strokeWidth="0.4" />
 
-      {/* Instrument boom extending from front */}
-      <line x1="140" y1="50" x2="175" y2="42" stroke="currentColor" strokeWidth="1" />
-      <line x1="140" y1="58" x2="175" y2="50" stroke="currentColor" strokeWidth="1" />
-      {/* Instrument housing at end */}
-      <rect x="175" y="40" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="0.8" transform="skewY(-5)" />
+      {/* Antenna mast on top */}
+      <line x1="100" y1="40" x2="100" y2="12" stroke="currentColor" strokeWidth="1" />
+      <rect x="96" y="8" width="8" height="6" fill="none" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="98" y1="14" x2="98" y2="40" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="102" y1="14" x2="102" y2="40" stroke="currentColor" strokeWidth="0.4" />
 
-      {/* Antenna masts on top */}
-      <line x1="55" y1="38" x2="55" y2="22" stroke="currentColor" strokeWidth="0.8" />
-      <line x1="90" y1="30" x2="90" y2="14" stroke="currentColor" strokeWidth="0.8" />
-      <rect x="52" y="18" width="6" height="4" fill="none" stroke="currentColor" strokeWidth="0.5" />
-      <rect x="87" y="10" width="6" height="4" fill="none" stroke="currentColor" strokeWidth="0.5" />
+      {/* Internal detail lines on top face */}
+      <line x1="55" y1="50" x2="75" y2="35" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="125" y1="35" x2="145" y2="50" stroke="currentColor" strokeWidth="0.4" />
+      <rect x="70" y="35" width="60" height="12" fill="none" stroke="currentColor" strokeWidth="0.4" />
 
-      {/* Internal detail lines on front face */}
-      <line x1="108" y1="32" x2="132" y2="42" stroke="currentColor" strokeWidth="0.4" />
-      <line x1="108" y1="42" x2="132" y2="52" stroke="currentColor" strokeWidth="0.4" />
-      <rect x="115" y="48" width="12" height="10" fill="none" stroke="currentColor" strokeWidth="0.4" transform="skewY(-10)" />
+      {/* Internal detail on front face */}
+      <line x1="40" y1="50" x2="50" y2="85" stroke="currentColor" strokeWidth="0.4" />
+      <rect x="40" y="60" width="10" height="20" fill="none" stroke="currentColor" strokeWidth="0.4" />
 
-      {/* Dimension line */}
-      <line x1="10" y1="100" x2="140" y2="100" stroke="currentColor" strokeWidth="0.3" />
-      <line x1="10" y1="96" x2="10" y2="104" stroke="currentColor" strokeWidth="0.3" />
-      <line x1="140" y1="96" x2="140" y2="104" stroke="currentColor" strokeWidth="0.3" />
+      {/* Internal detail on right face */}
+      <line x1="70" y1="55" x2="70" y2="85" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="100" y1="55" x2="100" y2="85" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="130" y1="55" x2="130" y2="85" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="60" y1="65" x2="140" y2="65" stroke="currentColor" strokeWidth="0.4" />
+      <line x1="60" y1="80" x2="140" y2="80" stroke="currentColor" strokeWidth="0.4" />
+      <rect x="85" y="58" width="30" height="28" fill="none" stroke="currentColor" strokeWidth="0.5" />
 
       {/* Label */}
-      <text x="100" y="120" textAnchor="middle" fontSize="9" fill="currentColor" opacity="0.7">GRACE-FO</text>
+      <text x="100" y="130" textAnchor="middle" fontSize="8" fill="currentColor" opacity="0.6">GRACE-FO</text>
     </svg>
   );
 }
