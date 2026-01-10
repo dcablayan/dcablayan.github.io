@@ -688,8 +688,8 @@ function Contact() {
 // Interactive Water/Fluid Simulation
 function FluidSimulation() {
   const canvasRef = useRef(null);
-  const particlesRef = useRef([]);
-  const mouseRef = useRef({ x: 0, y: 0, isDown: false });
+  const mouseRef = useRef({ x: -1000, y: 0 });
+  const wavePointsRef = useRef([]);
   const animationRef = useRef(null);
 
   useEffect(() => {
@@ -700,94 +700,76 @@ function FluidSimulation() {
     const resize = () => {
       width = canvas.width = canvas.offsetWidth;
       height = canvas.height = canvas.offsetHeight;
-    };
-
-    const createParticle = (x, y, vx, vy) => ({
-      x, y, vx, vy,
-      life: 1,
-      size: Math.random() * 3 + 2,
-      color: `hsla(${200 + Math.random() * 40}, 80%, ${50 + Math.random() * 20}%, `,
-    });
-
-    const addParticles = (x, y, count = 5) => {
-      for (let i = 0; i < count; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 3 + 1;
-        particlesRef.current.push(createParticle(
-          x, y,
-          Math.cos(angle) * speed,
-          Math.sin(angle) * speed - 2
-        ));
-      }
-      // Limit particles
-      if (particlesRef.current.length > 300) {
-        particlesRef.current = particlesRef.current.slice(-300);
+      // Initialize wave points
+      wavePointsRef.current = [];
+      for (let i = 0; i <= width; i += 4) {
+        wavePointsRef.current.push({ x: i, y: height / 2, vy: 0 });
       }
     };
 
     const animate = () => {
-      ctx.fillStyle = 'rgba(10, 10, 18, 0.15)';
-      ctx.fillRect(0, 0, width, height);
+      ctx.clearRect(0, 0, width, height);
 
-      // Draw water surface line
+      const points = wavePointsRef.current;
+      const mouseX = mouseRef.current.x;
+      const time = Date.now() * 0.001;
+
+      // Update wave points
+      for (let i = 0; i < points.length; i++) {
+        const p = points[i];
+        const targetY = height / 2;
+
+        // Mouse influence - create ripple near mouse
+        const distToMouse = Math.abs(p.x - mouseX);
+        if (distToMouse < 100) {
+          const influence = (1 - distToMouse / 100) * 15;
+          p.vy += influence * 0.3;
+        }
+
+        // Spring physics
+        const dy = targetY - p.y;
+        p.vy += dy * 0.03;
+        p.vy *= 0.92;
+        p.y += p.vy;
+
+        // Neighbor influence (wave propagation)
+        if (i > 0) {
+          const left = points[i - 1];
+          p.vy += (left.y - p.y) * 0.01;
+        }
+        if (i < points.length - 1) {
+          const right = points[i + 1];
+          p.vy += (right.y - p.y) * 0.01;
+        }
+
+        // Subtle ambient wave
+        p.y += Math.sin(time * 2 + i * 0.05) * 0.2;
+      }
+
+      // Draw wave line
       ctx.beginPath();
-      ctx.strokeStyle = 'rgba(59, 130, 246, 0.3)';
-      ctx.lineWidth = 1;
-      const time = Date.now() * 0.002;
-      ctx.moveTo(0, 20);
-      for (let x = 0; x <= width; x += 10) {
-        const y = 20 + Math.sin(x * 0.02 + time) * 3 + Math.sin(x * 0.01 + time * 0.5) * 2;
-        ctx.lineTo(x, y);
+      ctx.strokeStyle = 'rgba(59, 130, 246, 0.25)';
+      ctx.lineWidth = 1.5;
+      ctx.moveTo(points[0].x, points[0].y);
+
+      for (let i = 1; i < points.length - 1; i++) {
+        const xc = (points[i].x + points[i + 1].x) / 2;
+        const yc = (points[i].y + points[i + 1].y) / 2;
+        ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
       }
       ctx.stroke();
 
-      // Update and draw particles
-      particlesRef.current = particlesRef.current.filter(p => {
-        // Physics
-        p.vy += 0.15; // gravity
-        p.vx *= 0.99; // friction
-        p.vy *= 0.99;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life -= 0.015;
-
-        // Bounce off walls
-        if (p.x < 0 || p.x > width) p.vx *= -0.6;
-        if (p.y > height - 10) {
-          p.y = height - 10;
-          p.vy *= -0.5;
-          p.vx *= 0.8;
-        }
-
-        // Draw
-        if (p.life > 0) {
-          ctx.beginPath();
-          ctx.fillStyle = p.color + p.life * 0.8 + ')';
-          ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Glow effect
-          ctx.beginPath();
-          ctx.fillStyle = p.color + p.life * 0.3 + ')';
-          ctx.arc(p.x, p.y, p.size * p.life * 2, 0, Math.PI * 2);
-          ctx.fill();
-        }
-
-        return p.life > 0;
-      });
-
-      // Draw ripples at mouse position
-      if (mouseRef.current.isDown) {
-        addParticles(mouseRef.current.x, mouseRef.current.y, 3);
+      // Draw subtle reflection/glow
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(59, 130, 246, 0.08)';
+      ctx.lineWidth = 4;
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length - 1; i++) {
+        const xc = (points[i].x + points[i + 1].x) / 2;
+        const yc = (points[i].y + points[i + 1].y) / 2;
+        ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
       }
-
-      // Draw instruction text if no particles
-      if (particlesRef.current.length === 0) {
-        ctx.fillStyle = 'rgba(59, 130, 246, 0.4)';
-        ctx.font = '14px system-ui, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('Click and drag to create waves', width / 2, height / 2);
-      }
+      ctx.stroke();
 
       animationRef.current = requestAnimationFrame(animate);
     };
@@ -796,57 +778,31 @@ function FluidSimulation() {
       const rect = canvas.getBoundingClientRect();
       mouseRef.current.x = e.clientX - rect.left;
       mouseRef.current.y = e.clientY - rect.top;
-      if (mouseRef.current.isDown) {
-        addParticles(mouseRef.current.x, mouseRef.current.y, 2);
-      }
     };
 
-    const handleMouseDown = (e) => {
-      mouseRef.current.isDown = true;
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      addParticles(x, y, 15);
-    };
-
-    const handleMouseUp = () => {
-      mouseRef.current.isDown = false;
+    const handleMouseLeave = () => {
+      mouseRef.current.x = -1000;
     };
 
     const handleTouchMove = (e) => {
-      e.preventDefault();
       const rect = canvas.getBoundingClientRect();
       const touch = e.touches[0];
       mouseRef.current.x = touch.clientX - rect.left;
-      mouseRef.current.y = touch.clientY - rect.top;
-      addParticles(mouseRef.current.x, mouseRef.current.y, 2);
-    };
-
-    const handleTouchStart = (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const touch = e.touches[0];
-      addParticles(touch.clientX - rect.left, touch.clientY - rect.top, 15);
     };
 
     resize();
     window.addEventListener('resize', resize);
-    canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('mousedown', handleMouseDown);
-    canvas.addEventListener('mouseup', handleMouseUp);
-    canvas.addEventListener('mouseleave', handleMouseUp);
-    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
-    canvas.addEventListener('touchstart', handleTouchStart);
+    canvas.addEventListener('mousemove', handleMouseMove, { passive: true });
+    canvas.addEventListener('mouseleave', handleMouseLeave);
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: true });
 
     animationRef.current = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener('resize', resize);
       canvas.removeEventListener('mousemove', handleMouseMove);
-      canvas.removeEventListener('mousedown', handleMouseDown);
-      canvas.removeEventListener('mouseup', handleMouseUp);
-      canvas.removeEventListener('mouseleave', handleMouseUp);
+      canvas.removeEventListener('mouseleave', handleMouseLeave);
       canvas.removeEventListener('touchmove', handleTouchMove);
-      canvas.removeEventListener('touchstart', handleTouchStart);
       cancelAnimationFrame(animationRef.current);
     };
   }, []);
