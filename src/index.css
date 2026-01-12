@@ -528,6 +528,26 @@ body {
   padding: 1rem 1.5rem 1.5rem;
 }
 
+.calendly-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--highlight);
+  color: #000;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-bottom: 1rem;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.calendly-link:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
 .footer-content p {
   color: var(--text-muted);
   font-size: 0.85rem;

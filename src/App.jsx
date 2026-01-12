@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Mail, Linkedin, Github, ExternalLink, Twitter, BookOpen, Menu, X, ChevronUp, Code2 } from 'lucide-react';
+import { Mail, Linkedin, Github, ExternalLink, Twitter, BookOpen, Menu, X, ChevronUp, Code2, Calendar } from 'lucide-react';
 
 // Utility: Linear interpolation for smooth animations
 const lerp = (start, end, factor) => start + (end - start) * factor;
@@ -895,6 +895,15 @@ function Footer() {
     <footer className="footer">
       <FluidSimulation />
       <div className="footer-content">
+        <a
+          href="https://calendly.com/dylancablayan/15-minute-quickchat"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="calendly-link"
+        >
+          <Calendar size={16} />
+          <span>Schedule a 15-min chat</span>
+        </a>
         <p>© {currentYear} Dylan Cablayan. Built with React.</p>
         <p className="footer-tagline">Making an impact through technology</p>
       </div>
