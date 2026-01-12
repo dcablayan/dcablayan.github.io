@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Mail, Linkedin, Github, ExternalLink, Menu, X, ChevronUp, Calendar } from 'lucide-react';
+import { Mail, Linkedin, Github, ExternalLink, Twitter, BookOpen, Menu, X, ChevronUp, Code2, Calendar } from 'lucide-react';
 
 // Utility: Linear interpolation for smooth animations
 const lerp = (start, end, factor) => start + (end - start) * factor;
@@ -763,13 +763,13 @@ function Projects() {
 
 // Contact Section
 function Contact() {
-  const primaryLinks = [
+  const links = [
     { name: 'Email', href: 'mailto:dylancablayan07@gmail.com', icon: Mail },
     { name: 'LinkedIn', href: 'https://linkedin.com/in/dylancablayan', icon: Linkedin },
-  ];
-
-  const secondaryLinks = [
     { name: 'GitHub', href: 'https://github.com/dcablayan', icon: Github },
+    { name: 'LeetCode', href: 'https://leetcode.com/u/dcablayan/', icon: Code2 },
+    { name: 'X', href: 'https://x.com/dylancablayan', icon: Twitter },
+    { name: 'ResearchGate', href: 'https://www.researchgate.net/profile/Dylan-Cablayan', icon: BookOpen },
   ];
 
   return (
@@ -778,16 +778,8 @@ function Contact() {
       <p className="contact-text">
         I'm always open to discussing research, startups, or new opportunities.
       </p>
-      <div className="contact-links primary">
-        {primaryLinks.map((link) => (
-          <a key={link.name} href={link.href} target="_blank" rel="noopener noreferrer" className="contact-link">
-            <link.icon size={20} />
-            <span>{link.name}</span>
-          </a>
-        ))}
-      </div>
-      <div className="contact-links secondary">
-        {secondaryLinks.map((link) => (
+      <div className="contact-links">
+        {links.map((link) => (
           <a key={link.name} href={link.href} target="_blank" rel="noopener noreferrer" className="contact-link">
             <link.icon size={20} />
             <span>{link.name}</span>
