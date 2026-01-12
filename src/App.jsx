@@ -589,6 +589,8 @@ function Experience() {
       role: 'VC Deal Sourcing',
       date: 'Oct 2025 - Present',
       description: 'Deal sourcing and startup analysis for clean energy investments.',
+      link: 'https://www.energyinnovationcapital.com',
+      linkName: 'EIC',
     },
     {
       company: 'NASA',
