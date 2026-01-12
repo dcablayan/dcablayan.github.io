@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Mail, Linkedin, Github, ExternalLink, Twitter, BookOpen, Menu, X, ChevronUp, Code2, Calendar } from 'lucide-react';
+import { Mail, Linkedin, Github, ExternalLink, Menu, X, ChevronUp, Calendar } from 'lucide-react';
 
 // Utility: Linear interpolation for smooth animations
 const lerp = (start, end, factor) => start + (end - start) * factor;
@@ -392,10 +392,10 @@ function Navbar() {
   const [showResumeModal, setShowResumeModal] = useState(false);
 
   const navLinks = [
-    { name: 'About', href: '#about' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Experience', href: '#experience' },
+    { name: 'Now', href: '#now' },
     { name: 'Projects', href: '#projects' },
+    { name: 'Experience', href: '#experience' },
+    { name: 'About', href: '#about' },
     { name: 'Contact', href: '#contact' },
   ];
 
@@ -489,13 +489,28 @@ function RotatingText() {
 function Hero() {
   return (
     <section className="hero">
-      <h1 className="hero-title">Hi, I'm Dylan Cablayan 👋</h1>
+      <h1 className="hero-title">Hi, I'm Dylan Cablayan</h1>
       <p className="hero-subtitle">I am a <RotatingText /></p>
     </section>
   );
 }
 
-// About Section - Expanded
+// Now Section - Current Focus
+function Now() {
+  return (
+    <section id="now" className="section now-section">
+      <h2 className="section-title">What I'm Working On</h2>
+      <div className="now-content">
+        <p>
+          I'm currently focused on building and researching AI systems at the intersection of machine learning, startups, and civic impact—gaining
+          hands-on experience through research labs, <span className="highlight">OpenAI's ChatGPT Lab</span>, and early-stage startups.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// About Section - Background & Interests
 function About() {
   return (
     <section id="about" className="section">
@@ -503,46 +518,44 @@ function About() {
       <div className="about-content">
         <p>
           I'm a Computer Science student at the <span className="highlight">University of Hawaiʻi at Mānoa</span> through the Kaʻieʻie Transfer Program,
-          concurrently taking classes at both UH Mānoa and Kapiʻolani Community College as I work toward completing degrees from both institutions.
-          My academic background is in Natural Science and Information & Computer Science, and I currently maintain a 4.0 GPA.
+          taking classes at both UH Mānoa and Kapiʻolani Community College. I'm a member of the <span className="highlight">OpenAI ChatGPT Lab</span> and
+          an intern at <span className="highlight">Blue Startups</span>, Hawaiʻi's top tech accelerator.
         </p>
         <p>
-          I'm a member of the <span className="highlight">OpenAI ChatGPT Lab</span> (1 of 28 students selected for Cohort 3)
-          and an intern at <span className="highlight">Blue Startups</span>, Hawaiʻi's leading tech accelerator. I also support venture capital
-          deal sourcing at Energy Innovation Capital.
+          My research experience includes the NASA SEES program at UT Austin's Center for Space Research and the UH Mānoa SAIL Lab,
+          where I worked on healthcare NLP applications.
         </p>
         <p>
-          My interests sit at the intersection of AI/ML, startups, and civic tech. I've advocated for legislation supporting
-          work-based learning (SB 2975 and HB 1654) and helped develop Hawaiʻi's first Filipino culture curriculum, now taught in seven schools statewide.
+          Beyond tech, I care about civic advocacy—I've helped pass legislation for work-based learning and co-developed Hawaiʻi's first
+          Filipino culture curriculum, now taught in seven schools.
         </p>
         <p>
-          Outside of class and work, I spend my time exploring new AI research, mentoring other students, building projects focused on real-world impact,
-          and enjoying solo travel and archery.
+          Outside of work, I'm into AI research, mentoring students, building real-world projects, solo travel, and archery.
         </p>
       </div>
     </section>
   );
 }
 
-// Skills Section
+// Skills Section - Compressed Tags
 function Skills() {
-  const skillCategories = [
-    { name: 'Programming Languages:', skills: ['Python', 'JavaScript', 'TypeScript', 'Java', 'SQL'] },
-    { name: 'Frameworks:', skills: ['React', 'Next.js', 'Node.js', 'TailwindCSS', 'Flask'] },
-    { name: 'AI/ML:', skills: ['PyTorch', 'TensorFlow', 'Pandas', 'NumPy', 'Scikit-learn', 'LangChain'] },
-    { name: 'Tools:', skills: ['Git', 'Docker', 'Linux', 'VS Code', 'Jupyter', 'AWS'] },
+  const skills = [
+    { category: 'Languages', items: ['Python', 'JavaScript', 'TypeScript', 'Java', 'SQL'] },
+    { category: 'AI/ML', items: ['PyTorch', 'TensorFlow', 'LangChain', 'Pandas', 'NumPy'] },
+    { category: 'Web', items: ['React', 'Next.js', 'Node.js', 'TailwindCSS'] },
+    { category: 'Tools', items: ['Git', 'Docker', 'AWS', 'Linux'] },
   ];
 
   return (
-    <section id="skills" className="section">
-      <h2 className="section-title">My Skills</h2>
-      <div className="skills-container">
-        {skillCategories.map((category) => (
-          <div key={category.name} className="skill-category">
-            <h3 className="skill-category-name">{category.name}</h3>
-            <div className="skill-list">
-              {category.skills.map((skill) => (
-                <span key={skill} className="skill-item">● {skill}</span>
+    <section id="skills" className="section skills-section">
+      <h2 className="section-title">Skills</h2>
+      <div className="skills-grid">
+        {skills.map((group) => (
+          <div key={group.category} className="skill-group">
+            <span className="skill-category-label">{group.category}</span>
+            <div className="skill-tags">
+              {group.items.map((skill) => (
+                <span key={skill} className="skill-tag">{skill}</span>
               ))}
             </div>
           </div>
@@ -552,55 +565,55 @@ function Skills() {
   );
 }
 
-// Experience Section with Cards - Added Dates
+// Experience Section - Compact
 function Experience() {
   const experiences = [
     {
       company: 'OpenAI',
       role: 'ChatGPT Lab Member',
       date: 'Oct 2025 - Present',
-      description: '1 of 28 students selected (Cohort 3) to develop and test student-facing ChatGPT features and provide feedback directly to OpenAI.',
+      description: 'Testing and developing student-facing ChatGPT features. 1 of 28 selected for Cohort 3.',
       link: 'https://openai.com',
     },
     {
       company: 'Blue Startups',
       role: 'Intern',
       date: 'Aug 2025 - Present',
-      description: "Supporting Hawaii's top tech accelerator with cohort operations, startup evaluation, and community building for the local startup ecosystem.",
+      description: "Supporting Hawaiʻi's top tech accelerator with cohort operations and startup evaluation.",
       link: 'https://bluestartups.com',
     },
     {
       company: 'Energy Innovation Capital',
-      role: 'VC Deal Sourcing (via Extern)',
+      role: 'VC Deal Sourcing',
       date: 'Oct 2025 - Present',
-      description: 'Conducting venture capital deal sourcing and startup analysis for clean energy investments.',
+      description: 'Deal sourcing and startup analysis for clean energy investments.',
     },
     {
       company: 'NASA',
-      role: 'Research Intern (SEES Program)',
+      role: 'Research Intern (SEES)',
       date: 'May - Aug 2024',
-      description: 'Conducted research at UT Austin Center for Space Research on GRACE-FO satellite data analyzing ice sheet melting. Presented findings at AGU Conference in Washington D.C.',
+      description: 'GRACE-FO satellite research at UT Austin. Presented at AGU Conference.',
       link: 'https://www.nasa.gov/learning-resources/nasa-stem-engagement/',
     },
     {
       company: 'Stanford AIMI',
       role: 'Health AI Bootcamp',
       date: 'Jun 2024',
-      description: 'Completed AI in Healthcare specialization covering ML fundamentals, clinical AI evaluations, and health equity considerations.',
+      description: 'AI in Healthcare specialization: ML fundamentals and clinical AI evaluation.',
       link: 'https://aimi.stanford.edu',
     },
     {
       company: 'Hohonu',
       role: 'Data Science Intern',
       date: 'Jun - Jul 2024',
-      description: 'First startup experience working on tidal prediction models, data pipelines, and machine learning for ocean monitoring systems.',
+      description: 'Built tidal prediction models and ML pipelines for ocean monitoring.',
       link: 'https://hohonu.io',
     },
     {
-      company: 'UH Mānoa',
-      role: 'CS Research Intern - SAIL Lab',
+      company: 'UH Mānoa SAIL Lab',
+      role: 'CS Research Intern',
       date: 'Aug 2023 - Jun 2024',
-      description: 'Developed NLP application for transcribing patient-physician conversations into structured JSON format using GPT-4 at the Laboratory of Applications in Informatics & Analytics.',
+      description: 'NLP application for patient-physician transcription using GPT-4.',
     },
   ];
 
@@ -630,39 +643,48 @@ function Experience() {
   );
 }
 
-// Projects Section with Cards - Added Links and Details
+// Projects Section with Cards - Featured Projects First
 function Projects() {
-  const projects = [
+  const featuredProjects = [
+    {
+      title: 'NASA GRACE-FO Research',
+      problem: 'Understanding ice sheet melting and sea level rise using satellite gravity data.',
+      contribution: 'Analyzed GRACE-FO satellite data at UT Austin\'s Center for Space Research as part of the NASA SEES program and helped present findings at AGU.',
+      tags: ['Python', 'Data Analysis', 'Climate Datasets'],
+      date: 'May - Aug 2024',
+      link: 'https://www.researchgate.net/publication/385278069_GRACE-FO_Weighing_Where_the_Water_Goes',
+      featured: true,
+    },
+    {
+      title: 'Synth - AI Contract Review',
+      problem: 'AI-powered contract review and financial analysis to help users extract insights from legal/financial documents.',
+      contribution: 'Solo-built prototype and demo. Designed concept, implemented chatbot, and core AI logic. Won 2nd place at Hawaii State DECA.',
+      tags: ['Python', 'NLP', 'GPT', 'Fintech'],
+      date: 'Jan 2024',
+      github: 'https://github.com/dcablayan',
+      featured: true,
+    },
+    {
+      title: 'NLP Medical Transcription',
+      problem: 'Transcribing patient-physician conversations into structured JSON for clinical documentation.',
+      contribution: 'Built the NLP application and schema logic as a CS Research Intern at UH Mānoa SAIL Lab.',
+      tags: ['Python', 'GPT-4', 'NLP', 'Healthcare'],
+      date: '2023 - 2024',
+      featured: true,
+    },
+  ];
+
+  const otherProjects = [
     {
       title: 'Filipino Curriculum Project',
-      description: 'Worked alongside other high school students to develop Hawaiʻi\'s first Filipino history and culture curriculum for the DOE. Now actively taught at 7 schools across the state, reaching hundreds of students.',
-      tags: ['Education', 'Curriculum Design', 'Cultural Advocacy'],
+      description: 'Developed Hawaiʻi\'s first Filipino history and culture curriculum for the DOE. Now taught at 7 schools statewide.',
+      tags: ['Education', 'Curriculum Design'],
       date: 'Jan 2023 - Aug 2024',
       link: 'https://sites.google.com/view/filipinocurriculum/home',
     },
     {
-      title: 'Synth - AI Contract Review',
-      description: 'Built an AI-powered contract review and financial analysis chatbot with working demo. Won 2nd place at Hawaii State DECA Innovation Plan competition.',
-      tags: ['AI/ML', 'NLP', 'Fintech'],
-      date: 'Jan 2024',
-      github: 'https://github.com/dcablayan',
-    },
-    {
-      title: 'NLP Medical Transcription',
-      description: 'Developed NLP application that transcribes patient-physician conversations into structured JSON format using GPT-4 for clinical documentation.',
-      tags: ['Python', 'GPT-4', 'Healthcare AI'],
-      date: '2023 - 2024',
-    },
-    {
-      title: 'NASA GRACE-FO Research',
-      description: 'Analyzed gravitational anomalies and sea level changes from ice sheet melting using GRACE-FO satellite data. Presented findings at AGU Conference.',
-      tags: ['Data Science', 'Climate Research', 'Python'],
-      date: 'May - Aug 2024',
-      link: 'https://www.researchgate.net/publication/385278069_GRACE-FO_Weighing_Where_the_Water_Goes',
-    },
-    {
       title: 'AI Cancer Research',
-      description: 'Research on NLP systems in clinical oncology settings. Won 2nd place at Ellison Medical Institute Medical Sciences Challenge at UCLA.',
+      description: 'Research on NLP systems in clinical oncology. Won 2nd place at Ellison Medical Institute Challenge at UCLA.',
       tags: ['AI', 'Healthcare', 'Research'],
       date: 'Aug 2024',
     },
@@ -670,16 +692,23 @@ function Projects() {
 
   return (
     <section id="projects" className="section">
-      <h2 className="section-title">Projects</h2>
+      <h2 className="section-title">Featured Projects</h2>
       <div className="cards-grid">
-        {projects.map((project, index) => (
-          <div key={index} className="card card-yellow">
+        {featuredProjects.map((project, index) => (
+          <div key={index} className="card card-yellow featured-project">
             <div className="card-content">
               <div className="card-header">
                 <h3 className="card-title">{project.title}</h3>
                 <span className="card-date">{project.date}</span>
               </div>
-              <p className="card-description">{project.description}</p>
+              <div className="project-detail">
+                <span className="project-label">Problem:</span>
+                <p>{project.problem}</p>
+              </div>
+              <div className="project-detail">
+                <span className="project-label">My Contribution:</span>
+                <p>{project.contribution}</p>
+              </div>
               <div className="card-tags">
                 {project.tags.map((tag) => (
                   <span key={tag} className="tag">{tag}</span>
@@ -701,30 +730,64 @@ function Projects() {
           </div>
         ))}
       </div>
+
+      <h3 className="subsection-title">Other Projects</h3>
+      <div className="cards-grid">
+        {otherProjects.map((project, index) => (
+          <div key={index} className="card card-yellow">
+            <div className="card-content">
+              <div className="card-header">
+                <h3 className="card-title">{project.title}</h3>
+                <span className="card-date">{project.date}</span>
+              </div>
+              <p className="card-description">{project.description}</p>
+              <div className="card-tags">
+                {project.tags.map((tag) => (
+                  <span key={tag} className="tag">{tag}</span>
+                ))}
+              </div>
+              <div className="card-links">
+                {project.link && (
+                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="card-link">
+                    <ExternalLink size={14} /> View
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
 
 // Contact Section
 function Contact() {
-  const links = [
+  const primaryLinks = [
     { name: 'Email', href: 'mailto:dylancablayan07@gmail.com', icon: Mail },
     { name: 'LinkedIn', href: 'https://linkedin.com/in/dylancablayan', icon: Linkedin },
+  ];
+
+  const secondaryLinks = [
     { name: 'GitHub', href: 'https://github.com/dcablayan', icon: Github },
-    { name: 'LeetCode', href: 'https://leetcode.com/u/dcablayan/', icon: Code2 },
-    { name: 'X', href: 'https://x.com/dylancablayan', icon: Twitter },
-    { name: 'ResearchGate', href: 'https://www.researchgate.net/profile/Dylan-Cablayan', icon: BookOpen },
   ];
 
   return (
     <section id="contact" className="section">
-      <h2 className="section-title">Get In Touch</h2>
+      <h2 className="section-title">Get in Touch</h2>
       <p className="contact-text">
-        I'm always open to discussing new opportunities, research collaborations, or just chatting about AI and startups.
-        Feel free to reach out!
+        I'm always open to discussing research, startups, or new opportunities.
       </p>
-      <div className="contact-links">
-        {links.map((link) => (
+      <div className="contact-links primary">
+        {primaryLinks.map((link) => (
+          <a key={link.name} href={link.href} target="_blank" rel="noopener noreferrer" className="contact-link">
+            <link.icon size={20} />
+            <span>{link.name}</span>
+          </a>
+        ))}
+      </div>
+      <div className="contact-links secondary">
+        {secondaryLinks.map((link) => (
           <a key={link.name} href={link.href} target="_blank" rel="noopener noreferrer" className="contact-link">
             <link.icon size={20} />
             <span>{link.name}</span>
@@ -921,10 +984,11 @@ function App() {
         <Navbar />
         <main>
           <Hero />
+          <Now />
+          <Projects />
+          <Experience />
           <About />
           <Skills />
-          <Experience />
-          <Projects />
           <Contact />
         </main>
         <Footer />
