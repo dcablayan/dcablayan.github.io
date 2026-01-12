@@ -392,10 +392,10 @@ function Navbar() {
   const [showResumeModal, setShowResumeModal] = useState(false);
 
   const navLinks = [
+    { name: 'About', href: '#about' },
     { name: 'Now', href: '#now' },
     { name: 'Projects', href: '#projects' },
     { name: 'Experience', href: '#experience' },
-    { name: 'About', href: '#about' },
     { name: 'Contact', href: '#contact' },
   ];
 
@@ -574,6 +574,7 @@ function Experience() {
       date: 'Oct 2025 - Present',
       description: 'Testing and developing student-facing ChatGPT features. 1 of 28 selected for Cohort 3.',
       link: 'https://openai.com',
+      linkName: 'OpenAI',
     },
     {
       company: 'Blue Startups',
@@ -581,6 +582,7 @@ function Experience() {
       date: 'Aug 2025 - Present',
       description: "Supporting Hawaiʻi's top tech accelerator with cohort operations and startup evaluation.",
       link: 'https://bluestartups.com',
+      linkName: 'Blue Startups',
     },
     {
       company: 'Energy Innovation Capital',
@@ -594,13 +596,7 @@ function Experience() {
       date: 'May - Aug 2024',
       description: 'GRACE-FO satellite research at UT Austin. Presented at AGU Conference.',
       link: 'https://www.nasa.gov/learning-resources/nasa-stem-engagement/',
-    },
-    {
-      company: 'Stanford AIMI',
-      role: 'Health AI Bootcamp',
-      date: 'Jun 2024',
-      description: 'AI in Healthcare specialization: ML fundamentals and clinical AI evaluation.',
-      link: 'https://aimi.stanford.edu',
+      linkName: 'NASA SEES',
     },
     {
       company: 'Hohonu',
@@ -608,12 +604,27 @@ function Experience() {
       date: 'Jun - Jul 2024',
       description: 'Built tidal prediction models and ML pipelines for ocean monitoring.',
       link: 'https://hohonu.io',
+      linkName: 'Hohonu',
+    },
+  ];
+
+  const researchEducation = [
+    {
+      company: 'Stanford AIMI',
+      role: 'Health AI Bootcamp',
+      date: 'Jun 2024',
+      description: 'AI in Healthcare specialization: ML fundamentals and clinical AI evaluation.',
+      link: 'https://aimi.stanford.edu',
+      linkName: 'Stanford AIMI',
     },
     {
       company: 'UH Mānoa SAIL Lab',
       role: 'CS Research Intern',
       date: 'Aug 2023 - Jun 2024',
       description: 'NLP application for patient-physician transcription using GPT-4.',
+      link: 'https://mahdi-b.github.io',
+      linkName: 'SAIL Lab',
+      nested: true,
     },
   ];
 
@@ -632,7 +643,28 @@ function Experience() {
               <p className="card-description">{exp.description}</p>
               {exp.link && (
                 <a href={exp.link} target="_blank" rel="noopener noreferrer" className="card-link">
-                  <ExternalLink size={14} /> Website
+                  <ExternalLink size={14} /> {exp.linkName || 'Website'}
+                </a>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h3 className="subsection-title">Research & Education</h3>
+      <div className="cards-grid research-group">
+        {researchEducation.map((exp, index) => (
+          <div key={index} className={`card card-yellow ${exp.nested ? 'nested-card' : ''}`}>
+            <div className="card-content">
+              <div className="card-header">
+                <h3 className="card-title">{exp.company}</h3>
+                <span className="card-date">{exp.date}</span>
+              </div>
+              <p className="card-role">{exp.role}</p>
+              <p className="card-description">{exp.description}</p>
+              {exp.link && (
+                <a href={exp.link} target="_blank" rel="noopener noreferrer" className="card-link">
+                  <ExternalLink size={14} /> {exp.linkName || 'Website'}
                 </a>
               )}
             </div>
@@ -653,6 +685,7 @@ function Projects() {
       tags: ['Python', 'Data Analysis', 'Climate Datasets'],
       date: 'May - Aug 2024',
       link: 'https://www.researchgate.net/publication/385278069_GRACE-FO_Weighing_Where_the_Water_Goes',
+      linkText: 'ResearchGate',
       featured: true,
     },
     {
@@ -665,11 +698,13 @@ function Projects() {
       featured: true,
     },
     {
-      title: 'NLP Medical Transcription',
+      title: 'Parrot Forms – NLP Medical Transcription',
+      subtitle: 'Under UH Mānoa SAIL Lab',
       problem: 'Transcribing patient-physician conversations into structured JSON for clinical documentation.',
       contribution: 'Built the NLP application and schema logic as a CS Research Intern at UH Mānoa SAIL Lab.',
       tags: ['Python', 'GPT-4', 'NLP', 'Healthcare'],
       date: '2023 - 2024',
+      github: 'https://github.com/AkibSadmanee/ParrotForms',
       featured: true,
     },
   ];
@@ -701,6 +736,9 @@ function Projects() {
                 <h3 className="card-title">{project.title}</h3>
                 <span className="card-date">{project.date}</span>
               </div>
+              {project.subtitle && (
+                <p className="card-subtitle">{project.subtitle}</p>
+              )}
               <div className="project-detail">
                 <span className="project-label">Problem:</span>
                 <p>{project.problem}</p>
@@ -722,7 +760,7 @@ function Projects() {
                 )}
                 {project.link && (
                   <a href={project.link} target="_blank" rel="noopener noreferrer" className="card-link">
-                    <ExternalLink size={14} /> View
+                    <ExternalLink size={14} /> {project.linkText || 'View'}
                   </a>
                 )}
               </div>
@@ -976,10 +1014,10 @@ function App() {
         <Navbar />
         <main>
           <Hero />
+          <About />
           <Now />
           <Projects />
           <Experience />
-          <About />
           <Skills />
           <Contact />
         </main>
