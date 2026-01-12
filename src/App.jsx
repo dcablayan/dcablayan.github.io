@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Mail, Linkedin, Github, ExternalLink, Twitter, BookOpen, Menu, X, ChevronUp, Code2, Lock } from 'lucide-react';
+import { Mail, Linkedin, Github, ExternalLink, Twitter, BookOpen, Menu, X, ChevronUp, Code2, Calendar } from 'lucide-react';
 
 // Utility: Linear interpolation for smooth animations
 const lerp = (start, end, factor) => start + (end - start) * factor;
@@ -343,65 +343,44 @@ function ScrollToTop() {
   );
 }
 
-// Password Modal for Resume
-function PasswordModal({ isOpen, onClose, onSuccess }) {
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(false);
-  const [shake, setShake] = useState(false);
-  const inputRef = useRef(null);
+// Resume Selector Modal
+function ResumeSelector({ isOpen, onClose }) {
+  const resumes = {
+    technical: 'https://drive.google.com/file/d/1bvjtaNJXKyeXRoWOk1HszDoAtFgOW_74/view?usp=sharing',
+    nonTechnical: 'https://drive.google.com/file/d/1bvjtaNJXKyeXRoWOk1HszDoAtFgOW_74/view?usp=sharing',
+  };
 
-  useEffect(() => {
-    if (isOpen && inputRef.current) {
-      inputRef.current.focus();
-    }
-    if (!isOpen) {
-      setPassword('');
-      setError(false);
-    }
-  }, [isOpen]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Simple password check
-    if (password === 'Dyl25') {
-      onSuccess();
-      onClose();
-      setPassword('');
-      setError(false);
-    } else {
-      setError(true);
-      setShake(true);
-      setTimeout(() => setShake(false), 500);
-    }
+  const handleSelect = (type) => {
+    window.open(resumes[type], '_blank', 'noopener,noreferrer');
+    onClose();
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="password-modal-overlay" onClick={onClose}>
-      <div className={`password-modal ${shake ? 'shake' : ''}`} onClick={(e) => e.stopPropagation()}>
+      <div className="password-modal" onClick={(e) => e.stopPropagation()}>
         <button className="password-modal-close" onClick={onClose}>
           <X size={20} />
         </button>
-        <div className="password-modal-icon">
-          <Lock size={32} />
-        </div>
-        <h3 className="password-modal-title">Resume Access</h3>
-        <p className="password-modal-text">Please enter the password to view my resume.</p>
-        <form onSubmit={handleSubmit}>
-          <input
-            ref={inputRef}
-            type="password"
-            value={password}
-            onChange={(e) => { setPassword(e.target.value); setError(false); }}
-            placeholder="Enter password"
-            className={`password-input ${error ? 'error' : ''}`}
-          />
-          {error && <p className="password-error">Incorrect password. Please try again.</p>}
-          <button type="submit" className="password-submit">
-            View Resume
+        <h3 className="password-modal-title">View My Resume</h3>
+        <p className="password-modal-text">What best describes your background?</p>
+        <div className="resume-options">
+          <button
+            className="resume-option"
+            onClick={() => handleSelect('technical')}
+          >
+            <span className="resume-option-title">Technical</span>
+            <span className="resume-option-desc">Engineering, software, research roles</span>
           </button>
-        </form>
+          <button
+            className="resume-option"
+            onClick={() => handleSelect('nonTechnical')}
+          >
+            <span className="resume-option-title">Non-Technical</span>
+            <span className="resume-option-desc">Business, operations, general roles</span>
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -410,8 +389,7 @@ function PasswordModal({ isOpen, onClose, onSuccess }) {
 // Navigation with Mobile Menu
 function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const resumeUrl = 'https://drive.google.com/file/d/1bvjtaNJXKyeXRoWOk1HszDoAtFgOW_74/view?usp=sharing';
+  const [showResumeModal, setShowResumeModal] = useState(false);
 
   const navLinks = [
     { name: 'About', href: '#about' },
@@ -423,14 +401,6 @@ function Navbar() {
 
   const handleLinkClick = () => {
     setMobileMenuOpen(false);
-  };
-
-  const handleResumeClick = () => {
-    setShowPasswordModal(true);
-  };
-
-  const handlePasswordSuccess = () => {
-    window.open(resumeUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -446,7 +416,7 @@ function Navbar() {
           </div>
 
           <div className="nav-right">
-            <button onClick={handleResumeClick} className="resume-btn">
+            <button onClick={() => setShowResumeModal(true)} className="resume-btn">
               Resume
             </button>
 
@@ -470,10 +440,9 @@ function Navbar() {
         </div>
       </nav>
 
-      <PasswordModal
-        isOpen={showPasswordModal}
-        onClose={() => setShowPasswordModal(false)}
-        onSuccess={handlePasswordSuccess}
+      <ResumeSelector
+        isOpen={showResumeModal}
+        onClose={() => setShowResumeModal(false)}
       />
     </>
   );
@@ -926,6 +895,15 @@ function Footer() {
     <footer className="footer">
       <FluidSimulation />
       <div className="footer-content">
+        <a
+          href="https://calendly.com/dylancablayan/15-minute-quickchat"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="calendly-link"
+        >
+          <Calendar size={16} />
+          <span>Schedule a 15-min chat</span>
+        </a>
         <p>© {currentYear} Dylan Cablayan. Built with React.</p>
         <p className="footer-tagline">Making an impact through technology</p>
       </div>
