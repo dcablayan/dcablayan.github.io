@@ -543,7 +543,7 @@ function Skills() {
     { category: 'Product', items: ['Roadmapping', 'User Research', 'A/B Testing', 'Agile/Scrum', 'PRDs'] },
     { category: 'Technical', items: ['Python', 'SQL', 'APIs', 'Git', 'Data Analysis'] },
     { category: 'Tools', items: ['Figma', 'Jira', 'Notion', 'Amplitude', 'Tableau'] },
-    { category: 'AI/ML', items: ['LLM Prompting', 'RAG', 'LangChain', 'ML Fundamentals'] },
+    { category: 'Research', items: ['NLP', 'Literature Review', 'Statistical Analysis', 'Technical Writing'] },
   ];
 
   return (
