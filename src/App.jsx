@@ -540,10 +540,10 @@ function About() {
 // Skills Section - Compressed Tags
 function Skills() {
   const skills = [
-    { category: 'Languages', items: ['Python', 'JavaScript', 'TypeScript', 'Java', 'SQL'] },
-    { category: 'AI/ML', items: ['PyTorch', 'TensorFlow', 'LangChain', 'Pandas', 'NumPy'] },
-    { category: 'Web', items: ['React', 'Next.js', 'Node.js', 'TailwindCSS'] },
-    { category: 'Tools', items: ['Git', 'Docker', 'AWS', 'Linux'] },
+    { category: 'Product', items: ['Roadmapping', 'User Research', 'A/B Testing', 'Agile/Scrum', 'PRDs'] },
+    { category: 'Technical', items: ['Python', 'SQL', 'APIs', 'Git', 'Data Analysis'] },
+    { category: 'Tools', items: ['Figma', 'Jira', 'Notion', 'Amplitude', 'Tableau'] },
+    { category: 'AI/ML', items: ['LLM Prompting', 'RAG', 'LangChain', 'ML Fundamentals'] },
   ];
 
   return (
