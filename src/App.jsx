@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Mail, Linkedin, Github, ExternalLink, Twitter, Menu, X, ChevronUp, Calendar, Code2 } from 'lucide-react';
+import { Mail, Linkedin, Github, ExternalLink, Twitter, Menu, X, ChevronUp, Calendar, Code2, BookOpen } from 'lucide-react';
 
 // Utility: Linear interpolation for smooth animations
 const lerp = (start, end, factor) => start + (end - start) * factor;
@@ -578,7 +578,7 @@ function Experience() {
     },
     {
       company: 'Blue Startups',
-      role: 'Intern',
+      role: 'Program Operations Intern',
       date: 'Aug 2025 - Present',
       description: "Supporting Hawaiʻi's top tech accelerator with cohort operations and startup evaluation.",
       link: 'https://bluestartups.com',
@@ -589,6 +589,8 @@ function Experience() {
       role: 'VC Deal Sourcing',
       date: 'Oct 2025 - Present',
       description: 'Deal sourcing and startup analysis for clean energy investments.',
+      link: 'https://www.energyinnovationcapital.com',
+      linkName: 'EIC',
     },
     {
       company: 'NASA',
@@ -807,8 +809,7 @@ function Contact() {
     { name: 'GitHub', href: 'https://github.com/dcablayan', icon: Github },
     { name: 'LeetCode', href: 'https://leetcode.com/u/dcablayan/', icon: Code2 },
     { name: 'X', href: 'https://x.com/dylancablayan', icon: Twitter },
-    { name: 'ResearchGate', href: 'https://www.researchgate.net/profile/Dylan-Cablayan', logo: '/researchgate-logo.svg' },
-    { name: 'EIC', href: 'https://www.energyinnovationcapital.com', logo: '/eic-logo.png' },
+    { name: 'ResearchGate', href: 'https://www.researchgate.net/profile/Dylan-Cablayan', icon: BookOpen },
   ];
 
   return (
