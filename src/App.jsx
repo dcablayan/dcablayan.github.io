@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Mail, Linkedin, Github, ExternalLink, Twitter, Menu, X, ChevronUp, Calendar } from 'lucide-react';
+import { Mail, Linkedin, Github, ExternalLink, Twitter, Menu, X, ChevronUp, Calendar, Code2 } from 'lucide-react';
 
 // Utility: Linear interpolation for smooth animations
 const lerp = (start, end, factor) => start + (end - start) * factor;
@@ -595,8 +595,8 @@ function Experience() {
       role: 'Research Intern (SEES)',
       date: 'May - Aug 2024',
       description: 'GRACE-FO satellite research at UT Austin. Presented at AGU Conference.',
-      link: 'https://www.nasa.gov/learning-resources/nasa-stem-engagement/',
-      linkName: 'NASA SEES',
+      link: 'https://www.nasa.gov',
+      linkName: 'NASA',
     },
     {
       company: 'Hohonu',
@@ -805,9 +805,10 @@ function Contact() {
     { name: 'Email', href: 'mailto:dylancablayan07@gmail.com', icon: Mail },
     { name: 'LinkedIn', href: 'https://linkedin.com/in/dylancablayan', icon: Linkedin },
     { name: 'GitHub', href: 'https://github.com/dcablayan', icon: Github },
-    { name: 'LeetCode', href: 'https://leetcode.com/u/dcablayan/', logo: '/leetcode-logo.svg' },
+    { name: 'LeetCode', href: 'https://leetcode.com/u/dcablayan/', icon: Code2 },
     { name: 'X', href: 'https://x.com/dylancablayan', icon: Twitter },
     { name: 'ResearchGate', href: 'https://www.researchgate.net/profile/Dylan-Cablayan', logo: '/researchgate-logo.svg' },
+    { name: 'EIC', href: 'https://www.energyinnovationcapital.com', logo: '/eic-logo.png' },
   ];
 
   return (
